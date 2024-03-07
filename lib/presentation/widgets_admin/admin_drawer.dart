@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:water_7_40/presentation/widgets_admin/add_admin.dart';
 
 class AdminDrawer extends StatelessWidget {
   const AdminDrawer({super.key});
@@ -23,6 +24,12 @@ class AdminDrawer extends StatelessWidget {
               TextButton(
                 onPressed: () {},
                 child: const Text('Клиенты'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => AddAdmin()),
+                ),
+                child: const Text('Админы'),
               ),
             ],
           ),
