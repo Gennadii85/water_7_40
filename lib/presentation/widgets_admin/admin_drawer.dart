@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:water_7_40/presentation/widgets_admin/add_admin.dart';
+import 'package:water_7_40/presentation/pages/widgets_car/add_cars.dart';
 
 class AdminDrawer extends StatelessWidget {
   const AdminDrawer({super.key});
@@ -14,7 +15,9 @@ class AdminDrawer extends StatelessWidget {
             shrinkWrap: true,
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const AddCars()),
+                ),
                 child: const Text('Водители'),
               ),
               TextButton(
@@ -22,12 +25,8 @@ class AdminDrawer extends StatelessWidget {
                 child: const Text('Менеджеры'),
               ),
               TextButton(
-                onPressed: () {},
-                child: const Text('Клиенты'),
-              ),
-              TextButton(
                 onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => AddAdmin()),
+                  MaterialPageRoute(builder: (context) => const AddAdmin()),
                 ),
                 child: const Text('Админы'),
               ),

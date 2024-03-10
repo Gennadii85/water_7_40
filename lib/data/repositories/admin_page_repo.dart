@@ -1,35 +1,44 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class RepoAdminPage {
-  // Future getAdminList() async {
-  //   final db = FirebaseFirestore.instance;
-  //   final listAdmins = db.collection('admins').snapshots();
-  //   return listAdmins;
-  // }
-
   Future createAdmin(String name, String password) async {
-    if (name.isNotEmpty || password.isNotEmpty) {
+    if (name.isNotEmpty && password.isNotEmpty) {
       final db = FirebaseFirestore.instance;
-      db.collection('admins').doc(name).set({'name': name, 'pass': password});
+      db
+          .collection('admins')
+          .doc(name)
+          .set({'name': name, 'password': password});
     } else {
       return;
     }
   }
 
-  Future update() async {
-    return;
+  Future deleteAdmin(String name) async {
+    if (name.isNotEmpty) {
+      final db = FirebaseFirestore.instance;
+      db.collection('admins').doc(name).delete();
+    } else {
+      return;
+    }
   }
 
-  Future assignDriver() async {
-    return;
+  Future createCars(String name, String password, String carID) async {
+    final db = FirebaseFirestore.instance;
+    final snap =
+        await db.collection('cars').where('carID', isEqualTo: carID).get();
+    if (snap.docs.map((e) => e['carID']).contains(carID)) {
+      return;
+      //! CarMassage().massage(context);
+    }
+    if (name.isNotEmpty && password.isNotEmpty && carID.isNotEmpty) {
+      db.collection('cars').doc().set(
+        {'name': name, 'password': password, 'carID': carID},
+      );
+    }
   }
 
-  Future freeOrder() async {
-    return;
-  }
-
-  Future assignedOrder() async {
-    return;
+  Future deleteCars(String docID) async {
+    final db = FirebaseFirestore.instance;
+    db.collection('cars').doc(docID).delete();
   }
 }

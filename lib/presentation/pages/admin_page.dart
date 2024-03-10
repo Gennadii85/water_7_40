@@ -16,7 +16,8 @@ class AdminPage extends StatelessWidget {
           centerTitle: true,
           actions: [
             AdminButtons(
-              function: () => RepoAdminPage().update(),
+              function: () {},
+              // => RepoAdminPage().update(),
               text: 'Обновить',
             ),
           ],
@@ -43,7 +44,8 @@ class AdminPage extends StatelessWidget {
                           ],
                         ),
                         AdminButtons(
-                          function: () => RepoAdminPage().assignDriver(),
+                          function: () {},
+                          // => RepoAdminPage().assignDriver(),
                           text: 'Назначить',
                         ),
                       ],
@@ -60,11 +62,13 @@ class AdminPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     TextButton(
-                      onPressed: () => RepoAdminPage().freeOrder(),
+                      onPressed: () {},
+                      // => RepoAdminPage().freeOrder(),
                       child: const Text('Свободные'),
                     ),
                     TextButton(
-                      onPressed: () => RepoAdminPage().assignedOrder(),
+                      onPressed: () {},
+                      // => RepoAdminPage().assignedOrder(),
                       child: const Text('Назначенные'),
                     ),
                   ],

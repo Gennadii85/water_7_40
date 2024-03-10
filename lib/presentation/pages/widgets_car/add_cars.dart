@@ -1,34 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_card.dart';
+import 'package:water_7_40/presentation/pages/widgets_car/cars_card.dart';
 import 'package:water_7_40/data/repositories/admin_page_repo.dart';
 import 'package:water_7_40/presentation/widgets_admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/widgets_admin/admin_drawer.dart';
 
-class AddAdmin extends StatefulWidget {
-  const AddAdmin({super.key});
+class AddCars extends StatefulWidget {
+  const AddCars({super.key});
 
   @override
-  State<AddAdmin> createState() => _AddAdminState();
+  State<AddCars> createState() => _AddCarsState();
 }
 
-class _AddAdminState extends State<AddAdmin> {
+class _AddCarsState extends State<AddCars> {
   final db = FirebaseFirestore.instance;
 
   final TextEditingController passControl = TextEditingController();
-
   final TextEditingController nameControl = TextEditingController();
+  final TextEditingController idControl = TextEditingController();
 
   @override
   void dispose() {
     passControl.dispose();
     nameControl.dispose();
+    idControl.dispose();
     super.dispose();
   }
 
   void clearTextController() {
     passControl.clear();
     nameControl.clear();
+    idControl.clear();
   }
 
   @override
@@ -37,12 +39,12 @@ class _AddAdminState extends State<AddAdmin> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Admins list'),
+          title: const Text('Cars list'),
           centerTitle: true,
         ),
         drawer: const AdminDrawer(),
         body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('admins').snapshots(),
+          stream: FirebaseFirestore.instance.collection('cars').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               var docs = snapshot.data!.docs;
@@ -54,10 +56,12 @@ class _AddAdminState extends State<AddAdmin> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: docs.length,
-                      itemBuilder: (context, index) => AdminCard(
+                      itemBuilder: (context, index) => CarsCard(
                         name: docs[index]['name'],
-                        password: docs[index]['password'].toString(),
-                        function: (name) => RepoAdminPage().deleteAdmin(name),
+                        password: docs[index]['password'],
+                        carID: docs[index]['carID'],
+                        docID: docs[index].id,
+                        function: (docID) => RepoAdminPage().deleteCars(docID),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -94,15 +98,28 @@ class _AddAdminState extends State<AddAdmin> {
                                 ),
                               ),
                               const SizedBox(height: 30),
+                              TextField(
+                                controller: idControl,
+                                decoration: const InputDecoration(
+                                  labelText: 'ID водителя (только цифры)',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 50),
                             ],
                           ),
                           actions: [
                             AdminButtons(
                               text: 'Создать',
                               function: () {
-                                RepoAdminPage().createAdmin(
+                                RepoAdminPage().createCars(
                                   nameControl.text,
                                   passControl.text,
+                                  idControl.text,
                                 );
                                 clearTextController();
                                 Navigator.of(context).pop();
@@ -116,6 +133,7 @@ class _AddAdminState extends State<AddAdmin> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               );
