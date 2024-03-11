@@ -1,20 +1,24 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import '../../../core/var_admin.dart';
+import '../../../../core/var_admin.dart';
 
-class CarsCard extends StatelessWidget {
+class ManagersCard extends StatelessWidget {
   final String name;
   final String password;
+  final String phone;
   final String docID;
-  final String carID;
+  final String managerID;
+  final String percent;
   final Function function;
-  const CarsCard({
+  const ManagersCard({
     Key? key,
     required this.name,
     required this.password,
+    required this.phone,
     required this.docID,
-    required this.carID,
+    required this.managerID,
+    required this.percent,
     required this.function,
   }) : super(key: key);
 
@@ -46,7 +50,21 @@ class CarsCard extends StatelessWidget {
                     maxLines: 5,
                   ),
                   Text(
-                    ' ID:    $carID',
+                    ' Телефон:    $phone',
+                    style: VarAdmin.adminCardText,
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                    maxLines: 5,
+                  ),
+                  Text(
+                    ' ID:    $managerID',
+                    style: VarAdmin.adminCardText,
+                    softWrap: true,
+                    overflow: TextOverflow.clip,
+                    maxLines: 5,
+                  ),
+                  Text(
+                    ' %:    $percent',
                     style: VarAdmin.adminCardText,
                     softWrap: true,
                     overflow: TextOverflow.clip,

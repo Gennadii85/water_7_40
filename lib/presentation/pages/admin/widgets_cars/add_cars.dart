@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:water_7_40/presentation/pages/widgets_car/cars_card.dart';
+import 'package:water_7_40/presentation/pages/admin/widgets_cars/cars_card.dart';
 import 'package:water_7_40/data/repositories/admin_page_repo.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_buttons.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_drawer.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 
 class AddCars extends StatefulWidget {
   const AddCars({super.key});
@@ -61,7 +61,7 @@ class _AddCarsState extends State<AddCars> {
                         password: docs[index]['password'],
                         carID: docs[index]['carID'],
                         docID: docs[index].id,
-                        function: (docID) => RepoAdminPage().deleteCars(docID),
+                        function: (docID) => RepoAdminPage().deleteCar(docID),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -101,7 +101,7 @@ class _AddCarsState extends State<AddCars> {
                               TextField(
                                 controller: idControl,
                                 decoration: const InputDecoration(
-                                  labelText: 'ID водителя (только цифры)',
+                                  labelText: 'ID (только цифры)',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10),
@@ -116,7 +116,7 @@ class _AddCarsState extends State<AddCars> {
                             AdminButtons(
                               text: 'Создать',
                               function: () {
-                                RepoAdminPage().createCars(
+                                RepoAdminPage().createCar(
                                   nameControl.text,
                                   passControl.text,
                                   idControl.text,

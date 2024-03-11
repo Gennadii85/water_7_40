@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_card.dart';
+import 'package:water_7_40/presentation/pages/admin/widgets_admins/admin_card.dart';
 import 'package:water_7_40/data/repositories/admin_page_repo.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_buttons.dart';
-import 'package:water_7_40/presentation/widgets_admin/admin_drawer.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 
 class AddAdmin extends StatefulWidget {
   const AddAdmin({super.key});
