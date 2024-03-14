@@ -4,10 +4,16 @@ import '../../../core/var_manager.dart';
 class GoodsCard extends StatelessWidget {
   final String goods;
   final String prise;
+  final int count;
+  final Function addCount;
+  final Function delCount;
   const GoodsCard({
     Key? key,
     required this.goods,
     required this.prise,
+    required this.count,
+    required this.addCount,
+    required this.delCount,
   }) : super(key: key);
 
   @override
@@ -20,15 +26,33 @@ class GoodsCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              goods,
-              style: VarManager.cardSize,
+            Expanded(
+              flex: 2,
+              child: Text(
+                goods,
+                style: VarManager.cardSize,
+              ),
             ),
             Text(
               '$prise грн.',
               style: VarManager.cardSize,
             ),
-            Text('count'),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () => addCount(),
+                  icon: const Icon(Icons.add_circle_outline),
+                ),
+                Text(
+                  '$count шт.',
+                  style: VarManager.cardSize,
+                ),
+                IconButton(
+                  onPressed: () => delCount(),
+                  icon: const Icon(Icons.remove_circle_outline),
+                ),
+              ],
+            ),
           ],
         ),
       ),

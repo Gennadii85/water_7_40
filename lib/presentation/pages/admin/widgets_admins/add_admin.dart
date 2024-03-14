@@ -16,7 +16,6 @@ class _AddAdminState extends State<AddAdmin> {
   final db = FirebaseFirestore.instance;
 
   final TextEditingController passControl = TextEditingController();
-
   final TextEditingController nameControl = TextEditingController();
 
   @override
