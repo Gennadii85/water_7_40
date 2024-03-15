@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import '../../core/var_core.dart';
 import '../../presentation/pages/managers_page.dart';
 import '../../presentation/pages/registration_page.dart';
@@ -8,6 +9,7 @@ import '../model/managers_model.dart';
 
 class RepoIdenticManagers {
   dynamic loginManager(context) async {
+    await Hive.openBox(VarHive.nameBox);
     if (Hive.box(VarHive.nameBox).containsKey(VarHive.managers)) {
       Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
       ManagersModel model = await getDBRegistrationData(VarHive.managers, data);
@@ -17,10 +19,22 @@ class RepoIdenticManagers {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const ManagersPage()),
         );
+      } else {
+        _massage(
+          context,
+          'Неверный логин или пароль. Попробуйте снова или обратитесь к администратору',
+          MaterialPageRoute(
+            builder: (context) => const RegistrationPage(),
+          ),
+        );
       }
     } else {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const RegistrationPage()),
+      _massage(
+        context,
+        'Введите логин или пароль.',
+        MaterialPageRoute(
+          builder: (context) => const RegistrationPage(),
+        ),
       );
     }
   }
@@ -58,9 +72,29 @@ class RepoIdenticManagers {
         MaterialPageRoute(builder: (context) => const ManagersPage()),
       );
     } else {
-      Navigator.of(context).push(
+      _massage(
+        context,
+        'Неверный логин или пароль.',
         MaterialPageRoute(builder: (context) => const RegistrationPage()),
       );
     }
+  }
+
+  Future<dynamic> _massage(context, String text, MaterialPageRoute route) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(text),
+        actions: [
+          AdminButtons(
+            text: 'OK',
+            function: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(route);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

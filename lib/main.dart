@@ -14,7 +14,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Hive.initFlutter();
-  RepoCore().openBox();
   runApp(const MyApp());
 }
 

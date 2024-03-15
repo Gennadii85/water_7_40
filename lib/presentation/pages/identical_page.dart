@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:water_7_40/data/repositories/identic_repo.dart';
-
 import '../../core/var_manager.dart';
 import 'admin/admin_buttons.dart';
 
@@ -19,7 +18,7 @@ class IdenticalPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Страница идентификации роли в компании',
+                  'Страница идентификации',
                   style: VarManager.cardSize,
                 ),
               ],
