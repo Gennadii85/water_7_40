@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:water_7_40/data/repositories/identic_repo.dart';
+import 'package:water_7_40/data/repositories/managers_identic_repo.dart';
 import '../../core/var_manager.dart';
 import 'admin/admin_buttons.dart';
 

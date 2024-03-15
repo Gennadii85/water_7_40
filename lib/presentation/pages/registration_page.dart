@@ -3,7 +3,7 @@ import 'package:water_7_40/core/var_manager.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/identical_page.dart';
 
-import '../../data/repositories/identic_repo.dart';
+import '../../data/repositories/managers_identic_repo.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});

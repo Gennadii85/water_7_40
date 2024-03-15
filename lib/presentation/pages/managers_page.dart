@@ -8,6 +8,7 @@ import '../../core/var_core.dart';
 import '../../core/var_manager.dart';
 import '../../data/repositories/manager_page_repo.dart';
 import 'admin/admin_buttons.dart';
+import 'manager/widgets/managers_drawer.dart';
 
 class ManagersPage extends StatefulWidget {
   const ManagersPage({super.key});
@@ -32,6 +33,7 @@ class _ManagersPageState extends State<ManagersPage> {
             ),
           ],
         ),
+        drawer: const ManagersDrawer(),
         body: StreamBuilder<List<PriceModel>>(
           stream: RepoManagerPage().getPrice(),
           builder: (context, snapshot) {

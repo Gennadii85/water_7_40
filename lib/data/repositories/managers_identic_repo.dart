@@ -9,7 +9,6 @@ import '../model/managers_model.dart';
 
 class RepoIdenticManagers {
   dynamic loginManager(context) async {
-    await Hive.openBox(VarHive.nameBox);
     if (Hive.box(VarHive.nameBox).containsKey(VarHive.managers)) {
       Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
       ManagersModel model = await getDBRegistrationData(VarHive.managers, data);
