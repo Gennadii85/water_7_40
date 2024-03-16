@@ -57,12 +57,6 @@ class _AddManagersState extends State<AddManagers> {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Все заказы без указания менеджера будут иметь ID = 0',
-                      ),
-                    ),
                     const SizedBox(height: 30),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
@@ -72,7 +66,7 @@ class _AddManagersState extends State<AddManagers> {
                         name: docs[index]['name'],
                         password: docs[index]['password'],
                         phone: docs[index]['phone'],
-                        managerID: docs[index]['managerID'].toString(),
+                        managerID: docs[index]['id'].toString(),
                         percent: docs[index]['percent'].toString(),
                         docID: docs[index].id,
                         function: (docID) =>
@@ -93,7 +87,7 @@ class _AddManagersState extends State<AddManagers> {
                                 TextField(
                                   controller: nameControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Логин для входа',
+                                    labelText: 'Логин для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -105,7 +99,7 @@ class _AddManagersState extends State<AddManagers> {
                                 TextField(
                                   controller: passControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Пароль для входа',
+                                    labelText: 'Пароль для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -129,7 +123,7 @@ class _AddManagersState extends State<AddManagers> {
                                 TextField(
                                   controller: idControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'ID (только цифры)',
+                                    labelText: 'ID * (только цифры)',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -141,7 +135,7 @@ class _AddManagersState extends State<AddManagers> {
                                 TextField(
                                   controller: percentControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Процент (только цифры)',
+                                    labelText: 'Процент (только целые числа)',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),

@@ -6,6 +6,7 @@ class OrderModel {
   final num? managerProfit;
   final int? carID;
   final num? carProfit;
+  final Map goodsList;
   OrderModel({
     required this.created,
     this.delivered,
@@ -14,6 +15,7 @@ class OrderModel {
     this.managerProfit,
     this.carID,
     this.carProfit,
+    required this.goodsList,
   });
 
   static OrderModel fromFirebase(Map<String, dynamic> json) => OrderModel(
@@ -24,6 +26,7 @@ class OrderModel {
         managerProfit: json['managerProfit'] ?? '0',
         carID: json['carID'] ?? '0',
         carProfit: json['carProfit'] ?? '0',
+        goodsList: json['goodsList'],
       );
   Map<String, dynamic> toFirebase() => {
         'created': created,
@@ -33,5 +36,6 @@ class OrderModel {
         'managerProfit': managerProfit,
         'carID': carID,
         'carProfit': carProfit,
+        'goodsList': goodsList,
       };
 }

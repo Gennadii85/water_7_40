@@ -59,7 +59,7 @@ class _AddCarsState extends State<AddCars> {
                       itemBuilder: (context, index) => CarsCard(
                         name: docs[index]['name'],
                         password: docs[index]['password'],
-                        carID: docs[index]['carID'].toString(),
+                        carID: docs[index]['id'].toString(),
                         docID: docs[index].id,
                         function: (docID) => RepoAdminPage().deleteCar(docID),
                       ),
@@ -78,7 +78,7 @@ class _AddCarsState extends State<AddCars> {
                                 TextField(
                                   controller: nameControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Логин для входа',
+                                    labelText: 'Логин для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -90,7 +90,7 @@ class _AddCarsState extends State<AddCars> {
                                 TextField(
                                   controller: passControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Пароль для входа',
+                                    labelText: 'Пароль для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -102,7 +102,7 @@ class _AddCarsState extends State<AddCars> {
                                 TextField(
                                   controller: idControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'ID (только цифры)',
+                                    labelText: 'ID * (только цифры)',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/data/model/price_model.dart';
 import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
 import 'package:water_7_40/presentation/pages/manager/goods_card.dart';
-import '../../core/var_core.dart';
 import '../../core/var_manager.dart';
 import '../../data/repositories/manager_page_repo.dart';
 import 'admin/admin_buttons.dart';
@@ -26,12 +24,6 @@ class _ManagersPageState extends State<ManagersPage> {
         appBar: AppBar(
           title: const Text('Manager panel'),
           centerTitle: true,
-          actions: [
-            AdminButtons(
-              function: () => setState(() {}),
-              text: 'Обновить',
-            ),
-          ],
         ),
         drawer: const ManagersDrawer(),
         body: StreamBuilder<List<PriceModel>>(
@@ -39,35 +31,28 @@ class _ManagersPageState extends State<ManagersPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final prise = snapshot.data!;
-              final List<int> countList =
-                  List<int>.generate(prise.length, (index) => 0);
-              final int percentManager = int.parse(
-                Hive.box(VarHive.nameBox).get(VarHive.managersPercent),
-              );
               return BlocProvider(
-                create: (context) => OrderCountCubit(countList, percentManager),
+                create: (context) => OrderCountCubit(prise),
                 child: BlocBuilder<OrderCountCubit, OrderCountState>(
                   builder: (context, state) {
+                    final cubit = BlocProvider.of<OrderCountCubit>(context);
                     return SingleChildScrollView(
                       child: Column(
                         children: [
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: prise.length,
+                            itemCount: state.prise.length,
                             itemBuilder: (context, index) => GoodsCard(
-                              goods: prise[index].goodsName,
-                              prise: prise[index].goodsPrice.toString(),
+                              goods: state.prise[index].goodsName,
+                              prise: state.prise[index].goodsPrice.toString(),
                               count: state.listCount[index],
-                              addCount: () =>
-                                  BlocProvider.of<OrderCountCubit>(context)
-                                      .addCount(index, prise),
-                              delCount: () =>
-                                  BlocProvider.of<OrderCountCubit>(context)
-                                      .delCount(index, prise),
+                              id: state.prise[index].id,
+                              addCount: () => cubit.addCount(index),
+                              delCount: () => cubit.delCount(index),
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -80,7 +65,7 @@ class _ManagersPageState extends State<ManagersPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -93,6 +78,12 @@ class _ManagersPageState extends State<ManagersPage> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 15),
+                          AdminButtons(
+                            text: 'Заказать',
+                            function: () => cubit.writeOrder(),
+                          ),
+                          const SizedBox(height: 15),
                         ],
                       ),
                     );

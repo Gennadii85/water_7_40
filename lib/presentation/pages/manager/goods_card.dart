@@ -7,6 +7,7 @@ class GoodsCard extends StatelessWidget {
   final int count;
   final Function addCount;
   final Function delCount;
+  final int id;
   const GoodsCard({
     Key? key,
     required this.goods,
@@ -14,6 +15,7 @@ class GoodsCard extends StatelessWidget {
     required this.count,
     required this.addCount,
     required this.delCount,
+    required this.id,
   }) : super(key: key);
 
   @override

@@ -1,8 +1,8 @@
 class UsersRegistrationModel {
   final String name;
   final String password;
-  final String? id;
-  final String? percent;
+  final int? id;
+  final int? percent;
   UsersRegistrationModel({
     required this.name,
     required this.password,
@@ -14,13 +14,13 @@ class UsersRegistrationModel {
       UsersRegistrationModel(
         name: json['name'],
         password: json['password'],
-        id: json['managerID'] ?? '1',
-        percent: json['percent'] ?? '',
+        id: json['id'],
+        percent: json['percent'],
       );
   Map<String, dynamic> toJson() => {
         'name': name,
         'password': password,
-        'managerID': id ?? '1',
-        'percent': percent ?? '',
+        'id': id,
+        'percent': percent ?? 0,
       };
 }

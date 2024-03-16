@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-
 import '../../presentation/pages/widgets/massage.dart';
 
 class RepoAdminPage {
@@ -28,20 +26,18 @@ class RepoAdminPage {
 
   Future createCar(context, String name, String password, String carID) async {
     if (carID.isEmpty) {
-      Massage().massage(context, 'Укажите ID');
       return;
     }
     late int id;
     id = int.tryParse(carID) ?? 1;
-    final snap =
-        await db.collection('cars').where('carID', isEqualTo: id).get();
-    if (snap.docs.map((e) => e['carID']).contains(id)) {
+    final snap = await db.collection('cars').where('id', isEqualTo: id).get();
+    if (snap.docs.map((e) => e['id']).contains(id)) {
       Massage().massage(context, 'Такой ID уже существует');
       return;
     }
     if (name.isNotEmpty && password.isNotEmpty) {
       db.collection('cars').doc().set(
-        {'name': name, 'password': password, 'carID': id},
+        {'name': name, 'password': password, 'id': id},
       );
     }
   }
@@ -58,15 +54,24 @@ class RepoAdminPage {
     String managerID,
     String percent,
   ) async {
+    late int id;
+    late int? percentManager;
     if (managerID.isEmpty) {
-      Massage().massage(context, 'Укажите ID');
       return;
     }
-    late int id;
+    if (percent.isEmpty) {
+      percentManager = null;
+    } else {
+      if (int.tryParse(percent) != null) {
+        percentManager = int.tryParse(percent);
+      } else {
+        return;
+      }
+    }
     id = int.tryParse(managerID) ?? 1;
     final snap =
-        await db.collection('managers').where('managerID', isEqualTo: id).get();
-    if (snap.docs.map((e) => e['managerID']).contains(id)) {
+        await db.collection('managers').where('id', isEqualTo: id).get();
+    if (snap.docs.map((e) => e['id']).contains(id)) {
       Massage().massage(context, 'Такой ID уже существует');
       return;
     }
@@ -76,8 +81,8 @@ class RepoAdminPage {
           'name': name,
           'password': password,
           'phone': phone,
-          'managerID': id,
-          'percent': percent,
+          'id': id,
+          'percent': percentManager,
         },
       );
     }

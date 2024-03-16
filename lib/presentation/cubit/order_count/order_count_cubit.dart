@@ -1,33 +1,54 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:water_7_40/core/var_manager.dart';
+import '../../../core/var_core.dart';
+import '../../../data/model/order_model.dart';
 import '../../../data/model/price_model.dart';
 
 part 'order_count_state.dart';
 
 class OrderCountCubit extends Cubit<OrderCountState> {
-  final List<int> countList;
-  final int percentManager;
-  OrderCountCubit(this.countList, this.percentManager)
+  List<PriceModel> prise;
+  OrderCountCubit(this.prise)
       : super(
           OrderCountState(
-            listCount: countList,
+            listCount: List<int>.generate(prise.length, (index) => 0),
             allMoney: 0,
             managerMoney: 0,
+            prise: prise,
+            percentManager:
+                Hive.box(VarHive.nameBox).get(VarHive.managersPercent),
           ),
         );
 
-  void addCount(int index, List<PriceModel> prise) {
+  void initState() {
+    emit(
+      OrderCountInitState(
+        listCount: List<int>.generate(prise.length, (index) => 0),
+        allMoney: 0,
+        managerMoney: 0,
+        prise: prise,
+        percentManager: state.percentManager,
+      ),
+    );
+  }
+
+  void addCount(int index) {
     int elem = state.listCount.elementAt(index);
     state.listCount.setAll(index, [elem + 1]);
     emit(
       OrderCountState(
         listCount: state.listCount,
-        allMoney: summaOrder(prise),
-        managerMoney: managerProfit(prise),
+        allMoney: summaOrder(),
+        managerMoney: managerProfit(),
+        prise: state.prise,
+        percentManager: state.percentManager,
       ),
     );
   }
 
-  void delCount(int index, List<PriceModel> prise) {
+  void delCount(int index) {
     int elem = state.listCount.elementAt(index);
     if (elem == 0) {
       return;
@@ -36,14 +57,16 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       emit(
         OrderCountState(
           listCount: state.listCount,
-          allMoney: summaOrder(prise),
-          managerMoney: managerProfit(prise),
+          allMoney: summaOrder(),
+          managerMoney: managerProfit(),
+          prise: state.prise,
+          percentManager: state.percentManager,
         ),
       );
     }
   }
 
-  int summaOrder(List<PriceModel> prise) {
+  int summaOrder() {
     int allMoney = 0;
     List<int> all = [];
     int countIndex = 0;
@@ -55,7 +78,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     return allMoney;
   }
 
-  int managerProfit(List<PriceModel> prise) {
+  int managerProfit() {
     int allProfit = 0;
     List<int> all = [];
     int countIndex = 0;
@@ -63,11 +86,36 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       if (elem.manager) {
         int moneyPosition =
             elem.goodsPrice.toInt() * state.listCount[countIndex];
-        all.add(moneyPosition * percentManager ~/ 100);
+        all.add(moneyPosition * state.percentManager ~/ 100);
       }
       countIndex++;
     }
     allProfit = all.reduce((value, element) => value + element);
     return allProfit;
+  }
+
+  void writeOrder() {
+    Map map = {};
+    int countIndex = 0;
+    for (var elem in prise) {
+      map.addAll({elem.id.toString(): state.listCount[countIndex]});
+      countIndex++;
+    }
+    final model = OrderModel(
+      created: DateTime.now(),
+      delivered: null,
+      summa: state.allMoney,
+      managerID: null,
+      managerProfit: managerProfit(),
+      carID: null,
+      carProfit: null,
+      goodsList: map,
+    );
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc()
+        .set(model.toFirebase());
+
+    initState();
   }
 }

@@ -73,7 +73,7 @@ class _AddAdminState extends State<AddAdmin> {
                                 TextField(
                                   controller: nameControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Логин для входа',
+                                    labelText: 'Логин для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
@@ -85,7 +85,7 @@ class _AddAdminState extends State<AddAdmin> {
                                 TextField(
                                   controller: passControl,
                                   decoration: const InputDecoration(
-                                    labelText: 'Пароль для входа',
+                                    labelText: 'Пароль для входа *',
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
