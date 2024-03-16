@@ -8,22 +8,32 @@ import '../../presentation/pages/registration_page.dart';
 import '../model/managers_model.dart';
 
 class RepoIdenticManagers {
-  dynamic loginManager(context) async {
-    if (Hive.box(VarHive.nameBox).containsKey(VarHive.managers)) {
-      Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
-      ManagersModel model = await getDBRegistrationData(VarHive.managers, data);
+/* 
+key = VarHive.managers
+route = MaterialPageRoute(builder: (context) => const ManagersPage()),
+
+positionCompany == boxKey == VarHive. или admins, или cars, или managers
+
+*/
+  dynamic checkUser(context, String boxKey, MaterialPageRoute route) async {
+    if (Hive.box(VarHive.nameBox).containsKey(boxKey)) {
+      Map data = Hive.box(VarHive.nameBox).get(boxKey);
+      ManagersModel model = await getDBRegistrationData(boxKey, data);
       if (data.entries.first.key == model.name &&
           data.entries.first.value == model.password) {
-        Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const ManagersPage()),
-        );
+        Navigator.of(context).push(route);
+        if (model.percent!.isNotEmpty) {
+          Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+        }
       } else {
         _massage(
           context,
           'Неверный логин или пароль. Попробуйте снова или обратитесь к администратору',
           MaterialPageRoute(
-            builder: (context) => const RegistrationPage(),
+            builder: (context) => RegistrationPage(
+              positionCompany: boxKey,
+              route: route,
+            ),
           ),
         );
       }
@@ -32,11 +42,44 @@ class RepoIdenticManagers {
         context,
         'Введите логин или пароль.',
         MaterialPageRoute(
-          builder: (context) => const RegistrationPage(),
+          builder: (context) => RegistrationPage(
+            positionCompany: boxKey,
+            route: route,
+          ),
         ),
       );
     }
   }
+
+  // dynamic loginManager(context) async {
+  //   if (Hive.box(VarHive.nameBox).containsKey(VarHive.managers)) {
+  //     Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
+  //     ManagersModel model = await getDBRegistrationData(VarHive.managers, data);
+  //     if (data.entries.first.key == model.name &&
+  //         data.entries.first.value == model.password) {
+  //       Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+  //       Navigator.of(context).push(
+  //         MaterialPageRoute(builder: (context) => const ManagersPage()),
+  //       );
+  //     } else {
+  //       _massage(
+  //         context,
+  //         'Неверный логин или пароль. Попробуйте снова или обратитесь к администратору',
+  //         MaterialPageRoute(
+  //           builder: (context) => const RegistrationPage(),
+  //         ),
+  //       );
+  //     }
+  //   } else {
+  //     _massage(
+  //       context,
+  //       'Введите логин или пароль.',
+  //       MaterialPageRoute(
+  //         builder: (context) => const RegistrationPage(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   dynamic getDBRegistrationData(String boxKey, Map dataMap) async {
     Map<String, dynamic> data = {};
@@ -59,14 +102,21 @@ class RepoIdenticManagers {
     }
   }
 
-  dynamic registrationManager(context, String login, String password) async {
+  dynamic checkRegistrationUser(
+    context,
+    String login,
+    String password,
+    String positionCompany,
+    MaterialPageRoute route,
+  ) async {
     Map<String, dynamic> dataMap = {login: password};
-    ManagersModel model =
-        await getDBRegistrationData(VarHive.managers, dataMap);
+    ManagersModel model = await getDBRegistrationData(positionCompany, dataMap);
     if (dataMap.entries.first.key == model.name &&
         dataMap.entries.first.value == model.password) {
-      Hive.box(VarHive.nameBox).put(VarHive.managers, dataMap);
-      Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+      Hive.box(VarHive.nameBox).put(positionCompany, dataMap);
+      if (model.percent!.isNotEmpty) {
+        Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+      }
       Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const ManagersPage()),
       );
@@ -74,7 +124,12 @@ class RepoIdenticManagers {
       _massage(
         context,
         'Неверный логин или пароль.',
-        MaterialPageRoute(builder: (context) => const RegistrationPage()),
+        MaterialPageRoute(
+          builder: (context) => RegistrationPage(
+            positionCompany: positionCompany,
+            route: route,
+          ),
+        ),
       );
     }
   }

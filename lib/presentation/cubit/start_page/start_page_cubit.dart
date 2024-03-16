@@ -18,10 +18,12 @@ class StartPageCubit extends Cubit<StartPageState> {
         emit(check);
       }
       if (Hive.box(VarHive.nameBox).containsKey(VarHive.cars)) {
-        emit(StartPageCar());
+        var check = await checkCars();
+        emit(check);
       }
       if (Hive.box(VarHive.nameBox).containsKey(VarHive.admins)) {
-        emit(StartPageAdmin());
+        var check = await checkAdmins();
+        emit(check);
       }
     } else {
       emit(StartPageInitial());
@@ -35,6 +37,28 @@ class StartPageCubit extends Cubit<StartPageState> {
     if (data.entries.first.key == model.name &&
         data.entries.first.value == model.password) {
       return StartPageManager();
+    }
+    return StartPageInitial();
+  }
+
+  dynamic checkCars() async {
+    Map data = Hive.box(VarHive.nameBox).get(VarHive.cars);
+    ManagersModel model =
+        await RepoIdenticManagers().getDBRegistrationData(VarHive.cars, data);
+    if (data.entries.first.key == model.name &&
+        data.entries.first.value == model.password) {
+      return StartPageCar();
+    }
+    return StartPageInitial();
+  }
+
+  dynamic checkAdmins() async {
+    Map data = Hive.box(VarHive.nameBox).get(VarHive.admins);
+    ManagersModel model =
+        await RepoIdenticManagers().getDBRegistrationData(VarHive.admins, data);
+    if (data.entries.first.key == model.name &&
+        data.entries.first.value == model.password) {
+      return StartPageAdmin();
     }
     return StartPageInitial();
   }

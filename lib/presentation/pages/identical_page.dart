@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:water_7_40/data/repositories/managers_identic_repo.dart';
+import 'package:water_7_40/presentation/pages/admins_page.dart';
+import 'package:water_7_40/presentation/pages/cars_page.dart';
+import 'package:water_7_40/presentation/pages/managers_page.dart';
+import '../../core/var_core.dart';
 import '../../core/var_manager.dart';
 import 'admin/admin_buttons.dart';
 
@@ -26,12 +30,30 @@ class IdenticalPage extends StatelessWidget {
             const SizedBox(height: 30),
             AdminButtons(
               text: 'Менеджер',
-              function: () => RepoIdenticManagers().loginManager(context),
+              function: () => RepoIdenticManagers().checkUser(
+                context,
+                VarHive.managers,
+                MaterialPageRoute(builder: (context) => const ManagersPage()),
+              ),
             ),
             const SizedBox(height: 30),
-            AdminButtons(text: 'Водитель', function: () {}),
+            AdminButtons(
+              text: 'Водитель',
+              function: () => RepoIdenticManagers().checkUser(
+                context,
+                VarHive.cars,
+                MaterialPageRoute(builder: (context) => const CarsPage()),
+              ),
+            ),
             const SizedBox(height: 30),
-            AdminButtons(text: 'Администратор', function: () {}),
+            AdminButtons(
+              text: 'Администратор',
+              function: () => RepoIdenticManagers().checkUser(
+                context,
+                VarHive.admins,
+                MaterialPageRoute(builder: (context) => const AdminPage()),
+              ),
+            ),
           ],
         ),
       ),

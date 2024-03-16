@@ -65,35 +65,37 @@ class _AddAdminState extends State<AddAdmin> {
                       function: () => showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 50),
-                              TextField(
-                                controller: nameControl,
-                                decoration: const InputDecoration(
-                                  labelText: 'Логин для входа',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 50),
+                                TextField(
+                                  controller: nameControl,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Логин для входа',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 30),
-                              TextField(
-                                controller: passControl,
-                                decoration: const InputDecoration(
-                                  labelText: 'Пароль для входа',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(10),
+                                const SizedBox(height: 30),
+                                TextField(
+                                  controller: passControl,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Пароль для входа',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 30),
-                            ],
+                                const SizedBox(height: 30),
+                              ],
+                            ),
                           ),
                           actions: [
                             AdminButtons(

@@ -17,7 +17,8 @@ class ManagersDrawer extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => const IdenticalPage()),
+                    builder: (context) => const IdenticalPage(),
+                  ),
                 ),
                 child: const Text(
                   'Смена аккаунта',

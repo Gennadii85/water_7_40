@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:water_7_40/core/var_manager.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/identical_page.dart';
@@ -6,7 +8,13 @@ import 'package:water_7_40/presentation/pages/identical_page.dart';
 import '../../data/repositories/managers_identic_repo.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  final String positionCompany;
+  final MaterialPageRoute route;
+  const RegistrationPage({
+    Key? key,
+    required this.positionCompany,
+    required this.route,
+  }) : super(key: key);
 
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
@@ -69,10 +77,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 30),
               AdminButtons(
                 text: 'Войти',
-                function: () => RepoIdenticManagers().registrationManager(
+                function: () => RepoIdenticManagers().checkRegistrationUser(
                   context,
                   nameControl.text,
                   passControl.text,
+                  widget.positionCompany,
+                  widget.route,
                 ),
               ),
               AdminButtons(
