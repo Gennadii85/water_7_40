@@ -5,7 +5,7 @@ import 'package:water_7_40/core/var_manager.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/identical_page.dart';
 
-import '../../data/repositories/managers_identic_repo.dart';
+import '../../data/repositories/users_identic_repo.dart';
 
 class RegistrationPage extends StatefulWidget {
   final String positionCompany;
@@ -77,7 +77,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               const SizedBox(height: 30),
               AdminButtons(
                 text: 'Войти',
-                function: () => RepoIdenticManagers().checkRegistrationUser(
+                function: () => RepoIdenticUsers().checkRegistrationUser(
                   context,
                   nameControl.text,
                   passControl.text,

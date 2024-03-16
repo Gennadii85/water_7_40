@@ -57,7 +57,13 @@ class _AddManagersState extends State<AddManagers> {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 50),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Все заказы без указания менеджера будут иметь ID = 0',
+                      ),
+                    ),
+                    const SizedBox(height: 30),
                     ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -66,8 +72,8 @@ class _AddManagersState extends State<AddManagers> {
                         name: docs[index]['name'],
                         password: docs[index]['password'],
                         phone: docs[index]['phone'],
-                        managerID: docs[index]['managerID'],
-                        percent: docs[index]['percent'],
+                        managerID: docs[index]['managerID'].toString(),
+                        percent: docs[index]['percent'].toString(),
                         docID: docs[index].id,
                         function: (docID) =>
                             RepoAdminPage().deleteManager(docID),
@@ -152,6 +158,7 @@ class _AddManagersState extends State<AddManagers> {
                               text: 'Создать',
                               function: () {
                                 RepoAdminPage().createManager(
+                                  context,
                                   nameControl.text,
                                   passControl.text,
                                   phoneControl.text,

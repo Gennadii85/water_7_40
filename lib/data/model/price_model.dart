@@ -11,13 +11,13 @@ class PriceModel {
     required this.driver,
   });
 
-  static PriceModel fromJson(Map<String, dynamic> json) => PriceModel(
+  static PriceModel fromFirebase(Map<String, dynamic> json) => PriceModel(
         goodsName: json['name'],
         goodsPrice: json['money'],
         manager: json['manager'],
         driver: json['driver'],
       );
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toFirebase() => {
         'name': goodsName,
         'money': goodsPrice,
         'manager': manager,

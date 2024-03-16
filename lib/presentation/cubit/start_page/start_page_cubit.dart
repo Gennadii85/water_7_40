@@ -2,9 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../core/var_core.dart';
-import '../../../data/model/managers_model.dart';
+import '../../../data/model/users_registration_model.dart';
 import '../../../data/repositories/core_repo.dart';
-import '../../../data/repositories/managers_identic_repo.dart';
+import '../../../data/repositories/users_identic_repo.dart';
 
 part 'start_page_state.dart';
 
@@ -32,8 +32,8 @@ class StartPageCubit extends Cubit<StartPageState> {
 
   dynamic checkManager() async {
     Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
-    ManagersModel model = await RepoIdenticManagers()
-        .getDBRegistrationData(VarHive.managers, data);
+    UsersRegistrationModel model =
+        await RepoIdenticUsers().getDBRegistrationData(VarHive.managers, data);
     if (data.entries.first.key == model.name &&
         data.entries.first.value == model.password) {
       return StartPageManager();
@@ -43,8 +43,8 @@ class StartPageCubit extends Cubit<StartPageState> {
 
   dynamic checkCars() async {
     Map data = Hive.box(VarHive.nameBox).get(VarHive.cars);
-    ManagersModel model =
-        await RepoIdenticManagers().getDBRegistrationData(VarHive.cars, data);
+    UsersRegistrationModel model =
+        await RepoIdenticUsers().getDBRegistrationData(VarHive.cars, data);
     if (data.entries.first.key == model.name &&
         data.entries.first.value == model.password) {
       return StartPageCar();
@@ -54,8 +54,8 @@ class StartPageCubit extends Cubit<StartPageState> {
 
   dynamic checkAdmins() async {
     Map data = Hive.box(VarHive.nameBox).get(VarHive.admins);
-    ManagersModel model =
-        await RepoIdenticManagers().getDBRegistrationData(VarHive.admins, data);
+    UsersRegistrationModel model =
+        await RepoIdenticUsers().getDBRegistrationData(VarHive.admins, data);
     if (data.entries.first.key == model.name &&
         data.entries.first.value == model.password) {
       return StartPageAdmin();

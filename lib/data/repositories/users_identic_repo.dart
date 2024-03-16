@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import '../../core/var_core.dart';
-import '../../presentation/pages/managers_page.dart';
 import '../../presentation/pages/registration_page.dart';
-import '../model/managers_model.dart';
+import '../model/users_registration_model.dart';
 
-class RepoIdenticManagers {
+class RepoIdenticUsers {
 /* 
 key = VarHive.managers
 route = MaterialPageRoute(builder: (context) => const ManagersPage()),
@@ -18,7 +17,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
   dynamic checkUser(context, String boxKey, MaterialPageRoute route) async {
     if (Hive.box(VarHive.nameBox).containsKey(boxKey)) {
       Map data = Hive.box(VarHive.nameBox).get(boxKey);
-      ManagersModel model = await getDBRegistrationData(boxKey, data);
+      UsersRegistrationModel model = await getDBRegistrationData(boxKey, data);
       if (data.entries.first.key == model.name &&
           data.entries.first.value == model.password) {
         Navigator.of(context).push(route);
@@ -51,36 +50,6 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
     }
   }
 
-  // dynamic loginManager(context) async {
-  //   if (Hive.box(VarHive.nameBox).containsKey(VarHive.managers)) {
-  //     Map data = Hive.box(VarHive.nameBox).get(VarHive.managers);
-  //     ManagersModel model = await getDBRegistrationData(VarHive.managers, data);
-  //     if (data.entries.first.key == model.name &&
-  //         data.entries.first.value == model.password) {
-  //       Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
-  //       Navigator.of(context).push(
-  //         MaterialPageRoute(builder: (context) => const ManagersPage()),
-  //       );
-  //     } else {
-  //       _massage(
-  //         context,
-  //         'Неверный логин или пароль. Попробуйте снова или обратитесь к администратору',
-  //         MaterialPageRoute(
-  //           builder: (context) => const RegistrationPage(),
-  //         ),
-  //       );
-  //     }
-  //   } else {
-  //     _massage(
-  //       context,
-  //       'Введите логин или пароль.',
-  //       MaterialPageRoute(
-  //         builder: (context) => const RegistrationPage(),
-  //       ),
-  //     );
-  //   }
-  // }
-
   dynamic getDBRegistrationData(String boxKey, Map dataMap) async {
     Map<String, dynamic> data = {};
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -90,10 +59,10 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
     if (querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot snapshot = querySnapshot.docs.first;
       data = snapshot.data() as Map<String, dynamic>;
-      ManagersModel model = ManagersModel.fromJson(data);
+      UsersRegistrationModel model = UsersRegistrationModel.fromJson(data);
       return model;
     } else {
-      return ManagersModel(
+      return UsersRegistrationModel(
         name: 'name',
         password: 'password',
         id: '0',
@@ -110,16 +79,15 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
     MaterialPageRoute route,
   ) async {
     Map<String, dynamic> dataMap = {login: password};
-    ManagersModel model = await getDBRegistrationData(positionCompany, dataMap);
+    UsersRegistrationModel model =
+        await getDBRegistrationData(positionCompany, dataMap);
     if (dataMap.entries.first.key == model.name &&
         dataMap.entries.first.value == model.password) {
       Hive.box(VarHive.nameBox).put(positionCompany, dataMap);
       if (model.percent!.isNotEmpty) {
         Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
       }
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const ManagersPage()),
-      );
+      Navigator.of(context).push(route);
     } else {
       _massage(
         context,

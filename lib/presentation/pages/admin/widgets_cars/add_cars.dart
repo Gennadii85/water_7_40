@@ -59,7 +59,7 @@ class _AddCarsState extends State<AddCars> {
                       itemBuilder: (context, index) => CarsCard(
                         name: docs[index]['name'],
                         password: docs[index]['password'],
-                        carID: docs[index]['carID'],
+                        carID: docs[index]['carID'].toString(),
                         docID: docs[index].id,
                         function: (docID) => RepoAdminPage().deleteCar(docID),
                       ),
@@ -119,6 +119,7 @@ class _AddCarsState extends State<AddCars> {
                               text: 'Создать',
                               function: () {
                                 RepoAdminPage().createCar(
+                                  context,
                                   nameControl.text,
                                   passControl.text,
                                   idControl.text,

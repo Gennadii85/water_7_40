@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../../presentation/pages/widgets/massage.dart';
 
 class RepoAdminPage {
   final db = FirebaseFirestore.instance;
@@ -23,16 +26,22 @@ class RepoAdminPage {
     }
   }
 
-  Future createCar(String name, String password, String carID) async {
-    final snap =
-        await db.collection('cars').where('carID', isEqualTo: carID).get();
-    if (snap.docs.map((e) => e['carID']).contains(carID)) {
+  Future createCar(context, String name, String password, String carID) async {
+    if (carID.isEmpty) {
+      Massage().massage(context, 'Укажите ID');
       return;
-      //! CarMassage().massage(context);
     }
-    if (name.isNotEmpty && password.isNotEmpty && carID.isNotEmpty) {
+    late int id;
+    id = int.tryParse(carID) ?? 1;
+    final snap =
+        await db.collection('cars').where('carID', isEqualTo: id).get();
+    if (snap.docs.map((e) => e['carID']).contains(id)) {
+      Massage().massage(context, 'Такой ID уже существует');
+      return;
+    }
+    if (name.isNotEmpty && password.isNotEmpty) {
       db.collection('cars').doc().set(
-        {'name': name, 'password': password, 'carID': carID},
+        {'name': name, 'password': password, 'carID': id},
       );
     }
   }
@@ -42,27 +51,32 @@ class RepoAdminPage {
   }
 
   Future createManager(
+    context,
     String name,
     String password,
     String phone,
     String managerID,
     String percent,
   ) async {
-    final snap = await db
-        .collection('managers')
-        .where('managerID', isEqualTo: managerID)
-        .get();
-    if (snap.docs.map((e) => e['managerID']).contains(managerID)) {
+    if (managerID.isEmpty) {
+      Massage().massage(context, 'Укажите ID');
       return;
-      //! CarMassage().massage(context);
     }
-    if (name.isNotEmpty && password.isNotEmpty && managerID.isNotEmpty) {
+    late int id;
+    id = int.tryParse(managerID) ?? 1;
+    final snap =
+        await db.collection('managers').where('managerID', isEqualTo: id).get();
+    if (snap.docs.map((e) => e['managerID']).contains(id)) {
+      Massage().massage(context, 'Такой ID уже существует');
+      return;
+    }
+    if (name.isNotEmpty && password.isNotEmpty) {
       db.collection('managers').doc().set(
         {
           'name': name,
           'password': password,
           'phone': phone,
-          'managerID': managerID,
+          'managerID': id,
           'percent': percent,
         },
       );

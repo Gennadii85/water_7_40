@@ -7,7 +7,7 @@ class RepoManagerPage {
 
   Stream<List<PriceModel>> getPrice() => db.collection('price').snapshots().map(
         (snapshot) => snapshot.docs
-            .map((doc) => PriceModel.fromJson(doc.data()))
+            .map((doc) => PriceModel.fromFirebase(doc.data()))
             .toList(),
       );
 }
