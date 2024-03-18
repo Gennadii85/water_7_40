@@ -23,6 +23,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
         Navigator.of(context).push(route);
         if (model.percent != null) {
           Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+          Hive.box(VarHive.nameBox).put(VarHive.managersID, model.id);
         }
       } else {
         _massage(
@@ -86,6 +87,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
       Hive.box(VarHive.nameBox).put(positionCompany, dataMap);
       if (model.percent != null) {
         Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+        Hive.box(VarHive.nameBox).put(VarHive.managersID, model.id);
       }
       Navigator.of(context).push(route);
     } else {

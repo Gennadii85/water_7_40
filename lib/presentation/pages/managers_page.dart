@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:water_7_40/data/model/price_model.dart';
-import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
-import 'package:water_7_40/presentation/pages/manager/goods_card.dart';
-import '../../core/var_manager.dart';
+import 'package:water_7_40/data/model/order_model.dart';
+import 'package:water_7_40/presentation/pages/manager/create_order.dart';
 import '../../data/repositories/manager_page_repo.dart';
 import 'admin/admin_buttons.dart';
-import 'manager/widgets/managers_drawer.dart';
+import 'manager/managers_drawer.dart';
+import 'manager/order_card.dart';
 
 class ManagersPage extends StatefulWidget {
   const ManagersPage({super.key});
@@ -26,68 +24,34 @@ class _ManagersPageState extends State<ManagersPage> {
           centerTitle: true,
         ),
         drawer: const ManagersDrawer(),
-        body: StreamBuilder<List<PriceModel>>(
-          stream: RepoManagerPage().getPrice(),
+        body: StreamBuilder<List<OrderModel>>(
+          stream: RepoManagerPage().getOrders(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final prise = snapshot.data!;
-              return BlocProvider(
-                create: (context) => OrderCountCubit(prise),
-                child: BlocBuilder<OrderCountCubit, OrderCountState>(
-                  builder: (context, state) {
-                    final cubit = BlocProvider.of<OrderCountCubit>(context);
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: state.prise.length,
-                            itemBuilder: (context, index) => GoodsCard(
-                              goods: state.prise[index].goodsName,
-                              prise: state.prise[index].goodsPrice.toString(),
-                              count: state.listCount[index],
-                              id: state.prise[index].id,
-                              addCount: () => cubit.addCount(index),
-                              delCount: () => cubit.delCount(index),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Заказ на сумму: ${state.allMoney.toString()} грн.',
-                                  style: VarManager.cardSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Прибыль менеджера: ${state.managerMoney.toString()} грн.',
-                                  style: VarManager.cardSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          AdminButtons(
-                            text: 'Заказать',
-                            function: () => cubit.writeOrder(),
-                          ),
-                          const SizedBox(height: 15),
-                        ],
+              final orders = snapshot.data!;
+              final List<OrderModel> noDeliveredList =
+                  orders.where((element) => element.delivered == null).toList();
+              final List<OrderModel> createdList = orders;
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Text('Ожидают доставки'),
+                    const SizedBox(height: 15),
+                    _noDelivered(noDeliveredList),
+                    const SizedBox(height: 15),
+                    const Text('За текущий месяц'),
+                    const SizedBox(height: 15),
+                    _created(createdList),
+                    const SizedBox(height: 30),
+                    AdminButtons(
+                      text: 'Создать заказ',
+                      function: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const CreateOrder(),
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               );
             } else {
@@ -97,6 +61,36 @@ class _ManagersPageState extends State<ManagersPage> {
             }
           },
         ),
+      ),
+    );
+  }
+
+  ListView _created(List<OrderModel> createdList) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: createdList.length,
+      itemBuilder: (context, index) => OrderCard(
+        address: createdList[index].address,
+        summa: createdList[index].summa.toInt(),
+        phoneClient: createdList[index].phoneClient,
+        isDone: createdList[index].isDone,
+        takeMoney: createdList[index].takeMoney,
+        goodsList: createdList[index].goodsList,
+        notes: createdList[index].notes,
+      ),
+    );
+  }
+
+  ListView _noDelivered(List<OrderModel> noDeliveredList) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: noDeliveredList.length,
+      itemBuilder: (context, index) => Column(
+        children: [
+          Text(noDeliveredList[index].created.toString()),
+        ],
       ),
     );
   }

@@ -10,6 +10,7 @@ part 'order_count_state.dart';
 
 class OrderCountCubit extends Cubit<OrderCountState> {
   List<PriceModel> prise;
+  final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
   OrderCountCubit(this.prise)
       : super(
           OrderCountState(
@@ -94,7 +95,12 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     return allProfit;
   }
 
-  void writeOrder() {
+  void writeOrder(
+    String address,
+    String phoneClient,
+    bool takeMoney,
+    String? notes,
+  ) {
     Map map = {};
     int countIndex = 0;
     for (var elem in prise) {
@@ -105,11 +111,16 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       created: DateTime.now(),
       delivered: null,
       summa: state.allMoney,
-      managerID: null,
+      managerID: managerID,
       managerProfit: managerProfit(),
       carID: null,
       carProfit: null,
       goodsList: map,
+      address: address,
+      phoneClient: phoneClient,
+      isDone: false,
+      takeMoney: takeMoney,
+      notes: notes,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)
