@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:water_7_40/data/repositories/admin_page_repo.dart';
+import 'package:water_7_40/data/repositories/admin/create_user_repo.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_managers/managers_card.dart';
@@ -70,7 +70,7 @@ class _AddManagersState extends State<AddManagers> {
                         percent: docs[index]['percent'].toString(),
                         docID: docs[index].id,
                         function: (docID) =>
-                            RepoAdminPage().deleteManager(docID),
+                            RepoCreateUser().deleteManager(docID),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -151,7 +151,7 @@ class _AddManagersState extends State<AddManagers> {
                             AdminButtons(
                               text: 'Создать',
                               function: () {
-                                RepoAdminPage().createManager(
+                                RepoCreateUser().createManager(
                                   context,
                                   nameControl.text,
                                   passControl.text,

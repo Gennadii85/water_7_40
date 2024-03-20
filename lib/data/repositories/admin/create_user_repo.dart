@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../presentation/pages/widgets/massage.dart';
+import '../../../presentation/pages/widgets/massage.dart';
 
-class RepoAdminPage {
+class RepoCreateUser {
   final db = FirebaseFirestore.instance;
 
   Future createAdmin(String name, String password) async {

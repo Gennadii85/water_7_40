@@ -22,6 +22,16 @@ class _ManagersPageState extends State<ManagersPage> {
         appBar: AppBar(
           title: const Text('Manager panel'),
           centerTitle: true,
+          actions: [
+            AdminButtons(
+              text: 'Создать заказ',
+              function: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreateOrder(),
+                ),
+              ),
+            ),
+          ],
         ),
         drawer: const ManagersDrawer(),
         body: StreamBuilder<List<OrderModel>>(
@@ -43,14 +53,6 @@ class _ManagersPageState extends State<ManagersPage> {
                     const SizedBox(height: 15),
                     _created(createdList),
                     const SizedBox(height: 30),
-                    AdminButtons(
-                      text: 'Создать заказ',
-                      function: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const CreateOrder(),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               );
@@ -87,10 +89,14 @@ class _ManagersPageState extends State<ManagersPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: noDeliveredList.length,
-      itemBuilder: (context, index) => Column(
-        children: [
-          Text(noDeliveredList[index].created.toString()),
-        ],
+      itemBuilder: (context, index) => OrderCard(
+        address: noDeliveredList[index].address,
+        summa: noDeliveredList[index].summa.toInt(),
+        phoneClient: noDeliveredList[index].phoneClient,
+        isDone: noDeliveredList[index].isDone,
+        takeMoney: noDeliveredList[index].takeMoney,
+        goodsList: noDeliveredList[index].goodsList,
+        notes: noDeliveredList[index].notes,
       ),
     );
   }

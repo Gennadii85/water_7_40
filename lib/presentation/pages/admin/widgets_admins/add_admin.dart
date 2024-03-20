@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_admins/admin_card.dart';
-import 'package:water_7_40/data/repositories/admin_page_repo.dart';
+import 'package:water_7_40/data/repositories/admin/create_user_repo.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 
@@ -56,7 +56,7 @@ class _AddAdminState extends State<AddAdmin> {
                       itemBuilder: (context, index) => AdminCard(
                         name: docs[index]['name'],
                         password: docs[index]['password'].toString(),
-                        function: (name) => RepoAdminPage().deleteAdmin(name),
+                        function: (name) => RepoCreateUser().deleteAdmin(name),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -101,7 +101,7 @@ class _AddAdminState extends State<AddAdmin> {
                             AdminButtons(
                               text: 'Создать',
                               function: () {
-                                RepoAdminPage().createAdmin(
+                                RepoCreateUser().createAdmin(
                                   nameControl.text,
                                   passControl.text,
                                 );

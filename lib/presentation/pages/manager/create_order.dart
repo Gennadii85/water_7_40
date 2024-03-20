@@ -5,7 +5,7 @@ import 'package:water_7_40/data/model/price_model.dart';
 import 'package:water_7_40/data/repositories/manager_page_repo.dart';
 import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
-import 'package:water_7_40/presentation/pages/manager/goods_card.dart';
+import 'package:water_7_40/presentation/pages/manager/price_card.dart';
 import 'package:water_7_40/presentation/pages/managers_page.dart';
 
 class CreateOrder extends StatefulWidget {
@@ -27,10 +27,13 @@ class _CreateOrderState extends State<CreateOrder> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-            leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        )),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: const Text('Создать заказ'),
+          centerTitle: true,
+        ),
         body: StreamBuilder<List<PriceModel>>(
           stream: RepoManagerPage().getPrice(),
           builder: (context, snapshot) {
@@ -44,17 +47,20 @@ class _CreateOrderState extends State<CreateOrder> {
                     return SingleChildScrollView(
                       child: Column(
                         children: [
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: state.prise.length,
-                            itemBuilder: (context, index) => GoodsCard(
-                              goods: state.prise[index].goodsName,
-                              prise: state.prise[index].goodsPrice.toString(),
-                              count: state.listCount[index],
-                              id: state.prise[index].id,
-                              addCount: () => cubit.addCount(index),
-                              delCount: () => cubit.delCount(index),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: state.prise.length,
+                              itemBuilder: (context, index) => PriceCard(
+                                goods: state.prise[index].goodsName,
+                                prise: state.prise[index].goodsPrice.toString(),
+                                count: state.listCount[index],
+                                // id: state.prise[index].id,
+                                addCount: () => cubit.addCount(index),
+                                delCount: () => cubit.delCount(index),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 15),
@@ -71,36 +77,26 @@ class _CreateOrderState extends State<CreateOrder> {
                             ],
                           ),
                           const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Прибыль менеджера: ${state.managerMoney.toString()} грн.',
-                                  style: VarManager.cardSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
                           _textFieldRow(address, 'Адрес доставки *'),
                           _textFieldRow(phoneClient, 'Телефон клиента *'),
                           _textFieldRow(notes, 'Заметки'),
-                          Row(
-                            children: [
-                              const Text('Расчет с водителем'),
-                              Checkbox(
-                                value: takeMoney,
-                                onChanged: (value) {
-                                  setState(() {
-                                    takeMoney = value!;
-                                  });
-                                },
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Text('Расчет с водителем'),
+                                Checkbox(
+                                  value: takeMoney,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      takeMoney = value!;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 15),
                           AdminButtons(
                             text: 'Заказать',
                             function: () {
@@ -123,7 +119,7 @@ class _CreateOrderState extends State<CreateOrder> {
                               }
                             },
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 30),
                         ],
                       ),
                     );
@@ -141,14 +137,17 @@ class _CreateOrderState extends State<CreateOrder> {
     );
   }
 
-  TextField _textFieldRow(TextEditingController controller, String text) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: text,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
+  Padding _textFieldRow(TextEditingController controller, String text) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: text,
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
           ),
         ),
       ),

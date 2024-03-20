@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import '../../../core/var_manager.dart';
 
-class GoodsCard extends StatelessWidget {
+class PriceCard extends StatelessWidget {
   final String goods;
   final String prise;
   final int count;
   final Function addCount;
   final Function delCount;
-  final int id;
-  const GoodsCard({
+  // final int id;
+  const PriceCard({
     Key? key,
     required this.goods,
     required this.prise,
     required this.count,
     required this.addCount,
     required this.delCount,
-    required this.id,
+    // required this.id,
   }) : super(key: key);
 
   @override

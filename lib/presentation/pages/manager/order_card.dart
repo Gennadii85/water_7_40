@@ -6,8 +6,6 @@ import '../../../core/var_manager.dart';
 class OrderCard extends StatelessWidget {
   const OrderCard({
     Key? key,
-    // required this.managerID,
-    // required this.carID,
     required this.address,
     this.notes,
     required this.summa,
@@ -16,8 +14,7 @@ class OrderCard extends StatelessWidget {
     required this.takeMoney,
     required this.goodsList,
   }) : super(key: key);
-  // final int managerID;
-  // final int carID;
+
   final String address;
   final String? notes;
   final int summa;
@@ -64,7 +61,7 @@ class OrderCard extends StatelessWidget {
       children: goodsList.entries
           .map(
             (e) => ListTile(
-              shape: Border(top: BorderSide()),
+              shape: const Border(top: BorderSide()),
               title: Text(
                 e.key.toString(),
                 style: const TextStyle(
@@ -79,31 +76,6 @@ class OrderCard extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              // decoration: BoxDecoration(border: Border.all()),
-              // child: Row(
-              //   children: [
-
-              // Expanded(
-              //   flex: 4,
-              //   child: Text(
-              //     e.key.toString(),
-              //     style: const TextStyle(
-              //       color: Colors.black,
-              //       fontSize: 16,
-              //     ),
-              //   ),
-              // ),
-              // Expanded(
-              //   child: Text(
-              //     '${e.value.toString()} шт.',
-              //     style: TextStyle(
-              //       color: Colors.red[400],
-              //       fontSize: 20,
-              //     ),
-              //   ),
-              // ),
-              // ],
-              // ),
             ),
           )
           .toList(),

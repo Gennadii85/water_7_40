@@ -83,15 +83,15 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     int allProfit = 0;
     List<int> all = [];
     int countIndex = 0;
-    for (var elem in prise) {
-      if (elem.manager) {
-        int moneyPosition =
-            elem.goodsPrice.toInt() * state.listCount[countIndex];
-        all.add(moneyPosition * state.percentManager ~/ 100);
-      }
-      countIndex++;
-    }
-    allProfit = all.reduce((value, element) => value + element);
+    // for (var elem in prise) {
+    //   if (elem.manager) {
+    //     int moneyPosition =
+    //         elem.goodsPrice.toInt() * state.listCount[countIndex];
+    //     all.add(moneyPosition * state.percentManager ~/ 100);
+    //   }
+    //   countIndex++;
+    // }
+    // allProfit = all.reduce((value, element) => value + element);
     return allProfit;
   }
 
@@ -103,8 +103,10 @@ class OrderCountCubit extends Cubit<OrderCountState> {
   ) {
     Map map = {};
     int countIndex = 0;
-    for (var elem in prise) {
-      map.addAll({elem.id.toString(): state.listCount[countIndex]});
+    for (var elem in state.listCount) {
+      if (elem > 0) {
+        map.addAll({prise[countIndex].goodsName: state.listCount[countIndex]});
+      }
       countIndex++;
     }
     final model = OrderModel(

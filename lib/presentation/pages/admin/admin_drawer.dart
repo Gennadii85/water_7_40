@@ -6,6 +6,7 @@ import 'package:water_7_40/presentation/pages/admin/widgets_managers/add_manager
 import 'package:water_7_40/presentation/pages/admins_page.dart';
 
 import '../identical_page.dart';
+import 'widgets_admins/create_price_page.dart';
 
 class AdminDrawer extends StatelessWidget {
   const AdminDrawer({super.key});
@@ -52,6 +53,16 @@ class AdminDrawer extends StatelessWidget {
                 ),
                 child: const Text(
                   'Админы',
+                  style: VarAdmin.adminDrawerText,
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => const CreatePricePage()),
+                ),
+                child: const Text(
+                  'Прайс лист',
                   style: VarAdmin.adminDrawerText,
                 ),
               ),

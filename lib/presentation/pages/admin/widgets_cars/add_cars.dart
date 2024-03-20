@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_cars/cars_card.dart';
-import 'package:water_7_40/data/repositories/admin_page_repo.dart';
+import 'package:water_7_40/data/repositories/admin/create_user_repo.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 
@@ -61,7 +61,7 @@ class _AddCarsState extends State<AddCars> {
                         password: docs[index]['password'],
                         carID: docs[index]['id'].toString(),
                         docID: docs[index].id,
-                        function: (docID) => RepoAdminPage().deleteCar(docID),
+                        function: (docID) => RepoCreateUser().deleteCar(docID),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -118,7 +118,7 @@ class _AddCarsState extends State<AddCars> {
                             AdminButtons(
                               text: 'Создать',
                               function: () {
-                                RepoAdminPage().createCar(
+                                RepoCreateUser().createCar(
                                   context,
                                   nameControl.text,
                                   passControl.text,
