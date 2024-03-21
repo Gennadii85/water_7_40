@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../core/var_admin.dart';
 import '../../../presentation/pages/widgets/massage.dart';
 import '../../model/price_model.dart';
@@ -7,7 +6,11 @@ import '../../model/price_model.dart';
 class AdminPageRepo {
   final db = FirebaseFirestore.instance;
   Stream<List<PriceModel>> getPrice() {
-    return db.collection('price').snapshots().map(
+    return db
+        .collection('price')
+        .orderBy('goodsName', descending: true)
+        .snapshots()
+        .map(
           (snapshot) => snapshot.docs
               .map((doc) => PriceModel.fromFirebase(doc.data(), doc.id))
               .toList(),
@@ -25,6 +28,7 @@ class AdminPageRepo {
     String piecesPercentValueControlManager,
     String piecesMoneyValueControlManager,
     String existenceMoneyValueControlManager,
+    bool managerPercent,
     String piecesPercentValueControlCar,
     String piecesMoneyValueControlCar,
     String existenceMoneyValueControlCar,
@@ -33,6 +37,7 @@ class AdminPageRepo {
     if (piecesPercentValueControlManager.isNotEmpty) trueCountManager++;
     if (piecesMoneyValueControlManager.isNotEmpty) trueCountManager++;
     if (existenceMoneyValueControlManager.isNotEmpty) trueCountManager++;
+    if (managerPercent) trueCountManager++;
     if (trueCountManager > 1) {
       Massage().massage(
         context,
@@ -58,12 +63,14 @@ class AdminPageRepo {
       );
     }
     final model = PriceModel(
+      // dateTime: DateTime.now(),
       goodsName: goodsNameControl,
       goodsPrice: int.tryParse(goodsPriceControl) ?? 0,
       piecesPercentValueManager: int.tryParse(piecesPercentValueControlManager),
       piecesMoneyValueManager: int.tryParse(piecesMoneyValueControlManager),
       existenceMoneyValueManager:
           int.tryParse(existenceMoneyValueControlManager),
+      managerPercent: managerPercent,
       piecesPercentValueCar: int.tryParse(piecesPercentValueControlCar),
       piecesMoneyValueCar: int.tryParse(piecesMoneyValueControlCar),
       existenceMoneyValueCar: int.tryParse(existenceMoneyValueControlCar),
@@ -89,6 +96,9 @@ class AdminPageRepo {
     }
     if (model.existenceMoneyValueManager != null) {
       massage = ' грн. за наличие в заказе неважно сколько шт.';
+    }
+    if (model.managerPercent) {
+      massage = ' Каждому менеджеру свой процент';
     }
     return massage;
   }

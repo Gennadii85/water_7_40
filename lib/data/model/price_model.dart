@@ -6,6 +6,7 @@ class PriceModel {
   final int? piecesMoneyValueManager; //сколько денег на каждую штуку
   final int?
       existenceMoneyValueManager; // денег за наличие в заказе неважно сколько шт.
+  final bool managerPercent;
   final int? piecesPercentValueCar;
   final int? piecesMoneyValueCar;
   final int? existenceMoneyValueCar;
@@ -17,6 +18,7 @@ class PriceModel {
     this.piecesPercentValueManager,
     this.piecesMoneyValueManager,
     required this.existenceMoneyValueManager,
+    required this.managerPercent,
     this.piecesPercentValueCar,
     this.piecesMoneyValueCar,
     this.existenceMoneyValueCar,
@@ -30,6 +32,7 @@ class PriceModel {
         piecesPercentValueManager: json['piecesPercentValueManager'],
         piecesMoneyValueManager: json['piecesMoneyValueManager'],
         existenceMoneyValueManager: json['existenceMoneyValueManager'],
+        managerPercent: json['managerPercent'],
         piecesPercentValueCar: json['piecesPercentValueCar'],
         piecesMoneyValueCar: json['piecesMoneyValueCar'],
         existenceMoneyValueCar: json['existenceMoneyValueCar'],
@@ -40,6 +43,7 @@ class PriceModel {
         'piecesPercentValueManager': piecesPercentValueManager,
         'piecesMoneyValueManager': piecesMoneyValueManager,
         'existenceMoneyValueManager': existenceMoneyValueManager,
+        'managerPercent': managerPercent,
         'piecesPercentValueCar': piecesPercentValueCar,
         'piecesMoneyValueCar': piecesMoneyValueCar,
         'existenceMoneyValueCar': existenceMoneyValueCar,

@@ -59,7 +59,8 @@ class AdminDrawer extends StatelessWidget {
               TextButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (context) => const CreatePricePage()),
+                    builder: (context) => const CreatePricePage(),
+                  ),
                 ),
                 child: const Text(
                   'Прайс лист',

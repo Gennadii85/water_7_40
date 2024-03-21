@@ -1,5 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:water_7_40/presentation/pages/admin/widgets_admins/admin_price_card.dart';
+
 import '../../../../core/var_admin.dart';
 import '../../../../data/model/price_model.dart';
 import '../../../../data/repositories/admin/admin_page_manager_repo.dart';
@@ -23,6 +26,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
   TextEditingController piecesPercentValueControlCar = TextEditingController();
   TextEditingController piecesMoneyValueControlCar = TextEditingController();
   TextEditingController existenceMoneyValueControlCar = TextEditingController();
+  bool managerPercent = false;
 
   @override
   void dispose() {
@@ -137,14 +141,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  ManagerSalary(
-                    piecesPercentValueControlManager:
-                        piecesPercentValueControlManager,
-                    piecesMoneyValueControlManager:
-                        piecesMoneyValueControlManager,
-                    existenceMoneyValueControlManager:
-                        existenceMoneyValueControlManager,
-                  ),
+                  managerSalary(),
                   const SizedBox(height: 15),
                   CarSalary(
                     piecesPercentValueControlCar: piecesPercentValueControlCar,
@@ -163,6 +160,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
                         piecesPercentValueControlManager.text,
                         piecesMoneyValueControlManager.text,
                         existenceMoneyValueControlManager.text,
+                        managerPercent,
                         piecesPercentValueControlCar.text,
                         piecesMoneyValueControlCar.text,
                         existenceMoneyValueControlCar.text,
@@ -177,6 +175,74 @@ class _CreatePricePageState extends State<CreatePricePage> {
           ),
         ),
       ),
+    );
+  }
+
+  ExpansionTile managerSalary() {
+    return ExpansionTile(
+      title: const Text('Начисления менеджеру'),
+      childrenPadding: const EdgeInsets.all(8),
+      collapsedShape: Border.all(),
+      children: [
+        TextField(
+          controller: piecesPercentValueControlManager,
+          decoration: const InputDecoration(
+            labelText: 'Процент на каждую штуку',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        TextField(
+          controller: piecesMoneyValueControlManager,
+          decoration: const InputDecoration(
+            labelText: 'Сколько денег на каждую штуку',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        TextField(
+          controller: existenceMoneyValueControlManager,
+          decoration: const InputDecoration(
+            labelText: 'сколько денег за наличие в заказе неважно сколько шт.',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const Text('Начислять индивидуальный процент.'),
+                Checkbox(
+                  value: managerPercent,
+                  onChanged: (value) {
+                    setState(() {
+                      managerPercent = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -226,65 +292,6 @@ class CarSalary extends StatelessWidget {
         const SizedBox(height: 15),
         TextField(
           controller: existenceMoneyValueControlCar,
-          decoration: const InputDecoration(
-            labelText: 'сколько денег за наличие в заказе неважно сколько шт.',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ManagerSalary extends StatelessWidget {
-  const ManagerSalary({
-    super.key,
-    required this.piecesPercentValueControlManager,
-    required this.piecesMoneyValueControlManager,
-    required this.existenceMoneyValueControlManager,
-  });
-
-  final TextEditingController piecesPercentValueControlManager;
-  final TextEditingController piecesMoneyValueControlManager;
-  final TextEditingController existenceMoneyValueControlManager;
-
-  @override
-  Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: const Text('Начисления менеджеру'),
-      childrenPadding: const EdgeInsets.all(8),
-      collapsedShape: Border.all(),
-      children: [
-        TextField(
-          controller: piecesPercentValueControlManager,
-          decoration: const InputDecoration(
-            labelText: 'Процент на каждую штуку',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
-        TextField(
-          controller: piecesMoneyValueControlManager,
-          decoration: const InputDecoration(
-            labelText: 'Сколько денег на каждую штуку',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
-        TextField(
-          controller: existenceMoneyValueControlManager,
           decoration: const InputDecoration(
             labelText: 'сколько денег за наличие в заказе неважно сколько шт.',
             border: OutlineInputBorder(

@@ -8,7 +8,11 @@ class RepoManagerPage {
   final db = FirebaseFirestore.instance;
   final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
 
-  Stream<List<PriceModel>> getPrice() => db.collection('price').snapshots().map(
+  Stream<List<PriceModel>> getPrice() => db
+      .collection('price')
+      .orderBy('goodsName', descending: true)
+      .snapshots()
+      .map(
         (snapshot) => snapshot.docs
             .map((doc) => PriceModel.fromFirebase(doc.data(), doc.id))
             .toList(),
@@ -16,8 +20,7 @@ class RepoManagerPage {
 
   Stream<List<OrderModel>> getOrders() => db
       .collection('orders')
-      // .where('managerID', isEqualTo: managerID)
-      // .where('created', isEqualTo: DateTime.now().month)
+      .orderBy('created', descending: true)
       .snapshots()
       .map(
         (snapshot) => snapshot.docs
