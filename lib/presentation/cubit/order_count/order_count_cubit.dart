@@ -108,7 +108,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       }
       countIndex++;
     }
-    allProfit = all.reduce((value, element) => value + element);
+    allProfit = all.reduce((value, element) => value + element).toInt();
     return allProfit;
   }
 
@@ -136,7 +136,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       }
       countIndex++;
     }
-    allProfit = all.reduce((value, element) => value + element);
+    allProfit = all.reduce((value, element) => value + element).toInt();
     return allProfit;
   }
 
@@ -155,7 +155,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       countIndex++;
     }
     final model = OrderModel(
-      created: DateTime.now(),
+      created: DateTime.now().millisecondsSinceEpoch,
       delivered: null,
       summa: state.allMoney,
       managerID: managerID,

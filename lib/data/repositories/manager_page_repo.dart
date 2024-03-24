@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../../core/var_core.dart';
 import '../model/order_model.dart';
 import '../model/price_model.dart';
 
 class RepoManagerPage {
   final db = FirebaseFirestore.instance;
-  final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
+  // final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
+  final int today =
+      DateTime.now().millisecondsSinceEpoch - DateTime.now().hour * 3600000;
 
   Stream<List<PriceModel>> getPrice() => db
       .collection('price')
@@ -18,13 +18,21 @@ class RepoManagerPage {
             .toList(),
       );
 
-  Stream<List<OrderModel>> getOrders() => db
-      .collection('orders')
-      .orderBy('created', descending: true)
-      .snapshots()
-      .map(
-        (snapshot) => snapshot.docs
-            .map((doc) => OrderModel.fromFirebase(doc.data()))
-            .toList(),
-      );
+  Stream<List<OrderModel>> getTodayOrders() {
+    return db
+        .collection('orders')
+        .orderBy('created', descending: true)
+        .where('created', isGreaterThan: today)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => OrderModel.fromFirebase(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
+  List<OrderModel> sortListToCreated(List<OrderModel> list) {
+    list.sort((a, b) => a.created.compareTo(b.created));
+    return list;
+  }
 }

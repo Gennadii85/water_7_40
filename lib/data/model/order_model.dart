@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class OrderModel {
-  final DateTime created;
-  final DateTime? delivered;
+  final String? docID;
+  final int created;
+  final int? delivered;
   final num summa;
   final int? managerID;
-  final num? managerProfit;
+  final int? managerProfit;
   final int? carID;
-  final num? carProfit;
+  final int? carProfit;
   final Map goodsList;
   final String address;
   final String phoneClient;
@@ -17,8 +18,9 @@ class OrderModel {
   final String? notes;
 
   OrderModel({
+    this.docID,
     required this.created,
-    this.delivered,
+    required this.delivered,
     required this.summa,
     this.managerID,
     this.managerProfit,
@@ -34,8 +36,10 @@ class OrderModel {
     this.notes,
   });
 
-  static OrderModel fromFirebase(Map<String, dynamic> json) => OrderModel(
-        created: (json['created']).toDate(),
+  static OrderModel fromFirebase(Map<String, dynamic> json, String docID) =>
+      OrderModel(
+        docID: docID,
+        created: json['created'],
         delivered: json['delivered'],
         summa: json['summa'],
         managerID: json['managerID'],

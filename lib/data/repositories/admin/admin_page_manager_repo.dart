@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/var_admin.dart';
 import '../../../presentation/pages/widgets/massage.dart';
+import '../../model/order_model.dart';
 import '../../model/price_model.dart';
+import '../../model/users_registration_model.dart';
 
 class AdminPageRepo {
   final db = FirebaseFirestore.instance;
@@ -146,5 +148,45 @@ class AdminPageRepo {
       value = model.existenceMoneyValueCar.toString();
     }
     return value;
+  }
+}
+
+class AdminGetPostRepo {
+  final db = FirebaseFirestore.instance;
+  final int today =
+      DateTime.now().millisecondsSinceEpoch - DateTime.now().hour * 3600000;
+
+  Stream<List<OrderModel>> getAllOrders() {
+    return db
+        .collection('orders')
+        .where('delivered', isNull: true)
+        // .where('carID', isNull: true)
+        // .orderBy('created', descending: true)
+
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => OrderModel.fromFirebase(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
+  Future<List<UsersRegistrationModel>> getAllCars() async {
+    var collection = FirebaseFirestore.instance.collection('cars');
+    var querySnapshot = await collection.get();
+    List<UsersRegistrationModel> sss = [];
+    for (var doc in querySnapshot.docs) {
+      UsersRegistrationModel data = UsersRegistrationModel.fromJson(doc.data());
+      sss.add(data);
+    }
+    return sss;
+  }
+
+  dynamic saveCarIDtoOrders(int carID, String docID) {
+    print(docID);
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'carID': carID}).then((value) => carID);
   }
 }
