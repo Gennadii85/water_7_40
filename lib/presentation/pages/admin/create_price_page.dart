@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import 'package:water_7_40/presentation/pages/admin/widgets_admins/admin_price_card.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_price_card.dart';
 
-import '../../../../core/var_admin.dart';
-import '../../../../data/model/price_model.dart';
-import '../../../../data/repositories/admin/admin_page_manager_repo.dart';
+import '../../../core/var_admin.dart';
+import '../../../data/model/price_model.dart';
+import '../../../data/repositories/admin/admin_page_manager_repo.dart';
 
 class CreatePricePage extends StatefulWidget {
   const CreatePricePage({super.key});

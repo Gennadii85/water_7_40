@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:water_7_40/data/model/address_model.dart';
 import '../../../core/var_admin.dart';
 import '../../../presentation/pages/widgets/massage.dart';
 import '../../model/order_model.dart';
@@ -183,10 +184,49 @@ class AdminGetPostRepo {
   }
 
   dynamic saveCarIDtoOrders(int carID, String docID) {
-    print(docID);
     FirebaseFirestore.instance
         .collection('orders')
         .doc(docID)
         .update({'carID': carID}).then((value) => carID);
   }
+
+  Stream<List<CityModel>> getCityAddress() {
+    return db.collection('address').snapshots().map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => CityModel.fromFirebase(doc)).toList(),
+        );
+  }
+
+  dynamic setCityName(String name) =>
+      db.collection('address').doc(name).set({'street': []});
+
+  dynamic setStreetName(String cityName, String streetName) =>
+      db.collection('address').doc(cityName).update({
+        'street': FieldValue.arrayUnion([streetName]),
+      });
+
+  dynamic saveAddress(
+    String city,
+    String street,
+  ) =>
+      db.collection('address').doc(city).update({
+        'street': FieldValue.arrayUnion([street]),
+      });
+
+  dynamic saveAddressAndManager(
+    String city,
+    String street,
+    String house,
+    String apartment,
+    String id,
+  ) {
+    saveAddress(city, street);
+    String save = city + street + house + apartment.toLowerCase();
+    db.collection('managerAddress').doc(save).set({'managerID': id});
+  }
+
+  // houseControl.text,  apartmentControl.text
+
+  //  && houseControl.text.isNotEmpty &&
+  // apartmentControl.text.isNotEmpty
 }
