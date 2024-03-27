@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/data/repositories/users_identic_repo.dart';
 import 'package:water_7_40/presentation/pages/admins_page.dart';
 import 'package:water_7_40/presentation/pages/cars_page.dart';
@@ -53,6 +54,11 @@ class IdenticalPage extends StatelessWidget {
                 VarHive.admins,
                 MaterialPageRoute(builder: (context) => const AdminPage()),
               ),
+            ),
+            const SizedBox(height: 30),
+            AdminButtons(
+              text: 'Очистить все данные регистрации',
+              function: () => Hive.box(VarHive.nameBox).clear(),
             ),
           ],
         ),
