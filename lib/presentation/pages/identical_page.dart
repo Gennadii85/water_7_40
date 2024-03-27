@@ -42,7 +42,7 @@ class IdenticalPage extends StatelessWidget {
               function: () => RepoIdenticUsers().checkUser(
                 context,
                 VarHive.cars,
-                MaterialPageRoute(builder: (context) => const CarsPage()),
+                MaterialPageRoute(builder: (context) => CarsPage()),
               ),
             ),
             const SizedBox(height: 30),

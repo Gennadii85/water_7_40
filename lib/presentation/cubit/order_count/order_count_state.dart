@@ -6,7 +6,7 @@ class OrderCountState {
   int allMoney;
   int managerMoney;
   List<PriceModel> prise;
-  int percentManager;
+  int? percentManager;
 
   OrderCountState({
     required this.listCount,

@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
           );
         }
         if (state is StartPageCar) {
-          return const MaterialApp(
+          return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: CarsPage(),
           );

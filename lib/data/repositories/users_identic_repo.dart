@@ -12,6 +12,7 @@ key = VarHive.managers
 route = MaterialPageRoute(builder: (context) => const ManagersPage()),
 
 positionCompany == boxKey == VarHive. или admins, или cars, или managers
+это также названия коллекций в DB
 
 */
   dynamic checkUser(context, String boxKey, MaterialPageRoute route) async {
@@ -21,6 +22,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
       if (data.entries.first.key == model.name &&
           data.entries.first.value == model.password) {
         Navigator.of(context).push(route);
+
         if (model.percent != null) {
           Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
           Hive.box(VarHive.nameBox).put(VarHive.managersID, model.id);
@@ -87,8 +89,14 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
       Hive.box(VarHive.nameBox).put(positionCompany, dataMap);
       if (model.percent != null) {
         Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
+      }
+      if (positionCompany == VarHive.cars) {
+        Hive.box(VarHive.nameBox).put(VarHive.carsID, model.id);
+      }
+      if (positionCompany == VarHive.managers) {
         Hive.box(VarHive.nameBox).put(VarHive.managersID, model.id);
       }
+
       Navigator.of(context).push(route);
     } else {
       _massage(

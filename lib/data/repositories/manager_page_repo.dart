@@ -4,7 +4,6 @@ import '../model/price_model.dart';
 
 class RepoManagerPage {
   final db = FirebaseFirestore.instance;
-  // final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
   final int today =
       DateTime.now().millisecondsSinceEpoch - DateTime.now().hour * 3600000;
 
@@ -31,8 +30,8 @@ class RepoManagerPage {
         );
   }
 
-  List<OrderModel> sortListToCreated(List<OrderModel> list) {
-    list.sort((a, b) => a.created.compareTo(b.created));
-    return list;
-  }
+  // List<OrderModel> sortListToCreated(List<OrderModel> list) {
+  //   list.sort((a, b) => a.created.compareTo(b.created));
+  //   return list;
+  // }
 }

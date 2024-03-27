@@ -101,9 +101,13 @@ class OrderCountCubit extends Cubit<OrderCountState> {
         all.add(moneyPosition);
       }
       if (elem.managerPercent) {
-        int moneyPosition =
-            elem.goodsPrice.toInt() * state.listCount[countIndex];
-        all.add(moneyPosition * state.percentManager ~/ 100);
+        if (state.percentManager == null) {
+          all.add(0);
+        } else {
+          int moneyPosition =
+              elem.goodsPrice.toInt() * state.listCount[countIndex];
+          all.add(moneyPosition * state.percentManager! ~/ 100);
+        }
       } else {
         all.add(0);
       }
