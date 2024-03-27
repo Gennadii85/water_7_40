@@ -61,7 +61,27 @@ class _AddCarsState extends State<AddCars> {
                         password: docs[index]['password'],
                         carID: docs[index]['id'].toString(),
                         docID: docs[index].id,
-                        function: (docID) => RepoCreateUser().deleteCar(docID),
+                        function: (docID) => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: const Text('Удалить ?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Отмена'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  RepoCreateUser().deleteCar(docID);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 50),

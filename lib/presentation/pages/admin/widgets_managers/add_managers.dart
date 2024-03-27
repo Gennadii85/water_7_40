@@ -69,8 +69,27 @@ class _AddManagersState extends State<AddManagers> {
                         managerID: docs[index]['id'].toString(),
                         percent: docs[index]['percent'].toString(),
                         docID: docs[index].id,
-                        function: (docID) =>
-                            RepoCreateUser().deleteManager(docID),
+                        function: (docID) => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: const Text('Удалить ?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Отмена'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  RepoCreateUser().deleteManager(docID);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 50),

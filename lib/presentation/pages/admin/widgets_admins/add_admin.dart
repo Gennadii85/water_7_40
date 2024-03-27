@@ -56,7 +56,27 @@ class _AddAdminState extends State<AddAdmin> {
                       itemBuilder: (context, index) => AdminCard(
                         name: docs[index]['name'],
                         password: docs[index]['password'].toString(),
-                        function: (name) => RepoCreateUser().deleteAdmin(name),
+                        function: (name) => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            content: const Text('Удалить ?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Отмена'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  RepoCreateUser().deleteAdmin(name);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 50),
