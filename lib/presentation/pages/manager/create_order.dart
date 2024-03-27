@@ -8,6 +8,10 @@ import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/manager/price_card.dart';
 import 'package:water_7_40/presentation/pages/managers_page.dart';
 
+import '../../../data/model/address_model.dart';
+import '../../../data/repositories/admin/admin_page_manager_repo.dart';
+import '../../cubit/add_address/add_address_cubit.dart';
+
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
 
@@ -16,10 +20,22 @@ class CreateOrder extends StatefulWidget {
 }
 
 class _CreateOrderState extends State<CreateOrder> {
-  final TextEditingController address = TextEditingController();
   final TextEditingController phoneClient = TextEditingController();
   final TextEditingController notes = TextEditingController();
+  final TextEditingController houseControl = TextEditingController();
+  final TextEditingController apartmentControl = TextEditingController();
   bool takeMoney = true;
+
+  void saveOrder(AddAddressState addAddress, OrderCountCubit cubit) {
+    String address =
+        '${addAddress.city} ${addAddress.street} дом ${houseControl.text} кв ${apartmentControl.text}';
+    cubit.writeOrder(
+      address,
+      phoneClient.text,
+      takeMoney,
+      notes.text,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,98 +55,256 @@ class _CreateOrderState extends State<CreateOrder> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final prise = snapshot.data!;
-              return BlocProvider(
-                create: (context) => OrderCountCubit(prise),
-                child: BlocBuilder<OrderCountCubit, OrderCountState>(
-                  builder: (context, state) {
-                    final cubit = BlocProvider.of<OrderCountCubit>(context);
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: state.prise.length,
-                              itemBuilder: (context, index) => PriceCard(
-                                goods: state.prise[index].goodsName,
-                                prise: state.prise[index].goodsPrice.toString(),
-                                count: state.listCount[index],
-                                // id: state.prise[index].id,
-                                addCount: () => cubit.addCount(index),
-                                delCount: () => cubit.delCount(index),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Заказ на сумму: ${state.allMoney.toString()} грн.',
-                                  style: VarManager.cardSize,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 15),
-                          _textFieldRow(address, 'Адрес доставки *'),
-                          _textFieldRow(phoneClient, 'Телефон клиента *'),
-                          _textFieldRow(notes, 'Заметки'),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
+              return StreamBuilder<List<CityModel>>(
+                stream: AdminGetPostRepo().getCityAddress(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final List<CityModel> addressData = snapshot.data!;
+                    return MultiBlocProvider(
+                      providers: [
+                        BlocProvider(
+                          create: (context) => OrderCountCubit(prise),
+                        ),
+                        BlocProvider(
+                          create: (context) => AddAddressCubit(addressData),
+                        ),
+                      ],
+                      child: BlocBuilder<OrderCountCubit, OrderCountState>(
+                        builder: (context, state) {
+                          final cubit =
+                              BlocProvider.of<OrderCountCubit>(context);
+                          return SingleChildScrollView(
+                            child: Column(
                               children: [
-                                const Text('Расчет с водителем'),
-                                Checkbox(
-                                  value: takeMoney,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      takeMoney = value!;
-                                    });
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: state.prise.length,
+                                    itemBuilder: (context, index) => PriceCard(
+                                      goods: state.prise[index].goodsName,
+                                      prise: state.prise[index].goodsPrice
+                                          .toString(),
+                                      count: state.listCount[index],
+                                      addCount: () => cubit.addCount(index),
+                                      delCount: () => cubit.delCount(index),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Заказ на сумму: //${state.allMoney.toString()} грн.',
+                                        style: VarManager.cardSize,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 15),
+                                addressAuto(addressData),
+                                _textFieldRow(phoneClient, 'Телефон клиента *'),
+                                _textFieldRow(notes, 'Заметки'),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      const Text('Расчет с водителем'),
+                                      Checkbox(
+                                        value: takeMoney,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            takeMoney = value!;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                Builder(
+                                  builder: (context) {
+                                    final orderCount =
+                                        context.watch<OrderCountCubit>().state;
+                                    final addAddress =
+                                        context.watch<AddAddressCubit>().state;
+                                    return AdminButtons(
+                                      text: 'Заказать',
+                                      function: () {
+                                        if (houseControl.text.isEmpty ||
+                                            apartmentControl.text.isEmpty ||
+                                            phoneClient.text.isEmpty ||
+                                            orderCount.allMoney == 0) {
+                                          return;
+                                        } else {
+                                          saveOrder(addAddress, cubit);
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ManagersPage(),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    );
                                   },
                                 ),
+                                const SizedBox(height: 30),
                               ],
                             ),
-                          ),
-                          const SizedBox(height: 15),
-                          AdminButtons(
-                            text: 'Заказать',
-                            function: () {
-                              if (address.text.isEmpty ||
-                                  phoneClient.text.isEmpty ||
-                                  state.allMoney == 0) {
-                                return null;
-                              } else {
-                                cubit.writeOrder(
-                                  address.text,
-                                  phoneClient.text,
-                                  takeMoney,
-                                  notes.text,
-                                );
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const ManagersPage(),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                          const SizedBox(height: 30),
-                        ],
+                          );
+                        },
                       ),
                     );
-                  },
-                ),
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Не удалось получить список адресов.'),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               );
-            } else {
+            } else if (snapshot.hasError) {
               return const Center(
-                child: CircularProgressIndicator(),
+                child: Text('Не удалось получить прайс.'),
               );
             }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Padding addressAuto(data) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          const Text('Населенный пункт *'),
+          autocompleteCity(),
+          const SizedBox(height: 20),
+          const Text('Улица *'),
+          autocompleteStreet(),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: houseControl,
+                  decoration: InputDecoration(
+                    labelText: '№ дома',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: TextField(
+                  controller: apartmentControl,
+                  decoration: InputDecoration(
+                    labelText: '№ квартиры',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // ),
+    );
+  }
+
+  Container autocompleteCity() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(15),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: BlocBuilder<AddAddressCubit, AddAddressState>(
+          builder: (context, state) {
+            final cubit = BlocProvider.of<AddAddressCubit>(context);
+            return Row(
+              children: [
+                Expanded(
+                  child: Autocomplete<String>(
+                    optionsMaxHeight: 600,
+                    optionsBuilder: (textEditingValue) {
+                      state.city = textEditingValue.text;
+                      return state.cityList
+                          .map((e) => e.toLowerCase())
+                          .toList()
+                          .where((option) {
+                        return option
+                            .contains(textEditingValue.text.toLowerCase());
+                      });
+                    },
+                    onSelected: (selection) {
+                      state.city = selection;
+                      cubit.addCity();
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Container autocompleteStreet() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(15),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: BlocBuilder<AddAddressCubit, AddAddressState>(
+          builder: (context, state) {
+            return Row(
+              children: [
+                Expanded(
+                  child: Autocomplete<String>(
+                    optionsMaxHeight: 600,
+                    optionsBuilder: (textEditingValue) {
+                      state.street = textEditingValue.text;
+                      return state.streetList
+                          .map((e) => e.toLowerCase())
+                          .toList()
+                          .where((option) {
+                        return option
+                            .contains(textEditingValue.text.toLowerCase());
+                      });
+                    },
+                    onSelected: (selection) {
+                      state.street = selection;
+                    },
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:water_7_40/core/var_manager.dart';
 import '../../../core/var_core.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/price_model.dart';
+import '../../../data/repositories/admin/admin_page_manager_repo.dart';
 
 part 'order_count_state.dart';
 
@@ -177,5 +178,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
         .set(model.toFirebase());
 
     initState();
+    AdminGetPostRepo().savePhoneAddress(phoneClient, address);
+    //записать номер телефона в базу клиентов
   }
 }

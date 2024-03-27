@@ -221,12 +221,14 @@ class AdminGetPostRepo {
     String id,
   ) {
     saveAddress(city, street);
-    String save = city + street + house + apartment.toLowerCase();
-    db.collection('managerAddress').doc(save).set({'managerID': id});
+    String save = ('$city $street дом $house кв $apartment').toLowerCase();
+    db
+        .collection('managerAddress')
+        .doc(save)
+        .set({'managerID': id, 'phone': null});
   }
 
-  // houseControl.text,  apartmentControl.text
-
-  //  && houseControl.text.isNotEmpty &&
-  // apartmentControl.text.isNotEmpty
+  dynamic savePhoneAddress(String phone, String address) {
+    db.collection('managerAddress').doc(address).update({'phone': phone});
+  }
 }
