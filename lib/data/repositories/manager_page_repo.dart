@@ -7,15 +7,17 @@ class RepoManagerPage {
   final int today =
       DateTime.now().millisecondsSinceEpoch - DateTime.now().hour * 3600000;
 
-  Stream<List<PriceModel>> getPrice() => db
-      .collection('price')
-      .orderBy('goodsName', descending: true)
-      .snapshots()
-      .map(
-        (snapshot) => snapshot.docs
-            .map((doc) => PriceModel.fromFirebase(doc.data(), doc.id))
-            .toList(),
-      );
+  Stream<List<PriceModel>> getPrice() {
+    return db
+        .collection('price')
+        .orderBy('goodsName', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => PriceModel.fromFirebase(doc.data(), doc.id))
+              .toList(),
+        );
+  }
 
   Stream<List<OrderModel>> getTodayOrders() {
     return db
@@ -30,8 +32,16 @@ class RepoManagerPage {
         );
   }
 
-  // List<OrderModel> sortListToCreated(List<OrderModel> list) {
-  //   list.sort((a, b) => a.created.compareTo(b.created));
-  //   return list;
-  // }
+  Future<int?> checkAddress(String address) async {
+    int? id;
+    await db.collection('managerAddress').doc(address).get().then(
+      (doc) {
+        Map? data = doc.data() ?? {};
+        String? idData = data['managerID'] ?? '';
+        id = int.tryParse(idData!);
+      },
+      onError: (e) => id = null,
+    );
+    return id;
+  }
 }

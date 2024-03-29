@@ -6,11 +6,10 @@ import 'package:water_7_40/data/repositories/manager_page_repo.dart';
 import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/manager/price_card.dart';
-import 'package:water_7_40/presentation/pages/managers_page.dart';
-
 import '../../../data/model/address_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
 import '../../cubit/add_address/add_address_cubit.dart';
+import '../managers_page.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
@@ -26,15 +25,25 @@ class _CreateOrderState extends State<CreateOrder> {
   final TextEditingController apartmentControl = TextEditingController();
   bool takeMoney = true;
 
-  void saveOrder(AddAddressState addAddress, OrderCountCubit cubit) {
-    String address =
-        '${addAddress.city} ${addAddress.street} дом ${houseControl.text} кв ${apartmentControl.text}';
-    cubit.writeOrder(
-      address,
-      phoneClient.text,
-      takeMoney,
-      notes.text,
-    );
+  void writeOrder(
+    AddAddressState addAddress,
+    OrderCountCubit cubit,
+  ) async {
+    if (houseControl.text.isEmpty ||
+        apartmentControl.text.isEmpty ||
+        phoneClient.text.isEmpty ||
+        cubit.state.allMoney == 0) {
+      return;
+    } else {
+      String address =
+          '${addAddress.city} ${addAddress.street} дом ${houseControl.text} кв ${apartmentControl.text}';
+      cubit.writeOrder(address, phoneClient.text, takeMoney, notes.text);
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const ManagersPage(),
+        ),
+      );
+    }
   }
 
   @override
@@ -100,7 +109,7 @@ class _CreateOrderState extends State<CreateOrder> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
-                                        'Заказ на сумму: //${state.allMoney.toString()} грн.',
+                                        'Заказ на сумму: ${state.allMoney.toString()} грн.',
                                         style: VarManager.cardSize,
                                       ),
                                     ),
@@ -129,28 +138,12 @@ class _CreateOrderState extends State<CreateOrder> {
                                 const SizedBox(height: 15),
                                 Builder(
                                   builder: (context) {
-                                    final orderCount =
-                                        context.watch<OrderCountCubit>().state;
                                     final addAddress =
                                         context.watch<AddAddressCubit>().state;
                                     return AdminButtons(
                                       text: 'Заказать',
-                                      function: () {
-                                        if (houseControl.text.isEmpty ||
-                                            apartmentControl.text.isEmpty ||
-                                            phoneClient.text.isEmpty ||
-                                            orderCount.allMoney == 0) {
-                                          return;
-                                        } else {
-                                          saveOrder(addAddress, cubit);
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ManagersPage(),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                      function: () =>
+                                          writeOrder(addAddress, cubit),
                                     );
                                   },
                                 ),

@@ -6,6 +6,7 @@ import '../../../core/var_core.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/price_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
+import '../../../data/repositories/manager_page_repo.dart';
 
 part 'order_count_state.dart';
 
@@ -150,7 +151,8 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     String phoneClient,
     bool takeMoney,
     String? notes,
-  ) {
+  ) async {
+    int? id = await RepoManagerPage().checkAddress(address);
     Map map = {};
     int countIndex = 0;
     for (var elem in state.listCount) {
@@ -159,11 +161,20 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       }
       countIndex++;
     }
+    int? manID;
+    if (id == null) {
+      manID = managerID;
+    } else {
+      manID = id;
+      AdminGetPostRepo().savePhoneAddress(phoneClient, address);
+      //записать номер телефона в базу клиентов
+    }
+
     final model = OrderModel(
       created: DateTime.now().millisecondsSinceEpoch,
       delivered: null,
       summa: state.allMoney,
-      managerID: managerID,
+      managerID: manID,
       managerProfit: managerProfit(),
       carID: null,
       carProfit: carProfit(),
@@ -182,7 +193,5 @@ class OrderCountCubit extends Cubit<OrderCountState> {
         .set(model.toFirebase());
 
     initState();
-    AdminGetPostRepo().savePhoneAddress(phoneClient, address);
-    //записать номер телефона в базу клиентов
   }
 }
