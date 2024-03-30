@@ -37,7 +37,7 @@ class _AdminAddAddressState extends State<AdminAddAddress> {
         drawer: const AdminDrawer(),
         body: SingleChildScrollView(
           child: StreamBuilder<List<CityModel>>(
-            stream: AdminGetPostRepo().getCityAddress(),
+            stream: RepoAdminGetPost().getCityAddress(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 final List<CityModel> data = snapshot.data!;
@@ -62,7 +62,7 @@ class _AdminAddAddressState extends State<AdminAddAddress> {
                               function: () {
                                 if (state.city.isNotEmpty &&
                                     state.street.isNotEmpty) {
-                                  AdminGetPostRepo()
+                                  RepoAdminGetPost()
                                       .saveAddress(state.city, state.street);
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
@@ -128,7 +128,7 @@ class _AdminAddAddressState extends State<AdminAddAddress> {
                                     houseControl.text.isNotEmpty &&
                                     apartmentControl.text.isNotEmpty &&
                                     managerIDControl.text.isNotEmpty) {
-                                  AdminGetPostRepo().saveAddressAndManager(
+                                  RepoAdminGetPost().saveAddressAndManager(
                                     state.city,
                                     state.street,
                                     houseControl.text,

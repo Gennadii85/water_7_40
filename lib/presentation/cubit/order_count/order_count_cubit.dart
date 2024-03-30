@@ -87,31 +87,34 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     int countIndex = 0;
 
     for (var elem in prise) {
-      if (elem.piecesPercentValueManager != null) {
-        int moneyPosition =
-            elem.goodsPrice.toInt() * state.listCount[countIndex];
-        all.add(moneyPosition * elem.piecesPercentValueManager! ~/ 100);
-      }
-      if (elem.piecesMoneyValueManager != null) {
-        int moneyPosition =
-            elem.piecesMoneyValueManager! * state.listCount[countIndex];
-        all.add(moneyPosition);
-      }
-      if (elem.existenceMoneyValueManager != null) {
-        int moneyPosition = elem.existenceMoneyValueManager!;
-        all.add(moneyPosition);
-      }
-      if (elem.managerPercent) {
-        if (state.percentManager == null) {
-          all.add(0);
-        } else {
+      if (state.listCount[countIndex] != 0) {
+        if (elem.piecesPercentValueManager != null) {
           int moneyPosition =
               elem.goodsPrice.toInt() * state.listCount[countIndex];
-          all.add(moneyPosition * state.percentManager! ~/ 100);
+          all.add(moneyPosition * elem.piecesPercentValueManager! ~/ 100);
         }
-      } else {
-        all.add(0);
+        if (elem.piecesMoneyValueManager != null) {
+          int moneyPosition =
+              elem.piecesMoneyValueManager! * state.listCount[countIndex];
+          all.add(moneyPosition);
+        }
+        if (elem.existenceMoneyValueManager != null) {
+          int moneyPosition = elem.existenceMoneyValueManager!;
+          all.add(moneyPosition);
+        }
+        if (elem.managerPercent) {
+          if (state.percentManager == null) {
+            all.add(0);
+          } else {
+            int moneyPosition =
+                elem.goodsPrice.toInt() * state.listCount[countIndex];
+            all.add(moneyPosition * state.percentManager! ~/ 100);
+          }
+        } else {
+          all.add(0);
+        }
       }
+
       countIndex++;
     }
     allProfit = all.reduce((value, element) => value + element).toInt();
@@ -124,22 +127,25 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     int countIndex = 0;
 
     for (var elem in prise) {
-      if (elem.piecesPercentValueCar != null) {
-        int moneyPosition =
-            elem.goodsPrice.toInt() * state.listCount[countIndex];
-        all.add(moneyPosition * elem.piecesPercentValueCar! ~/ 100);
+      if (state.listCount[countIndex] != 0) {
+        if (elem.piecesPercentValueCar != null) {
+          int moneyPosition =
+              elem.goodsPrice.toInt() * state.listCount[countIndex];
+          all.add(moneyPosition * elem.piecesPercentValueCar! ~/ 100);
+        }
+        if (elem.piecesMoneyValueCar != null) {
+          int moneyPosition =
+              elem.piecesMoneyValueCar! * state.listCount[countIndex];
+          all.add(moneyPosition);
+        }
+        if (elem.existenceMoneyValueCar != null) {
+          int moneyPosition = elem.existenceMoneyValueCar!;
+          all.add(moneyPosition);
+        } else {
+          all.add(0);
+        }
       }
-      if (elem.piecesMoneyValueCar != null) {
-        int moneyPosition =
-            elem.piecesMoneyValueCar! * state.listCount[countIndex];
-        all.add(moneyPosition);
-      }
-      if (elem.existenceMoneyValueCar != null) {
-        int moneyPosition = elem.existenceMoneyValueCar!;
-        all.add(moneyPosition);
-      } else {
-        all.add(0);
-      }
+
       countIndex++;
     }
     allProfit = all.reduce((value, element) => value + element).toInt();
@@ -166,7 +172,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       manID = managerID;
     } else {
       manID = id;
-      AdminGetPostRepo().savePhoneAddress(phoneClient, address);
+      RepoAdminGetPost().savePhoneAddress(phoneClient, address);
       //записать номер телефона в базу клиентов
     }
 

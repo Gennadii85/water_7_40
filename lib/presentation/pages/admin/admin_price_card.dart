@@ -56,7 +56,7 @@ class AdminPriceCard extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              AdminPageRepo().deletePrice(id);
+                              RepoAdminPage().deletePrice(id);
                               Navigator.of(context).pop();
                             },
                             child: const Text('OK'),

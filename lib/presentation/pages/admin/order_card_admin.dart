@@ -57,7 +57,7 @@ class OrderCardAdmin extends StatelessWidget {
                           .map(
                             (elem) => TextButton(
                               onPressed: () {
-                                AdminGetPostRepo()
+                                RepoAdminGetPost()
                                     .saveCarIDtoOrders(elem.id!, docID);
                                 Navigator.of(context).pop();
                               },

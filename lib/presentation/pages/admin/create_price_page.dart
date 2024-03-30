@@ -72,7 +72,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
               const Text('Текущий прайс'),
               const SizedBox(height: 25),
               StreamBuilder<List<PriceModel>>(
-                stream: AdminPageRepo().getPrice(),
+                stream: RepoAdminPage().getPrice(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final prise = snapshot.data!;
@@ -87,12 +87,12 @@ class _CreatePricePageState extends State<CreatePricePage> {
                           name: prise[index].goodsName,
                           prise: prise[index].goodsPrice,
                           managerMethod:
-                              AdminPageRepo().managerMethod(prise[index]),
+                              RepoAdminPage().managerMethod(prise[index]),
                           managerMethodValue:
-                              AdminPageRepo().managerMethodValue(prise[index]),
-                          carMethod: AdminPageRepo().carMethod(prise[index]),
+                              RepoAdminPage().managerMethodValue(prise[index]),
+                          carMethod: RepoAdminPage().carMethod(prise[index]),
                           carMethodValue:
-                              AdminPageRepo().carMethodValue(prise[index]),
+                              RepoAdminPage().carMethodValue(prise[index]),
                         ),
                       ),
                     );
@@ -153,7 +153,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
                   TextButton(
                     child: const Text('Сохранить позицию в прайс'),
                     onPressed: () {
-                      AdminPageRepo().writeOrder(
+                      RepoAdminPage().writeOrder(
                         context,
                         goodsNameControl.text,
                         goodsPriceControl.text,

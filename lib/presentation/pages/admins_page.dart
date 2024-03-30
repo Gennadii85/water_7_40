@@ -26,12 +26,12 @@ class AdminPage extends StatelessWidget {
         ),
         drawer: const AdminDrawer(),
         body: FutureBuilder(
-          future: AdminGetPostRepo().getAllCars(),
+          future: RepoAdminGetPost().getAllCars(),
           builder: (context, snapshotCar) {
             if (snapshotCar.hasData) {
               List<UsersRegistrationModel> carList = snapshotCar.data!;
               return StreamBuilder<List<OrderModel>>(
-                stream: AdminGetPostRepo().getAllOrders(),
+                stream: RepoAdminGetPost().getAllOrders(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final orders = snapshot.data!;

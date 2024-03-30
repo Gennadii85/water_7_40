@@ -6,7 +6,7 @@ import '../../model/order_model.dart';
 import '../../model/price_model.dart';
 import '../../model/users_registration_model.dart';
 
-class AdminPageRepo {
+class RepoAdminPage {
   final db = FirebaseFirestore.instance;
   Stream<List<PriceModel>> getPrice() {
     return db
@@ -152,7 +152,7 @@ class AdminPageRepo {
   }
 }
 
-class AdminGetPostRepo {
+class RepoAdminGetPost {
   final db = FirebaseFirestore.instance;
   final int today =
       DateTime.now().millisecondsSinceEpoch - DateTime.now().hour * 3600000;

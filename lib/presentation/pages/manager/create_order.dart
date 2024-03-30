@@ -65,7 +65,7 @@ class _CreateOrderState extends State<CreateOrder> {
             if (snapshot.hasData) {
               final prise = snapshot.data!;
               return StreamBuilder<List<CityModel>>(
-                stream: AdminGetPostRepo().getCityAddress(),
+                stream: RepoAdminGetPost().getCityAddress(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final List<CityModel> addressData = snapshot.data!;
