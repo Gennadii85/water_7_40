@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
+
 import '../../../core/var_manager.dart';
 import '../../../data/model/users_registration_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
@@ -9,6 +11,7 @@ class OrderCardAdmin extends StatelessWidget {
     Key? key,
     required this.carList,
     required this.docID,
+    this.carID,
     required this.address,
     this.notes,
     required this.summa,
@@ -21,6 +24,7 @@ class OrderCardAdmin extends StatelessWidget {
   }) : super(key: key);
   final List<UsersRegistrationModel> carList;
   final String docID;
+  final int? carID;
   final String address;
   final String? notes;
   final int summa;
@@ -44,8 +48,14 @@ class OrderCardAdmin extends StatelessWidget {
         children: [
           ExpansionTile(
             controlAffinity: ListTileControlAffinity.leading,
-            title: RowEntity(value: address, name: 'Адрес:'),
-            subtitle: RowEntity(value: phoneClient, name: 'Телефон:'),
+            title: RowEntity(
+              value: address,
+              name: 'Адрес:',
+            ),
+            subtitle: RowEntity(
+              value: carID == null ? 'не назначен' : carID.toString(),
+              name: 'Водитель',
+            ),
             trailing: IconButton(
               onPressed: () => showDialog(
                 context: context,
@@ -76,6 +86,10 @@ class OrderCardAdmin extends StatelessWidget {
             ),
             children: [
               RowEntity(
+                value: phoneClient,
+                name: 'Телефон:',
+              ),
+              RowEntity(
                 value: summa.toString(),
                 name: 'Сумма:',
                 grn: ' грн.',
@@ -99,7 +113,59 @@ class OrderCardAdmin extends StatelessWidget {
                 name: 'Примечания:',
               ),
               _listGoods(),
+              AdminButtons(
+                text: 'Изменить',
+                function: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () => deleteOrder(context),
+                          child: const Text(
+                            'Удалить',
+                            style: TextStyle(color: Colors.red, fontSize: 22),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Изменить',
+                            style: TextStyle(color: Colors.blue, fontSize: 22),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<dynamic> deleteOrder(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('Удалить ?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () {
+              RepoAdminPage().deleteOrder(docID);
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Удалить'),
           ),
         ],
       ),

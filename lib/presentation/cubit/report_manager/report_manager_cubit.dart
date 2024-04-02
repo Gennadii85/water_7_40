@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:water_7_40/data/model/order_model.dart';
 
-import '../../../data/repositories/admin/admin_manager_report_repo.dart';
-
 part 'report_manager_state.dart';
 
 class ReportManagerCubit extends Cubit<ReportManagerState> {
@@ -38,20 +36,4 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
       ),
     );
   }
-
-  // dynamic getListModel(int id) async {
-  //   List<OrderModel> modelList = await RepoAdminManagersReport().getAllOrders(
-  //     id,
-  //     state.startDate,
-  //     state.finishDate,
-  //   );
-  //   emit(
-  //     ReportManagerState(
-  //       startDate: state.startDate,
-  //       finishDate: state.finishDate,
-  //       listModel: modelList,
-  //     ),
-  //   );
-  //   // print(modelList);
-  // }
 }

@@ -1,12 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:water_7_40/data/repositories/admin/admin_manager_report_repo.dart';
 import 'package:water_7_40/presentation/cubit/report_manager/report_manager_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import '../../../../core/var_admin.dart';
-import '../../../../data/model/order_model.dart';
-import 'report_card_manager.dart';
+import '../report_page.dart';
 
 class ManagersCard extends StatelessWidget {
   final String name;
@@ -99,7 +97,7 @@ class ManagersCard extends StatelessWidget {
             children: [
               AdminButtons(
                 text: 'Зарплата за период',
-                function: () => _getMoney(context),
+                function: () => _getMoney(context, int.tryParse(managerID)),
               ),
             ],
           ),
@@ -108,94 +106,118 @@ class ManagersCard extends StatelessWidget {
     );
   }
 
-  dynamic _getMoney(context) {
+  dynamic _getMoney(context, int? id) {
     DateTime date = DateTime.now();
     return showDialog(
       context: context,
       builder: (context) => BlocBuilder<ReportManagerCubit, ReportManagerState>(
         builder: (context, state) {
           ReportManagerCubit cubit = BlocProvider.of(context);
-          return Padding(
-            padding: const EdgeInsets.all(50),
-            child: Scaffold(
-              body: StreamBuilder<List<OrderModel>>(
-                stream: RepoAdminManagersReport().getAllOrders(
-                  int.parse(managerID),
-                  state.startDate,
-                  state.finishDate,
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      child: Text(
+                        'Логин: $name     ID: $managerID',
+                        style:
+                            const TextStyle(fontSize: 22, color: Colors.blue),
+                      ),
+                    ),
+                  ],
                 ),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final data = snapshot.data!;
-                    final orderList = data;
-                    print(orderList);
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Логин: $name     ID: $managerID',
-                                style: VarAdmin.adminCardText,
-                              ),
-                            ],
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: orderList.length,
-                            itemBuilder: (context, index) => ReportCardManager(
-                              address: orderList[index].address,
-                              summa: orderList[index].summa.toInt(),
-                              phoneClient: orderList[index].phoneClient,
-                              goodsList: orderList[index].goodsList,
-                              payManager: orderList[index].managerProfit ?? 0,
-                              payCar: orderList[index].carProfit ?? 0,
-                              carID: orderList[index].carID ?? 0,
-                              created: orderList[index].created,
-                              delivered: orderList[index].delivered ?? 0,
-                              docID: orderList[index].docID!,
-                            ),
-                          ),
-                        ],
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Text(
+                          'От',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Text(
+                          '${state.startDate.day} - ${state.startDate.month} - ${state.startDate.year}',
+                          style: VarAdmin.adminCardText,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final selectedDate = await calendar(context, date);
+                          if (selectedDate != null) {
+                            cubit.addStart(selectedDate);
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_month),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Text(
+                          'До',
+                          style: VarAdmin.adminCardText,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Text(
+                          '${state.finishDate.day} - ${state.finishDate.month} - ${state.finishDate.year}',
+                          style: VarAdmin.adminCardText,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          final selectedDate = await calendar(context, date);
+                          if (selectedDate != null) {
+                            cubit.addFinish(selectedDate);
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_month),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30),
+                AdminButtons(
+                  text: 'Показать',
+                  function: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ReportPage(
+                          id: id,
+                          position: true,
+                        ),
                       ),
                     );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Ошибка загрузки данных.'),
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
+                  },
+                ),
+              ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  Expanded modelList(List<OrderModel> orderList) {
-    return Expanded(
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: orderList.length,
-        itemBuilder: (context, index) => ReportCardManager(
-          address: orderList[index].address,
-          summa: orderList[index].summa.toInt(),
-          phoneClient: orderList[index].phoneClient,
-          goodsList: orderList[index].goodsList,
-          payManager: orderList[index].managerProfit ?? 0,
-          payCar: orderList[index].carProfit ?? 0,
-          carID: orderList[index].carID ?? 0,
-          created: orderList[index].created,
-          delivered: orderList[index].delivered ?? 0,
-          docID: orderList[index].docID!,
-        ),
       ),
     );
   }

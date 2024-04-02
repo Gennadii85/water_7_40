@@ -150,6 +150,10 @@ class RepoAdminPage {
     }
     return value;
   }
+
+  dynamic deleteOrder(String docID) {
+    db.collection('orders').doc(docID).delete();
+  }
 }
 
 class RepoAdminGetPost {
