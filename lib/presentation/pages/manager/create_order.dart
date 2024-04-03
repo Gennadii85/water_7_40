@@ -37,13 +37,34 @@ class _CreateOrderState extends State<CreateOrder> {
     } else {
       String address =
           '${addAddress.city} ${addAddress.street} дом ${houseControl.text} кв ${apartmentControl.text}';
-      cubit.writeOrder(address, phoneClient.text, takeMoney, notes.text);
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ManagersPage(),
+      int? id = await RepoManagerPage().checkAddress(address);
+      cubit.writeOrder(address, phoneClient.text, takeMoney, notes.text, id);
+      goManagerPage(id);
+    }
+  }
+
+  void goManagerPage(int? id) {
+    if (id != null) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: const Text(
+            'Этот адрес закреплен за другим менеджером! По-этому он не будет отображаться на вашей панели!',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Я понял'),
+            ),
+          ],
         ),
       );
     }
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ManagersPage(),
+      ),
+    );
   }
 
   @override

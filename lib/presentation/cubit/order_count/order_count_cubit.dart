@@ -6,7 +6,6 @@ import '../../../core/var_core.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/price_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
-import '../../../data/repositories/manager_page_repo.dart';
 
 part 'order_count_state.dart';
 
@@ -183,8 +182,9 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     String phoneClient,
     bool takeMoney,
     String? notes,
+    int? id,
   ) async {
-    int? id = await RepoManagerPage().checkAddress(address);
+    // int? id = await RepoManagerPage().checkAddress(address);
     Map map = {};
     int countIndex = 0;
     for (var elem in state.listCount) {
