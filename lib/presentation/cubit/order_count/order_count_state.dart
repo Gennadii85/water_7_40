@@ -26,3 +26,13 @@ class OrderCountInitState extends OrderCountState {
     required super.percentManager,
   });
 }
+
+class OrderCountUpdateInitState extends OrderCountState {
+  OrderCountUpdateInitState({
+    required super.listCount,
+    required super.allMoney,
+    required super.managerMoney,
+    required super.prise,
+    required super.percentManager,
+  });
+}

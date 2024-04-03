@@ -1,14 +1,16 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
-
 import '../../../core/var_manager.dart';
+import '../../../data/model/order_model.dart';
 import '../../../data/model/users_registration_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
+import 'update_order.dart';
 
 class OrderCardAdmin extends StatelessWidget {
   const OrderCardAdmin({
     Key? key,
+    required this.orderModel,
     required this.carList,
     required this.docID,
     this.carID,
@@ -22,6 +24,7 @@ class OrderCardAdmin extends StatelessWidget {
     required this.payManager,
     required this.payCar,
   }) : super(key: key);
+  final OrderModel orderModel;
   final List<UsersRegistrationModel> carList;
   final String docID;
   final int? carID;
@@ -129,7 +132,16 @@ class OrderCardAdmin extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => UpdateOrder(
+                                  model: orderModel,
+                                ),
+                              ),
+                            );
+                          },
                           child: const Text(
                             'Изменить',
                             style: TextStyle(color: Colors.blue, fontSize: 22),

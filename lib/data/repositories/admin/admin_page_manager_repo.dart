@@ -165,9 +165,6 @@ class RepoAdminGetPost {
     return db
         .collection('orders')
         .where('delivered', isNull: true)
-        // .where('carID', isNull: true)
-        // .orderBy('created', descending: true)
-
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
@@ -234,5 +231,10 @@ class RepoAdminGetPost {
 
   dynamic savePhoneAddress(String phone, String address) {
     db.collection('managerAddress').doc(address).update({'phone': phone});
+  }
+
+  List<OrderModel> sortListToCreated(List<OrderModel> list) {
+    list.sort((a, b) => b.created.compareTo(a.created));
+    return list;
   }
 }

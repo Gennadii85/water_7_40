@@ -15,8 +15,8 @@ class OrderCountCubit extends Cubit<OrderCountState> {
   final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
   OrderCountCubit(this.prise)
       : super(
-          OrderCountState(
-            listCount: List<int>.generate(prise.length, (index) => 0),
+          OrderCountInitState(
+            listCount: listCount(prise),
             allMoney: 0,
             managerMoney: 0,
             prise: prise,
@@ -24,6 +24,32 @@ class OrderCountCubit extends Cubit<OrderCountState> {
                 Hive.box(VarHive.nameBox).get(VarHive.managersPercent),
           ),
         );
+
+  static List<int> listCount(List<PriceModel> prise) =>
+      List<int>.generate(prise.length, (index) => 0);
+
+  void getListCount(Map<dynamic, dynamic> goodsMap) {
+    List<int> list = state.listCount;
+    int countIndex = 0;
+    for (var elem in prise) {
+      if (goodsMap.containsKey(elem.goodsName)) {
+        final entre =
+            goodsMap.entries.where((element) => element.key == elem.goodsName);
+        int val = entre.first.value;
+        list.setAll(countIndex, [val]);
+      }
+      countIndex++;
+    }
+    emit(
+      OrderCountState(
+        listCount: list,
+        allMoney: summaOrder(),
+        managerMoney: managerProfit(),
+        prise: state.prise,
+        percentManager: state.percentManager,
+      ),
+    );
+  }
 
   void initState() {
     emit(
@@ -83,7 +109,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
 
   int managerProfit() {
     int allProfit = 0;
-    List<int> all = [];
+    List<int> all = [0];
     int countIndex = 0;
 
     for (var elem in prise) {
@@ -197,6 +223,53 @@ class OrderCountCubit extends Cubit<OrderCountState> {
         .collection(VarManager.orders)
         .doc()
         .set(model.toFirebase());
+
+    initState();
+  }
+
+  void updateOrder(
+    String docID,
+    String address,
+    String phoneClient,
+    bool takeMoney,
+    String notes,
+    int manID,
+    int managerProfit,
+    int carProfit,
+  ) {
+    Map map = {};
+    int countIndex = 0;
+    for (var elem in state.listCount) {
+      if (elem > 0) {
+        map.addAll({prise[countIndex].goodsName: state.listCount[countIndex]});
+      }
+      countIndex++;
+    }
+    final model = OrderModel(
+      created: DateTime.now().millisecondsSinceEpoch,
+      delivered: null,
+      summa: state.allMoney,
+      managerID: manID,
+      managerProfit: managerProfit,
+      carID: null,
+      carProfit: carProfit,
+      goodsList: map,
+      address: address,
+      phoneClient: phoneClient,
+      isDone: false,
+      takeMoney: takeMoney,
+      payMoneyManager: false,
+      payMoneyCar: false,
+      notes: notes,
+    );
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc()
+        .set(model.toFirebase());
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc(docID)
+        .delete();
 
     initState();
   }

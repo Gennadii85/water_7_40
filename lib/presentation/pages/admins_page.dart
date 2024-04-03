@@ -35,7 +35,7 @@ class AdminPage extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final orders = snapshot.data!;
-                    final List<OrderModel> hoCarList = orders
+                    final List<OrderModel> noCarList = orders
                         .where((element) => element.carID == null)
                         .toList();
                     final List<OrderModel> waitDeliveredList = orders
@@ -45,16 +45,22 @@ class AdminPage extends StatelessWidget {
                               element.carID != null,
                         )
                         .toList();
+
+                    List<OrderModel> noCarListFinish =
+                        RepoAdminGetPost().sortListToCreated(noCarList);
+                    List<OrderModel> waitDeliveredListFinish =
+                        RepoAdminGetPost().sortListToCreated(waitDeliveredList);
+
                     return SingleChildScrollView(
                       child: Column(
                         children: [
                           const Text('Ожидают распределения'),
                           const SizedBox(height: 15),
-                          chowOrder(hoCarList, carList),
+                          chowOrder(noCarListFinish, carList),
                           const SizedBox(height: 30),
                           const Text('Распределены и ожидают доставки'),
                           const SizedBox(height: 30),
-                          chowOrder(waitDeliveredList, carList),
+                          chowOrder(waitDeliveredListFinish, carList),
                           const SizedBox(height: 30),
                         ],
                       ),
@@ -92,6 +98,7 @@ class AdminPage extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: createdList.length,
       itemBuilder: (context, index) => OrderCardAdmin(
+        orderModel: createdList[index],
         carList: carList,
         carID: createdList[index].carID,
         docID: createdList[index].docID!,
