@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import '../../../core/var_manager.dart';
 
 class PriceCard extends StatelessWidget {
@@ -7,6 +9,7 @@ class PriceCard extends StatelessWidget {
   final int count;
   final Function addCount;
   final Function delCount;
+  final int index;
   // final int id;
   const PriceCard({
     Key? key,
@@ -15,7 +18,7 @@ class PriceCard extends StatelessWidget {
     required this.count,
     required this.addCount,
     required this.delCount,
-    // required this.id,
+    required this.index,
   }) : super(key: key);
 
   @override
@@ -42,7 +45,7 @@ class PriceCard extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                  onPressed: () => addCount(),
+                  onPressed: () => addCount(index),
                   icon: const Icon(Icons.add_circle_outline),
                 ),
                 Text(
@@ -50,7 +53,7 @@ class PriceCard extends StatelessWidget {
                   style: VarManager.cardSize,
                 ),
                 IconButton(
-                  onPressed: () => delCount(),
+                  onPressed: () => delCount(index),
                   icon: const Icon(Icons.remove_circle_outline),
                 ),
               ],

@@ -35,6 +35,7 @@ class RepoAdminPage {
     String piecesPercentValueControlCar,
     String piecesMoneyValueControlCar,
     String existenceMoneyValueControlCar,
+    String categoryNameControl,
   ) {
     int trueCountManager = 0;
     if (piecesPercentValueControlManager.isNotEmpty) trueCountManager++;
@@ -66,7 +67,6 @@ class RepoAdminPage {
       );
     }
     final model = PriceModel(
-      // dateTime: DateTime.now(),
       goodsName: goodsNameControl,
       goodsPrice: int.tryParse(goodsPriceControl) ?? 0,
       piecesPercentValueManager: int.tryParse(piecesPercentValueControlManager),
@@ -77,6 +77,8 @@ class RepoAdminPage {
       piecesPercentValueCar: int.tryParse(piecesPercentValueControlCar),
       piecesMoneyValueCar: int.tryParse(piecesMoneyValueControlCar),
       existenceMoneyValueCar: int.tryParse(existenceMoneyValueControlCar),
+      categoryName: categoryNameControl,
+      isActive: true,
     );
     FirebaseFirestore.instance
         .collection(VarAdmin.dbPrice)

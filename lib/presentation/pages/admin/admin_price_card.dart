@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:water_7_40/data/repositories/admin/admin_page_manager_repo.dart';
 
 class AdminPriceCard extends StatelessWidget {
@@ -11,6 +13,7 @@ class AdminPriceCard extends StatelessWidget {
     required this.managerMethodValue,
     required this.carMethod,
     required this.carMethodValue,
+    required this.isActive,
   }) : super(key: key);
   final String id;
   final String name;
@@ -19,11 +22,17 @@ class AdminPriceCard extends StatelessWidget {
   final String managerMethodValue;
   final String carMethod;
   final String carMethodValue;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       child: ExpansionTile(
+        collapsedBackgroundColor:
+            isActive ? Colors.blue[200] : Colors.grey[200],
+        collapsedShape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

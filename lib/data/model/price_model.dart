@@ -10,6 +10,8 @@ class PriceModel {
   final int? piecesPercentValueCar;
   final int? piecesMoneyValueCar;
   final int? existenceMoneyValueCar;
+  final String categoryName;
+  final bool isActive;
 
   PriceModel({
     this.id,
@@ -22,6 +24,8 @@ class PriceModel {
     this.piecesPercentValueCar,
     this.piecesMoneyValueCar,
     this.existenceMoneyValueCar,
+    required this.categoryName,
+    required this.isActive,
   });
 
   static PriceModel fromFirebase(Map<String, dynamic> json, String id) =>
@@ -36,6 +40,8 @@ class PriceModel {
         piecesPercentValueCar: json['piecesPercentValueCar'],
         piecesMoneyValueCar: json['piecesMoneyValueCar'],
         existenceMoneyValueCar: json['existenceMoneyValueCar'],
+        categoryName: json['categoryName'],
+        isActive: json['isActive'],
       );
   Map<String, dynamic> toFirebase() => {
         'goodsName': goodsName,
@@ -47,5 +53,7 @@ class PriceModel {
         'piecesPercentValueCar': piecesPercentValueCar,
         'piecesMoneyValueCar': piecesMoneyValueCar,
         'existenceMoneyValueCar': existenceMoneyValueCar,
+        'categoryName': categoryName,
+        'isActive': isActive,
       };
 }

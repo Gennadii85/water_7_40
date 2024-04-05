@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
+import 'package:water_7_40/presentation/pages/admin/admin_drawer.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_price_card.dart';
-
 import '../../../core/var_admin.dart';
 import '../../../data/model/price_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
@@ -26,7 +24,10 @@ class _CreatePricePageState extends State<CreatePricePage> {
   TextEditingController piecesPercentValueControlCar = TextEditingController();
   TextEditingController piecesMoneyValueControlCar = TextEditingController();
   TextEditingController existenceMoneyValueControlCar = TextEditingController();
+  TextEditingController categoryNameControl = TextEditingController();
   bool managerPercent = false;
+  List<PriceModel> priseList = [];
+  List<String> categoriesList = [];
 
   @override
   void dispose() {
@@ -38,6 +39,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
     piecesPercentValueControlCar.dispose();
     piecesMoneyValueControlCar.dispose();
     existenceMoneyValueControlCar.dispose();
+    categoryNameControl.dispose();
 
     super.dispose();
   }
@@ -51,6 +53,7 @@ class _CreatePricePageState extends State<CreatePricePage> {
     piecesPercentValueControlCar.clear();
     piecesMoneyValueControlCar.clear();
     existenceMoneyValueControlCar.clear();
+    categoryNameControl.clear();
   }
 
   @override
@@ -61,11 +64,8 @@ class _CreatePricePageState extends State<CreatePricePage> {
         appBar: AppBar(
           title: const Text('Создать прайс'),
           centerTitle: true,
-          leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_back),
-          ),
         ),
+        drawer: const AdminDrawer(),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -75,25 +75,49 @@ class _CreatePricePageState extends State<CreatePricePage> {
                 stream: RepoAdminPage().getPrice(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    List<Widget> widgetList = [];
                     final prise = snapshot.data!;
+                    priseList = prise;
+                    categoriesList =
+                        prise.map((e) => e.categoryName).toSet().toList();
+                    for (var element in categoriesList) {
+                      List<PriceModel> list = prise
+                          .where((elem) => elem.categoryName == element)
+                          .toList();
+                      Widget widget = ExpansionTile(
+                        title: Text(element),
+                        childrenPadding: const EdgeInsets.all(8),
+                        collapsedShape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: const BorderSide(),
+                        ),
+                        children: list
+                            .map(
+                              (elem) => AdminPriceCard(
+                                id: elem.id!,
+                                name: elem.goodsName,
+                                prise: elem.goodsPrice,
+                                managerMethod:
+                                    RepoAdminPage().managerMethod(elem),
+                                managerMethodValue:
+                                    RepoAdminPage().managerMethodValue(elem),
+                                carMethod: RepoAdminPage().carMethod(elem),
+                                carMethodValue:
+                                    RepoAdminPage().carMethodValue(elem),
+                                isActive: elem.isActive,
+                              ),
+                            )
+                            .toList(),
+                      );
+                      widgetList.add(widget);
+                      widgetList.add(const SizedBox(height: 15));
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ListView.builder(
+                      child: ListView(
                         shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: prise.length,
-                        itemBuilder: (context, index) => AdminPriceCard(
-                          id: prise[index].id!,
-                          name: prise[index].goodsName,
-                          prise: prise[index].goodsPrice,
-                          managerMethod:
-                              RepoAdminPage().managerMethod(prise[index]),
-                          managerMethodValue:
-                              RepoAdminPage().managerMethodValue(prise[index]),
-                          carMethod: RepoAdminPage().carMethod(prise[index]),
-                          carMethodValue:
-                              RepoAdminPage().carMethodValue(prise[index]),
-                        ),
+                        children: widgetList,
                       ),
                     );
                   } else {
@@ -136,6 +160,47 @@ class _CreatePricePageState extends State<CreatePricePage> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     child: Text(
+                      'Выберите категорию или оставьте позицию без категории!',
+                      style: VarAdmin.adminPriceText,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Autocomplete<String>(
+                        optionsMaxHeight: 600,
+                        optionsBuilder: (textEditingValue) {
+                          categoryNameControl.text = textEditingValue.text;
+
+                          final Set<String> list =
+                              priseList.map((e) => e.categoryName).toSet();
+
+                          return list
+                              .map((e) => e.toLowerCase())
+                              .toList()
+                              .where((option) {
+                            return option
+                                .contains(textEditingValue.text.toLowerCase());
+                          });
+                        },
+                        onSelected: (selection) {
+                          categoryNameControl.text = selection;
+                          selection = '';
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(
                       'Определите только один метод расчета менеджера и водителя. Если оставить все поля пустыми - менеджер и водитель не будут получать отчисления с этой позиции !!!',
                       style: VarAdmin.adminPriceText,
                     ),
@@ -164,13 +229,20 @@ class _CreatePricePageState extends State<CreatePricePage> {
                         piecesPercentValueControlCar.text,
                         piecesMoneyValueControlCar.text,
                         existenceMoneyValueControlCar.text,
+                        categoryNameControl.text,
                       );
                       clearTextController();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const CreatePricePage(),
+                        ),
+                      );
                     },
                   ),
                   const SizedBox(height: 30),
                 ],
               ),
+              const SizedBox(height: 50),
             ],
           ),
         ),
