@@ -228,11 +228,14 @@ class RepoAdminGetPost {
     db
         .collection('managerAddress')
         .doc(save)
-        .set({'managerID': id, 'phone': null});
+        .set({'managerID': id, 'phone': null, 'name': null});
   }
 
-  dynamic savePhoneAddress(String phone, String address) {
-    db.collection('managerAddress').doc(address).update({'phone': phone});
+  dynamic savePhoneNameAddress(String phone, String name, String address) {
+    db
+        .collection('managerAddress')
+        .doc(address)
+        .update({'phone': phone, 'name': name});
   }
 
   List<OrderModel> sortListToCreated(List<OrderModel> list) {

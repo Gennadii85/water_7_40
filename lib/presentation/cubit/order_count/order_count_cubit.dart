@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/core/var_manager.dart';
 import '../../../core/var_core.dart';
+import '../../../data/entity/create_order_address_entity.dart';
+import '../../../data/entity/create_order_goods_cart_entity.dart';
+import '../../../data/entity/price_entity.dart';
+import '../../../data/model/address_model.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/price_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
@@ -11,114 +15,176 @@ import '../../../data/repositories/admin/admin_page_manager_repo.dart';
 part 'order_count_state.dart';
 
 class OrderCountCubit extends Cubit<OrderCountState> {
-  // List<ExpansionTile> modelList;
-  List<PriceModel> price;
-  List<Map<String, List<int>>> countList;
   final int managerID = Hive.box(VarHive.nameBox).get(VarHive.managersID);
-  OrderCountCubit(this.price, this.countList)
+  final int? managersPercent =
+      Hive.box(VarHive.nameBox).get(VarHive.managersPercent);
+  OrderCountCubit()
       : super(
           OrderCountInitState(
             allMoney: 0,
             managerMoney: 0,
-            // modelList: modelList,
-            countList: countList,
-            price: price,
-            percentManager:
-                Hive.box(VarHive.nameBox).get(VarHive.managersPercent),
+            priceEntity: PriceEntity(
+              categoriesList: [],
+            ),
+            goodsList: [],
+            addressData: [],
+            addressEntity: CreateOrderAddressEntity(
+              city: TextEditingController(),
+              street: TextEditingController(),
+              house: TextEditingController(),
+              apartment: TextEditingController(),
+              phone: TextEditingController(),
+              name: TextEditingController(),
+              notes: TextEditingController(),
+            ),
           ),
         );
 
-  // List<List> listCount(List<PriceModel> prise) {
-  //   List<String> categoriesList =
-  //       prise.map((e) => e.categoryName).toSet().toList();
-  //   List<List> topCount = List.generate(categoriesList.length, (index) => []);
-  //   // List<PriceModel> priseSort =
-  //   prise.sort((a, b) => a.categoryName.compareTo(b.categoryName));
-  //   for (var element in prise) {}
-  //   return topCount;
-  // }
-
-  // void getListCount(Map<dynamic, dynamic> goodsMap) {
-  //   List<int> list = state.listCount;
-  //   int countIndex = 0;
-  //   for (var elem in prise) {
-  //     if (goodsMap.containsKey(elem.goodsName)) {
-  //       final entre =
-  //           goodsMap.entries.where((element) => element.key == elem.goodsName);
-  //       int val = entre.first.value;
-  //       list.setAll(countIndex, [val]);
-  //     }
-  //     countIndex++;
-  //   }
-  //   emit(
-  //     OrderCountState(
-  //       listCount: list,
-  //       allMoney: summaOrder(),
-  //       managerMoney: managerProfit(),
-  //       prise: state.prise,
-  //       percentManager: state.percentManager,
-  //     ),
-  //   );
-  // }
-
-  // void initState() {
-  //   emit(
-  //     OrderCountInitState(
-  //       listCount: List<int>.generate(prise.length, (index) => 0),
-  //       allMoney: 0,
-  //       managerMoney: 0,
-  //       prise: prise,
-  //       percentManager: state.percentManager,
-  //     ),
-  //   );
-  // }
-
-  void addCount(int indexModel, int index) {
-    int value = state.countList[indexModel].entries.first.value[index];
-
-    state.countList[indexModel].entries.first.value.setAll(index, [value + 1]);
+  void initState() {
     emit(
-      OrderCountState(
+      OrderCountInitState(
         allMoney: 0,
         managerMoney: 0,
-        price: price,
-        countList: state.countList,
-        percentManager: 0,
+        priceEntity: PriceEntity(
+          categoriesList: [],
+        ),
+        goodsList: [],
+        addressData: [],
+        addressEntity: CreateOrderAddressEntity(
+          city: TextEditingController(),
+          street: TextEditingController(),
+          house: TextEditingController(),
+          apartment: TextEditingController(),
+          phone: TextEditingController(),
+          name: TextEditingController(),
+          notes: TextEditingController(),
+        ),
       ),
     );
   }
 
-  void delCount(int indexModel, int index) {
-    int value = state.countList[indexModel].entries.first.value[index];
+  void getPriceEntity(
+    PriceEntity priceEntity,
+    List<CityModel> addressData,
+  ) {
+    emit(
+      OrderCountValueState(
+        allMoney: state.allMoney,
+        managerMoney: 0,
+        percentManager: 0,
+        priceEntity: priceEntity,
+        goodsList: [],
+        addressData: addressData,
+        addressEntity: state.addressEntity,
+      ),
+    );
+  }
+
+  void addCount(int indexCategories, int index) {
+    int value =
+        state.priceEntity.categoriesList[indexCategories].countList[index];
+    state.priceEntity.categoriesList[indexCategories].countList
+        .setAll(index, [value + 1]);
+    emit(
+      OrderCountValueState(
+        allMoney: summaOrder(),
+        managerMoney: 0,
+        percentManager: 0,
+        priceEntity: state.priceEntity,
+        goodsList: state.goodsList,
+        addressData: state.addressData,
+        addressEntity: state.addressEntity,
+      ),
+    );
+  }
+
+  void delCount(int indexCategories, int index) {
+    int value =
+        state.priceEntity.categoriesList[indexCategories].countList[index];
     if (value == 0) {
       return;
     } else {
-      int value = state.countList[indexModel].entries.first.value[index];
-      state.countList[indexModel].entries.first.value
+      state.priceEntity.categoriesList[indexCategories].countList
           .setAll(index, [value - 1]);
       emit(
-        OrderCountState(
-          allMoney: 0,
+        OrderCountValueState(
+          allMoney: summaOrder(),
           managerMoney: 0,
-          price: price,
-          countList: state.countList,
           percentManager: 0,
+          priceEntity: state.priceEntity,
+          goodsList: state.goodsList,
+          addressData: state.addressData,
+          addressEntity: state.addressEntity,
         ),
       );
     }
   }
 
-  // int summaOrder() {
-  //   int allMoney = 0;
-  //   List<int> all = [];
-  //   int countIndex = 0;
-  //   for (var elem in prise) {
-  //     all.add(elem.goodsPrice.toInt() * state.listCount[countIndex]);
-  //     countIndex++;
-  //   }
-  //   allMoney = all.reduce((value, element) => value + element);
-  //   return allMoney;
-  // }
+  int summaCategory(
+    List<PriceModel> priceModelList,
+    List<int> countList,
+  ) {
+    int oneCategoriesAllMoney = 0;
+    List<int> oneCategoriesMoneyList = [];
+    int index = 0;
+    for (var element in priceModelList) {
+      int price = element.goodsPrice;
+      int count = countList[index];
+      int onePriceModelSum = price * count;
+      oneCategoriesMoneyList.add(onePriceModelSum);
+      index++;
+    }
+    oneCategoriesAllMoney =
+        oneCategoriesMoneyList.reduce((value, element) => value + element);
+    return oneCategoriesAllMoney;
+  }
+
+  int summaOrder() {
+    int allMoney = 0;
+    List<int> allSummaCategories = [];
+    int summaCategories = 0;
+    for (var elem in state.priceEntity.categoriesList) {
+      summaCategories = summaCategory(elem.priceModelList, elem.countList);
+      allSummaCategories.add(summaCategories);
+    }
+    allMoney = allSummaCategories.reduce((value, element) => value + element);
+
+    return allMoney;
+  }
+
+  List<CreateOrderGoodsEntity> getFinalPrice() {
+    List<CreateOrderGoodsEntity> createOrderGoodsEntityList = [];
+    for (var element in state.priceEntity.categoriesList) {
+      int index = 0;
+      List<PriceModel> priceModelList = element.priceModelList;
+      for (var elem in element.countList) {
+        if (elem > 0) {
+          final entity = CreateOrderGoodsEntity(
+            goodsName: priceModelList[index].goodsName,
+            count: elem,
+            price: priceModelList[index].goodsPrice,
+          );
+          createOrderGoodsEntityList.add(entity);
+        }
+        index++;
+      }
+    }
+    return createOrderGoodsEntityList;
+  }
+
+  void saveFinalPrice() {
+    emit(
+      OrderCountValueState(
+        allMoney: summaOrder(),
+        managerMoney: 0,
+        percentManager: 0,
+        priceEntity: state.priceEntity,
+        goodsList: getFinalPrice(),
+        addressData: state.addressData,
+        addressEntity: state.addressEntity,
+      ),
+    );
+  }
 
   // int managerProfit() {
   //   int allProfit = 0;
@@ -191,54 +257,57 @@ class OrderCountCubit extends Cubit<OrderCountState> {
   //   return allProfit;
   // }
 
-  // void writeOrder(
-  //   String address,
-  //   String phoneClient,
-  //   bool takeMoney,
-  //   String? notes,
-  //   int? id,
-  // ) async {
-  //   Map map = {};
-  //   int countIndex = 0;
-  //   for (var elem in state.listCount) {
-  //     if (elem > 0) {
-  //       map.addAll({prise[countIndex].goodsName: state.listCount[countIndex]});
-  //     }
-  //     countIndex++;
-  //   }
-  //   int? manID;
-  //   if (id == null) {
-  //     manID = managerID;
-  //   } else {
-  //     manID = id;
-  //     RepoAdminGetPost().savePhoneAddress(phoneClient, address);
-  //     //записать номер телефона в базу клиентов
-  //   }
+  void writeOrder(
+    String address,
+    // String phoneClient,
+    bool takeMoney,
+    // String? notes,
+    int? id,
+  ) async {
+    Map map = {};
+    List<CreateOrderGoodsEntity> goodsList = getFinalPrice();
+    for (var element in goodsList) {
+      map.addAll({element.goodsName: element.count});
+    }
 
-  //   final model = OrderModel(
-  //     created: DateTime.now().millisecondsSinceEpoch,
-  //     delivered: null,
-  //     summa: state.allMoney,
-  //     managerID: manID,
-  //     managerProfit: managerProfit(),
-  //     carID: null,
-  //     carProfit: carProfit(),
-  //     goodsList: map,
-  //     address: address,
-  //     phoneClient: phoneClient,
-  //     isDone: false,
-  //     takeMoney: takeMoney,
-  //     payMoneyManager: false,
-  //     payMoneyCar: false,
-  //     notes: notes,
-  //   );
-  //   FirebaseFirestore.instance
-  //       .collection(VarManager.orders)
-  //       .doc()
-  //       .set(model.toFirebase());
+    int? manID;
+    if (id == null) {
+      manID = managerID;
+    } else {
+      manID = id;
+      RepoAdminGetPost().savePhoneNameAddress(
+        state.addressEntity.phone.text,
+        state.addressEntity.name.text,
+        address,
+      );
+      //записать номер телефона в базу клиентов
+    }
 
-  //   initState();
-  // }
+    final model = OrderModel(
+      created: DateTime.now().millisecondsSinceEpoch,
+      delivered: null,
+      summa: state.allMoney,
+      managerID: manID,
+      managerProfit: 0, // managerProfit(),
+      carID: null,
+      carProfit: 0, // carProfit(),
+      goodsList: map,
+      address: address,
+      phoneClient: state.addressEntity.phone.text,
+      isDone: false,
+      takeMoney: takeMoney,
+      payMoneyManager: false,
+      payMoneyCar: false,
+      notes: state.addressEntity.notes.text,
+      name: state.addressEntity.name.text,
+    );
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc()
+        .set(model.toFirebase());
+
+    initState();
+  }
 
   // void updateOrder(
   //   String docID,

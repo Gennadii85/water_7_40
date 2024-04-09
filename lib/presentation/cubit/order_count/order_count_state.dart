@@ -2,30 +2,45 @@
 part of 'order_count_cubit.dart';
 
 class OrderCountState {
+  PriceEntity priceEntity;
   int allMoney;
-  int managerMoney;
-  // List<ExpansionTile> modelList;
-  List<PriceModel> price;
-  List<Map<String, List<int>>> countList;
-  int? percentManager;
-
+  List<CreateOrderGoodsEntity> goodsList;
+  List<CityModel> addressData;
+  CreateOrderAddressEntity addressEntity;
   OrderCountState({
+    required this.priceEntity,
     required this.allMoney,
-    required this.managerMoney,
-    required this.price,
-    required this.countList,
-    required this.percentManager,
+    required this.goodsList,
+    required this.addressData,
+    required this.addressEntity,
   });
 }
 
 class OrderCountInitState extends OrderCountState {
+  int managerMoney;
+  int? percentManager;
   OrderCountInitState({
+    required this.managerMoney,
+    this.percentManager,
+    required super.priceEntity,
     required super.allMoney,
-    required super.managerMoney,
-    // required super.modelList,
-    required super.price,
-    required super.percentManager,
-    required super.countList,
+    required super.goodsList,
+    required super.addressData,
+    required super.addressEntity,
+  });
+}
+
+class OrderCountValueState extends OrderCountState {
+  int managerMoney;
+  int? percentManager;
+  OrderCountValueState({
+    required this.managerMoney,
+    this.percentManager,
+    required super.priceEntity,
+    required super.allMoney,
+    required super.goodsList,
+    required super.addressData,
+    required super.addressEntity,
   });
 }
 

@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/core/var_core.dart';
 import 'package:water_7_40/presentation/pages/managers_page.dart';
 import 'firebase_options.dart';
+import 'presentation/cubit/order_count/order_count_cubit.dart';
 import 'presentation/cubit/report_manager/report_manager_cubit.dart';
 import 'presentation/cubit/start_page/start_page_cubit.dart';
 import 'presentation/pages/admins_page.dart';
@@ -26,6 +27,9 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => ReportManagerCubit(),
+        ),
+        BlocProvider(
+          create: (context) => OrderCountCubit(),
         ),
       ],
       child: const MyApp(),

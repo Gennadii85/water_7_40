@@ -1,17 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:water_7_40/core/var_manager.dart';
 import 'package:water_7_40/data/model/price_model.dart';
 import 'package:water_7_40/data/repositories/manager_page_repo.dart';
 import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
-import 'package:water_7_40/presentation/pages/manager/price_body.dart';
+import 'package:water_7_40/presentation/pages/manager/address_order_init_page.dart';
+import 'package:water_7_40/presentation/pages/manager/address_order_value_page.dart';
+import '../../../data/entity/price_entity.dart';
 import '../../../data/model/address_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
-import '../../cubit/add_address/add_address_cubit.dart';
 import '../managers_page.dart';
+import 'create_price_position.dart';
 
 class CreateOrder extends StatefulWidget {
   const CreateOrder({super.key});
@@ -21,26 +22,26 @@ class CreateOrder extends StatefulWidget {
 }
 
 class _CreateOrderState extends State<CreateOrder> {
-  final TextEditingController phoneClient = TextEditingController();
-  final TextEditingController notes = TextEditingController();
-  final TextEditingController houseControl = TextEditingController();
-  final TextEditingController apartmentControl = TextEditingController();
   bool takeMoney = true;
 
   void writeOrder(
-    AddAddressState addAddress,
     OrderCountCubit cubit,
   ) async {
-    if (houseControl.text.isEmpty ||
-        apartmentControl.text.isEmpty ||
-        phoneClient.text.isEmpty ||
-        cubit.state.allMoney == 0) {
+    if (cubit.state.addressEntity.city.text.isEmpty ||
+        cubit.state.addressEntity.street.text.isEmpty ||
+        cubit.state.addressEntity.house.text.isEmpty ||
+        cubit.state.addressEntity.apartment.text.isEmpty ||
+        cubit.state.addressEntity.phone.text.isEmpty ||
+        cubit.state.goodsList.isEmpty) {
       return;
     } else {
-      String address =
-          '${addAddress.city} ${addAddress.street} дом ${houseControl.text} кв ${apartmentControl.text}';
+      String city = cubit.state.addressEntity.city.text;
+      String street = cubit.state.addressEntity.street.text;
+      String house = cubit.state.addressEntity.house.text;
+      String apartment = cubit.state.addressEntity.apartment.text;
+      String address = '$city $street дом $house кв $apartment';
       int? id = await RepoManagerPage().checkAddress(address);
-      // cubit.writeOrder(address, phoneClient.text, takeMoney, notes.text, id);
+      cubit.writeOrder(address, takeMoney, id);
       goManagerPage(id);
     }
   }
@@ -77,126 +78,244 @@ class _CreateOrderState extends State<CreateOrder> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ManagersPage()),
+              );
+              BlocProvider.of<OrderCountCubit>(context).initState();
+            },
           ),
           title: const Text('Создать заказ'),
           centerTitle: true,
         ),
-        body: StreamBuilder<List<PriceModel>>(
-          stream: RepoManagerPage().getPrice(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final List<PriceModel> priceData = snapshot.data!;
-
-              final List<PriceModel> price = priceData
-                  .where((element) => element.isActive == true)
-                  .toList();
-
-              return StreamBuilder<List<CityModel>>(
-                stream: RepoAdminGetPost().getCityAddress(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final List<CityModel> addressData = snapshot.data!;
-                    return MultiBlocProvider(
-                      providers: [
-                        BlocProvider(
-                          create: (context) => OrderCountCubit(
-                            price,
-                            RepoManagerPage().setCount(price),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (context) => AddAddressCubit(addressData),
-                        ),
-                      ],
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: PriceBody(price: price),
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: BlocBuilder<OrderCountCubit,
-                                      OrderCountState>(
-                                    builder: (context, state) {
-                                      return Text(
-                                        'Заказ на сумму: ${state.allMoney.toString()} грн.',
-                                        style: VarManager.cardSize,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            RepoManagerPage()
-                                .addressAuto(houseControl, apartmentControl),
-                            _textFieldRow(phoneClient, 'Телефон клиента *'),
-                            _textFieldRow(notes, 'Заметки'),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Text('Расчет с водителем'),
-                                  Checkbox(
-                                    value: takeMoney,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        takeMoney = value!;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            Builder(
-                              builder: (context) {
-                                final addAddress =
-                                    context.watch<AddAddressCubit>().state;
-                                return AdminButtons(
-                                  text: 'Заказать',
-                                  function: () => writeOrder(
-                                    addAddress,
-                                    BlocProvider.of<OrderCountCubit>(
-                                      context,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 30),
-                          ],
-                        ),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Не удалось получить список адресов.'),
-                    );
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('Не удалось получить прайс.'),
-              );
+        body: BlocBuilder<OrderCountCubit, OrderCountState>(
+          builder: (context, state) {
+            if (state is OrderCountInitState) {
+              return initPage();
+            } else {
+              return valuePage(state);
             }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
           },
         ),
       ),
+    );
+  }
+
+  SingleChildScrollView valuePage(
+    OrderCountState state,
+  ) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: 15),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: AddressOrderValuePage(),
+          ),
+          _textFieldRow(
+            state.addressEntity.phone,
+            'Телефон клиента *',
+          ),
+          _textFieldRow(
+            state.addressEntity.name,
+            'Контактное лицо',
+          ),
+          _textFieldRow(
+            state.addressEntity.notes,
+            'Заметки',
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                const Text('Расчет с водителем'),
+                Checkbox(
+                  value: takeMoney,
+                  onChanged: (value) {
+                    setState(() {
+                      takeMoney = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: BlocBuilder<OrderCountCubit, OrderCountState>(
+                  builder: (context, state) {
+                    return Text(
+                      'Заказ на сумму: ${state.allMoney.toString()} грн.',
+                      style: VarManager.cardSize,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          ListView.builder(
+            itemBuilder: (context, index) {
+              int money =
+                  state.goodsList[index].count * state.goodsList[index].price;
+              return Card(
+                elevation: 4,
+                color: Colors.blue[200],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          state.goodsList[index].goodsName,
+                          style: VarManager.cardSize,
+                        ),
+                      ),
+                      Text(
+                        '${state.goodsList[index].count} шт. - ',
+                        style: VarManager.cardSize,
+                      ),
+                      Text('$money грн.', style: VarManager.cardSize),
+                    ],
+                  ),
+                ),
+              );
+            },
+            shrinkWrap: true,
+            itemCount: state.goodsList.length,
+            physics: const NeverScrollableScrollPhysics(),
+          ),
+          const SizedBox(height: 15),
+          AdminButtons(
+            text: 'Добавить позиции',
+            function: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreatePricePosition(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 15),
+          AdminButtons(
+            text: 'Заказать',
+            function: () {
+              writeOrder(
+                BlocProvider.of<OrderCountCubit>(context),
+              );
+            },
+          ),
+          const SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+
+  StreamBuilder<List<PriceModel>> initPage() {
+    return StreamBuilder<List<PriceModel>>(
+      stream: RepoManagerPage().getPrice(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final List<PriceModel> priceData = snapshot.data!;
+
+          final List<PriceModel> price =
+              priceData.where((element) => element.isActive == true).toList();
+          PriceEntity priceEntity = RepoManagerPage().setPriceEntity(price);
+
+          return getCityAddress(priceEntity);
+        } else if (snapshot.hasError) {
+          return const Center(
+            child: Text('Не удалось получить прайс.'),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  StreamBuilder<List<CityModel>> getCityAddress(PriceEntity priceEntity) {
+    return StreamBuilder<List<CityModel>>(
+      stream: RepoAdminGetPost().getCityAddress(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final List<CityModel> addressData = snapshot.data!;
+          return SingleChildScrollView(
+            child: BlocBuilder<OrderCountCubit, OrderCountState>(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AddressOrderInitPage(addressData: addressData),
+                    ),
+                    _textFieldRow(
+                      state.addressEntity.phone,
+                      'Телефон клиента *',
+                    ),
+                    _textFieldRow(
+                      state.addressEntity.name,
+                      'Контактное лицо',
+                    ),
+                    _textFieldRow(
+                      state.addressEntity.notes,
+                      'Заметки',
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Text('Расчет с водителем'),
+                          Checkbox(
+                            value: takeMoney,
+                            onChanged: (value) {
+                              setState(() {
+                                takeMoney = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    AdminButtons(
+                      text: 'Добавить позиции',
+                      function: () {
+                        BlocProvider.of<OrderCountCubit>(context)
+                            .getPriceEntity(
+                          priceEntity,
+                          addressData,
+                        );
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const CreatePricePosition(),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                  ],
+                );
+              },
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Center(
+            child: Text('Не удалось получить список адресов.'),
+          );
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
   }
 
