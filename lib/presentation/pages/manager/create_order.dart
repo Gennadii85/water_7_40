@@ -121,6 +121,10 @@ class _CreateOrderState extends State<CreateOrder> {
             'Контактное лицо',
           ),
           _textFieldRow(
+            state.addressEntity.time,
+            'Время доставки',
+          ),
+          _textFieldRow(
             state.addressEntity.notes,
             'Заметки',
           ),
@@ -264,6 +268,10 @@ class _CreateOrderState extends State<CreateOrder> {
                     _textFieldRow(
                       state.addressEntity.name,
                       'Контактное лицо',
+                    ),
+                    _textFieldRow(
+                      state.addressEntity.time,
+                      'Время доставки',
                     ),
                     _textFieldRow(
                       state.addressEntity.notes,

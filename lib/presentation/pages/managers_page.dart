@@ -62,7 +62,7 @@ class _ManagersPageState extends State<ManagersPage> {
                   children: [
                     const Text('Ожидают доставки'),
                     const SizedBox(height: 15),
-                    _noDelivered(noDeliveredList),
+                    _createdToday(noDeliveredList),
                     const SizedBox(height: 15),
                     const Text('За текущий день'),
                     const SizedBox(height: 15),
@@ -85,36 +85,22 @@ class _ManagersPageState extends State<ManagersPage> {
     );
   }
 
-  ListView _createdToday(List<OrderModel> createdList) {
+  ListView _createdToday(List<OrderModel> list) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: createdList.length,
+      itemCount: list.length,
       itemBuilder: (context, index) => OrderCard(
-        address: createdList[index].address,
-        summa: createdList[index].summa.toInt(),
-        phoneClient: createdList[index].phoneClient,
-        isDone: createdList[index].isDone,
-        takeMoney: createdList[index].takeMoney,
-        goodsList: createdList[index].goodsList,
-        notes: createdList[index].notes,
-      ),
-    );
-  }
-
-  ListView _noDelivered(List<OrderModel> noDeliveredList) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: noDeliveredList.length,
-      itemBuilder: (context, index) => OrderCard(
-        address: noDeliveredList[index].address,
-        summa: noDeliveredList[index].summa.toInt(),
-        phoneClient: noDeliveredList[index].phoneClient,
-        isDone: noDeliveredList[index].isDone,
-        takeMoney: noDeliveredList[index].takeMoney,
-        goodsList: noDeliveredList[index].goodsList,
-        notes: noDeliveredList[index].notes,
+        address: list[index].address,
+        summa: list[index].summa.toInt(),
+        phoneClient: list[index].phoneClient,
+        name: list[index].name ?? '',
+        isDone: list[index].isDone,
+        takeMoney: list[index].takeMoney,
+        time: list[index].time ?? '',
+        notes: list[index].notes,
+        managerProfit: list[index].managerProfit ?? 0,
+        goodsList: list[index].goodsList,
       ),
     );
   }

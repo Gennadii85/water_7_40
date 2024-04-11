@@ -111,6 +111,11 @@ class AdminPage extends StatelessWidget {
         notes: createdList[index].notes,
         payManager: createdList[index].managerProfit ?? 0,
         payCar: createdList[index].carProfit ?? 0,
+        createDate:
+            DateTime.fromMillisecondsSinceEpoch(createdList[index].created),
+        managerID: createdList[index].managerID!,
+        time: createdList[index].time ?? '',
+        name: createdList[index].name ?? '',
       ),
     );
   }

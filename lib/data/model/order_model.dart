@@ -18,6 +18,7 @@ class OrderModel {
   final String? notes;
   final String? name;
   final String? timeDelivery;
+  final String? time;
 
   OrderModel({
     this.docID,
@@ -38,6 +39,7 @@ class OrderModel {
     this.notes,
     this.name,
     this.timeDelivery,
+    this.time,
   });
 
   static OrderModel fromFirebase(Map<String, dynamic> json, String docID) =>
@@ -60,6 +62,7 @@ class OrderModel {
         notes: json['notes'],
         name: json['name'],
         timeDelivery: json['timeDelivery'],
+        time: json['time'],
       );
   Map<String, dynamic> toFirebase() => {
         'created': created,
@@ -79,5 +82,6 @@ class OrderModel {
         'notes': notes,
         'name': name,
         'timeDelivery': timeDelivery,
+        'time': time,
       };
 }

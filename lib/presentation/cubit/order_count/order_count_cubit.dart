@@ -36,6 +36,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
               phone: TextEditingController(),
               name: TextEditingController(),
               notes: TextEditingController(),
+              time: TextEditingController(),
             ),
           ),
         );
@@ -58,6 +59,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
           phone: TextEditingController(),
           name: TextEditingController(),
           notes: TextEditingController(),
+          time: TextEditingController(),
         ),
       ),
     );
@@ -186,82 +188,77 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     );
   }
 
-  // int managerProfit() {
-  //   int allProfit = 0;
-  //   List<int> all = [0];
-  //   int countIndex = 0;
+  PriceModel getPriceModel(String goodsName) {
+    List<PriceModel> list = [];
+    for (var element in state.priceEntity.categoriesList) {
+      list.addAll(element.priceModelList);
+    }
+    return list.where((element) => element.goodsName == goodsName).first;
+  }
 
-  //   for (var elem in prise) {
-  //     if (state.listCount[countIndex] != 0) {
-  //       if (elem.piecesPercentValueManager != null) {
-  //         int moneyPosition =
-  //             elem.goodsPrice.toInt() * state.listCount[countIndex];
-  //         all.add(moneyPosition * elem.piecesPercentValueManager! ~/ 100);
-  //       }
-  //       if (elem.piecesMoneyValueManager != null) {
-  //         int moneyPosition =
-  //             elem.piecesMoneyValueManager! * state.listCount[countIndex];
-  //         all.add(moneyPosition);
-  //       }
-  //       if (elem.existenceMoneyValueManager != null) {
-  //         int moneyPosition = elem.existenceMoneyValueManager!;
-  //         all.add(moneyPosition);
-  //       }
-  //       if (elem.managerPercent) {
-  //         if (state.percentManager == null) {
-  //           all.add(0);
-  //         } else {
-  //           int moneyPosition =
-  //               elem.goodsPrice.toInt() * state.listCount[countIndex];
-  //           all.add(moneyPosition * state.percentManager! ~/ 100);
-  //         }
-  //       } else {
-  //         all.add(0);
-  //       }
-  //     }
+  int managerProfit() {
+    int allProfit = 0;
+    List<int> all = [0];
 
-  //     countIndex++;
-  //   }
-  //   allProfit = all.reduce((value, element) => value + element).toInt();
-  //   return allProfit;
-  // }
+    for (var elem in state.goodsList) {
+      final PriceModel model = getPriceModel(elem.goodsName);
 
-  // int carProfit() {
-  //   int allProfit = 0;
-  //   List<int> all = [];
-  //   int countIndex = 0;
+      if (model.piecesPercentValueManager != null) {
+        int moneyPosition = elem.price.toInt() * elem.count;
+        all.add(moneyPosition * model.piecesPercentValueManager! ~/ 100);
+      }
+      if (model.piecesMoneyValueManager != null) {
+        int moneyPosition = model.piecesMoneyValueManager! * elem.count;
+        all.add(moneyPosition);
+      }
+      if (model.existenceMoneyValueManager != null) {
+        int moneyPosition = model.existenceMoneyValueManager!;
+        all.add(moneyPosition);
+      }
+      if (model.managerPercent) {
+        if (managersPercent == null) {
+          all.add(0);
+        } else {
+          int moneyPosition = elem.price.toInt() * elem.count;
+          all.add(moneyPosition * managersPercent! ~/ 100);
+        }
+      } else {
+        all.add(0);
+      }
+    }
+    allProfit = all.reduce((value, element) => value + element).toInt();
+    return allProfit;
+  }
 
-  //   for (var elem in prise) {
-  //     if (state.listCount[countIndex] != 0) {
-  //       if (elem.piecesPercentValueCar != null) {
-  //         int moneyPosition =
-  //             elem.goodsPrice.toInt() * state.listCount[countIndex];
-  //         all.add(moneyPosition * elem.piecesPercentValueCar! ~/ 100);
-  //       }
-  //       if (elem.piecesMoneyValueCar != null) {
-  //         int moneyPosition =
-  //             elem.piecesMoneyValueCar! * state.listCount[countIndex];
-  //         all.add(moneyPosition);
-  //       }
-  //       if (elem.existenceMoneyValueCar != null) {
-  //         int moneyPosition = elem.existenceMoneyValueCar!;
-  //         all.add(moneyPosition);
-  //       } else {
-  //         all.add(0);
-  //       }
-  //     }
+  int carProfit() {
+    int allProfit = 0;
+    List<int> all = [0];
 
-  //     countIndex++;
-  //   }
-  //   allProfit = all.reduce((value, element) => value + element).toInt();
-  //   return allProfit;
-  // }
+    for (var elem in state.goodsList) {
+      final PriceModel model = getPriceModel(elem.goodsName);
+
+      if (model.piecesPercentValueCar != null) {
+        int moneyPosition = elem.price.toInt() * elem.count;
+        all.add(moneyPosition * model.piecesPercentValueCar! ~/ 100);
+      }
+      if (model.piecesMoneyValueCar != null) {
+        int moneyPosition = model.piecesMoneyValueCar! * elem.count;
+        all.add(moneyPosition);
+      }
+      if (model.existenceMoneyValueCar != null) {
+        int moneyPosition = model.existenceMoneyValueCar!;
+        all.add(moneyPosition);
+      } else {
+        all.add(0);
+      }
+    }
+    allProfit = all.reduce((value, element) => value + element).toInt();
+    return allProfit;
+  }
 
   void writeOrder(
     String address,
-    // String phoneClient,
     bool takeMoney,
-    // String? notes,
     int? id,
   ) async {
     Map map = {};
@@ -269,7 +266,6 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     for (var element in goodsList) {
       map.addAll({element.goodsName: element.count});
     }
-
     int? manID;
     if (id == null) {
       manID = managerID;
@@ -282,15 +278,14 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       );
       //записать номер телефона в базу клиентов
     }
-
     final model = OrderModel(
       created: DateTime.now().millisecondsSinceEpoch,
       delivered: null,
       summa: state.allMoney,
       managerID: manID,
-      managerProfit: 0, // managerProfit(),
+      managerProfit: managerProfit(),
       carID: null,
-      carProfit: 0, // carProfit(),
+      carProfit: carProfit(),
       goodsList: map,
       address: address,
       phoneClient: state.addressEntity.phone.text,
@@ -300,12 +295,12 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       payMoneyCar: false,
       notes: state.addressEntity.notes.text,
       name: state.addressEntity.name.text,
+      time: state.addressEntity.time.text,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)
         .doc()
         .set(model.toFirebase());
-
     initState();
   }
 
@@ -352,7 +347,6 @@ class OrderCountCubit extends Cubit<OrderCountState> {
   //       .collection(VarManager.orders)
   //       .doc(docID)
   //       .delete();
-
   //   initState();
   // }
 }

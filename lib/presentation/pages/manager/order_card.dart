@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import '../../../core/var_manager.dart';
 
 class OrderCard extends StatelessWidget {
@@ -13,6 +11,9 @@ class OrderCard extends StatelessWidget {
     required this.isDone,
     required this.takeMoney,
     required this.goodsList,
+    required this.name,
+    required this.managerProfit,
+    required this.time,
   }) : super(key: key);
 
   final String address;
@@ -22,6 +23,9 @@ class OrderCard extends StatelessWidget {
   final bool isDone;
   final bool takeMoney;
   final Map goodsList;
+  final String name;
+  final int managerProfit;
+  final String time;
   @override
   Widget build(BuildContext context) {
     String take = '';
@@ -37,15 +41,22 @@ class OrderCard extends StatelessWidget {
           ExpansionTile(
             controlAffinity: ListTileControlAffinity.leading,
             title: RowEntity(value: address, name: 'Адрес:'),
-            subtitle: RowEntity(value: phoneClient, name: 'Телефон:'),
+            subtitle: RowEntity(
+              value: summa.toString(),
+              name: 'Сумма:',
+              grn: ' грн.',
+            ),
             children: [
+              RowEntity(value: phoneClient, name: 'Телефон:'),
+              RowEntity(value: name, name: 'Ф.И.О.:'),
+              RowEntity(value: take, name: 'Инкассация:'),
+              RowEntity(value: time, name: 'Время:'),
+              RowEntity(value: notes ?? '', name: 'Примечания:'),
               RowEntity(
-                value: summa.toString(),
-                name: 'Сумма:',
+                value: managerProfit.toString(),
+                name: 'Заработок:',
                 grn: ' грн.',
               ),
-              RowEntity(value: take, name: 'Инкассация:'),
-              RowEntity(value: notes ?? '', name: 'Примечания:'),
               _listGoods(),
             ],
           ),

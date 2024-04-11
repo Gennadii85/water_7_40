@@ -12,8 +12,10 @@ class OrderCardAdmin extends StatelessWidget {
     Key? key,
     required this.orderModel,
     required this.carList,
+    required this.createDate,
     required this.docID,
     this.carID,
+    required this.managerID,
     required this.address,
     this.notes,
     required this.summa,
@@ -23,11 +25,15 @@ class OrderCardAdmin extends StatelessWidget {
     required this.goodsList,
     required this.payManager,
     required this.payCar,
+    required this.time,
+    required this.name,
   }) : super(key: key);
   final OrderModel orderModel;
   final List<UsersRegistrationModel> carList;
+  final DateTime createDate;
   final String docID;
   final int? carID;
+  final int managerID;
   final String address;
   final String? notes;
   final int summa;
@@ -37,6 +43,8 @@ class OrderCardAdmin extends StatelessWidget {
   final Map goodsList;
   final int payManager;
   final int payCar;
+  final String time;
+  final String name;
   @override
   Widget build(BuildContext context) {
     String take = '';
@@ -89,8 +97,9 @@ class OrderCardAdmin extends StatelessWidget {
             ),
             children: [
               RowEntity(
-                value: phoneClient,
-                name: 'Телефон:',
+                value:
+                    '${createDate.day} - ${createDate.month} - ${createDate.year}  в ${createDate.hour} : ${createDate.minute}',
+                name: 'Создан:',
               ),
               RowEntity(
                 value: summa.toString(),
@@ -98,8 +107,12 @@ class OrderCardAdmin extends StatelessWidget {
                 grn: ' грн.',
               ),
               RowEntity(
-                value: take,
-                name: 'Инкассация:',
+                value: time,
+                name: 'Время:',
+              ),
+              RowEntity(
+                value: managerID.toString(),
+                name: 'Менеджер:',
               ),
               RowEntity(
                 value: payManager.toString(),
@@ -114,6 +127,18 @@ class OrderCardAdmin extends StatelessWidget {
               RowEntity(
                 value: notes ?? '',
                 name: 'Примечания:',
+              ),
+              RowEntity(
+                value: phoneClient,
+                name: 'Телефон:',
+              ),
+              RowEntity(
+                value: name,
+                name: 'Ф.И.О.:',
+              ),
+              RowEntity(
+                value: take,
+                name: 'Инкассация:',
               ),
               _listGoods(),
               AdminButtons(

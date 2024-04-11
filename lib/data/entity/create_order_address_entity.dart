@@ -8,14 +8,16 @@ class CreateOrderAddressEntity {
   TextEditingController phone;
   TextEditingController city;
   TextEditingController name;
+  TextEditingController time;
   TextEditingController notes;
   CreateOrderAddressEntity({
-    required this.city,
     required this.street,
     required this.house,
     required this.apartment,
     required this.phone,
+    required this.city,
     required this.name,
+    required this.time,
     required this.notes,
   });
 }
