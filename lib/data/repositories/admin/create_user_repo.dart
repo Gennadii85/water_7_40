@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import '../../../presentation/pages/widgets/massage.dart';
 
 class RepoCreateUser {
@@ -24,22 +25,70 @@ class RepoCreateUser {
     }
   }
 
-  Future createCar(context, String name, String password, String carID) async {
-    if (carID.isEmpty) {
+  Future createCar(
+    context,
+    String nicknameControl,
+    String nameControl,
+    String passwordControl,
+    String carIDControl,
+    String phoneControl,
+    String maxControl,
+    String notesControl,
+  ) async {
+    if (carIDControl.isEmpty ||
+        nameControl.isEmpty ||
+        passwordControl.isEmpty) {
+      Navigator.of(context).pop();
+      Massage().massage(context, 'Заполните нужные поля');
       return;
     }
     late int id;
-    id = int.tryParse(carID) ?? 1;
+    if (int.tryParse(carIDControl) == null) {
+      Massage().massage(context, 'ID - только цифры !');
+      return;
+    }
+    id = int.tryParse(carIDControl)!;
     final snap = await db.collection('cars').where('id', isEqualTo: id).get();
     if (snap.docs.map((e) => e['id']).contains(id)) {
       Massage().massage(context, 'Такой ID уже существует');
       return;
     }
-    if (name.isNotEmpty && password.isNotEmpty) {
-      db.collection('cars').doc().set(
-        {'name': name, 'password': password, 'id': id},
-      );
+    db.collection('cars').doc().set(
+      {
+        'nickname': nicknameControl,
+        'name': nameControl,
+        'password': passwordControl,
+        'id': id,
+        'phone': phoneControl,
+        'max': maxControl,
+        'notes': notesControl,
+      },
+    );
+  }
+
+  Future redactCar(
+    context,
+    String nicknameControl,
+    String passwordControl,
+    String phoneControl,
+    String maxControl,
+    String notesControl,
+    String docID,
+  ) async {
+    if (passwordControl.isEmpty) {
+      Navigator.of(context).pop();
+      Massage().massage(context, 'Заполните нужные поля');
+      return;
     }
+    db.collection('cars').doc(docID).update(
+      {
+        'nickname': nicknameControl,
+        'password': passwordControl,
+        'phone': phoneControl,
+        'max': maxControl,
+        'notes': notesControl,
+      },
+    );
   }
 
   Future deleteCar(String docID) async {

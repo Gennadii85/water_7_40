@@ -47,6 +47,105 @@ class _AddManagersState extends State<AddManagers> {
         appBar: AppBar(
           title: const Text('Managers list'),
           centerTitle: true,
+          actions: [
+            AdminButtons(
+              text: 'Добавить',
+              function: () => showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: nameControl,
+                          decoration: const InputDecoration(
+                            labelText: 'Логин для входа *',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: passControl,
+                          decoration: const InputDecoration(
+                            labelText: 'Пароль для входа *',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: phoneControl,
+                          decoration: const InputDecoration(
+                            labelText: 'Телефон',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: idControl,
+                          decoration: const InputDecoration(
+                            labelText: 'ID * (только цифры)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextField(
+                          controller: percentControl,
+                          decoration: const InputDecoration(
+                            labelText: 'Процент (только целые числа)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    AdminButtons(
+                      text: 'Создать',
+                      function: () {
+                        RepoCreateUser().createManager(
+                          context,
+                          nameControl.text,
+                          passControl.text,
+                          phoneControl.text,
+                          idControl.text,
+                          percentControl.text,
+                        );
+                        clearTextController();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    AdminButtons(
+                      text: 'Отмена',
+                      function: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         drawer: const AdminDrawer(),
         body: StreamBuilder<QuerySnapshot>(
@@ -89,104 +188,6 @@ class _AddManagersState extends State<AddManagers> {
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    AdminButtons(
-                      text: 'Добавить',
-                      function: () => showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          content: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                TextField(
-                                  controller: nameControl,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Логин для входа *',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                TextField(
-                                  controller: passControl,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Пароль для входа *',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                TextField(
-                                  controller: phoneControl,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Телефон',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                TextField(
-                                  controller: idControl,
-                                  decoration: const InputDecoration(
-                                    labelText: 'ID * (только цифры)',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 15),
-                                TextField(
-                                  controller: percentControl,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Процент (только целые числа)',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                              ],
-                            ),
-                          ),
-                          actions: [
-                            AdminButtons(
-                              text: 'Создать',
-                              function: () {
-                                RepoCreateUser().createManager(
-                                  context,
-                                  nameControl.text,
-                                  passControl.text,
-                                  phoneControl.text,
-                                  idControl.text,
-                                  percentControl.text,
-                                );
-                                clearTextController();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            AdminButtons(
-                              text: 'Отмена',
-                              function: () => Navigator.of(context).pop(),
-                            ),
-                          ],
                         ),
                       ),
                     ),
