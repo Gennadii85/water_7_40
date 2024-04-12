@@ -39,7 +39,7 @@ class RepoCreateUser {
         nameControl.isEmpty ||
         passwordControl.isEmpty) {
       Navigator.of(context).pop();
-      Massage().massage(context, 'Заполните нужные поля');
+      // Massage().massage(context, 'Заполните нужные поля');
       return;
     }
     late int id;
@@ -50,7 +50,7 @@ class RepoCreateUser {
     id = int.tryParse(carIDControl)!;
     final snap = await db.collection('cars').where('id', isEqualTo: id).get();
     if (snap.docs.map((e) => e['id']).contains(id)) {
-      Massage().massage(context, 'Такой ID уже существует');
+      // Massage().massage(context, 'Такой ID уже существует');
       return;
     }
     db.collection('cars').doc().set(
@@ -77,7 +77,7 @@ class RepoCreateUser {
   ) async {
     if (passwordControl.isEmpty) {
       Navigator.of(context).pop();
-      Massage().massage(context, 'Заполните нужные поля');
+      // Massage().massage(context, 'Заполните нужные поля');
       return;
     }
     db.collection('cars').doc(docID).update(
@@ -97,44 +97,87 @@ class RepoCreateUser {
 
   Future createManager(
     context,
-    String name,
-    String password,
-    String phone,
+    String nicknameControl,
+    String nameControl,
+    String passwordControl,
     String managerID,
-    String percent,
+    String phoneControl,
+    String percentControl,
+    String notesControl,
   ) async {
-    late int id;
-    late int? percentManager;
-    if (managerID.isEmpty) {
+    if (managerID.isEmpty || nameControl.isEmpty || passwordControl.isEmpty) {
+      Navigator.of(context).pop();
+      // Massage().massage(context, 'Заполните нужные поля');
       return;
     }
-    if (percent.isEmpty) {
+    late int id;
+    if (int.tryParse(managerID) == null) {
+      // Massage().massage(context, 'ID - только цифры !');
+      return;
+    }
+    late int? percentManager;
+    if (percentControl.isEmpty) {
       percentManager = null;
     } else {
-      if (int.tryParse(percent) != null) {
-        percentManager = int.tryParse(percent);
+      if (int.tryParse(percentControl) != null) {
+        percentManager = int.tryParse(percentControl);
       } else {
         return;
       }
     }
-    id = int.tryParse(managerID) ?? 1;
+    id = int.tryParse(managerID)!;
     final snap =
         await db.collection('managers').where('id', isEqualTo: id).get();
     if (snap.docs.map((e) => e['id']).contains(id)) {
-      Massage().massage(context, 'Такой ID уже существует');
+      // Massage().massage(context, 'Такой ID уже существует');
       return;
     }
-    if (name.isNotEmpty && password.isNotEmpty) {
-      db.collection('managers').doc().set(
-        {
-          'name': name,
-          'password': password,
-          'phone': phone,
-          'id': id,
-          'percent': percentManager,
-        },
-      );
+    db.collection('managers').doc().set(
+      {
+        'nickname': nicknameControl,
+        'name': nameControl,
+        'password': passwordControl,
+        'id': id,
+        'phone': phoneControl,
+        'percent': percentManager,
+        'notes': notesControl,
+      },
+    );
+  }
+
+  Future redactManager(
+    context,
+    String nicknameControl,
+    String passwordControl,
+    String phoneControl,
+    String percentControl,
+    String notesControl,
+    String docID,
+  ) async {
+    if (passwordControl.isEmpty) {
+      Navigator.of(context).pop();
+      // Massage().massage(context, 'Заполните нужные поля');
+      return;
     }
+    late int? percentManager;
+    if (percentControl.isEmpty) {
+      percentManager = null;
+    } else {
+      if (int.tryParse(percentControl) != null) {
+        percentManager = int.tryParse(percentControl);
+      } else {
+        return;
+      }
+    }
+    db.collection('managers').doc(docID).update(
+      {
+        'nickname': nicknameControl,
+        'password': passwordControl,
+        'phone': phoneControl,
+        'percent': percentManager,
+        'notes': notesControl,
+      },
+    );
   }
 
   Future deleteManager(String docID) async {

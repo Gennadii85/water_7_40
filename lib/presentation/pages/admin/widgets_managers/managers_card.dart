@@ -1,9 +1,10 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:water_7_40/presentation/cubit/report_manager/report_manager_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import '../../../../core/var_admin.dart';
+import '../../../../core/var_manager.dart';
+import '../../../../data/repositories/admin/create_user_repo.dart';
 import '../report_page.dart';
 
 class ManagersCard extends StatelessWidget {
@@ -14,6 +15,8 @@ class ManagersCard extends StatelessWidget {
   final String managerID;
   final String percent;
   final Function function;
+  final String nickname;
+  final String notes;
   const ManagersCard({
     Key? key,
     required this.name,
@@ -23,6 +26,8 @@ class ManagersCard extends StatelessWidget {
     required this.managerID,
     required this.percent,
     required this.function,
+    required this.nickname,
+    required this.notes,
   }) : super(key: key);
 
   @override
@@ -30,80 +35,168 @@ class ManagersCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.all(8),
       elevation: 5,
-      child: Column(
+      child: ExpansionTile(
+        title: RowEntity(value: nickname, name: 'Имя:'),
+        subtitle: RowEntity(value: managerID, name: 'ID:'),
+        trailing: IconButton(
+          onPressed: () => function(docID),
+          icon: const Icon(
+            Icons.delete_forever_outlined,
+            color: Colors.red,
+          ),
+        ),
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Логин:    $name',
-                        style: VarAdmin.adminCardText,
+          RowEntity(value: name, name: 'Логин:'),
+          RowEntity(value: password, name: 'Пароль:'),
+          RowEntity(value: phone, name: 'Телефон:'),
+          RowEntity(value: percent, name: 'Процент:'),
+          RowEntity(value: notes, name: 'Заметки:'),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AdminButtons(
+              text: 'Редактировать',
+              function: () => showDialog(
+                context: context,
+                builder: (context) {
+                  TextEditingController passwordControl =
+                      TextEditingController(text: password);
+                  TextEditingController percentControl =
+                      TextEditingController(text: percent);
+                  TextEditingController nicknameControl =
+                      TextEditingController(text: nickname);
+                  TextEditingController phoneControl =
+                      TextEditingController(text: phone);
+                  TextEditingController notesControl =
+                      TextEditingController(text: notes);
+
+                  return AlertDialog(
+                    content: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          textField(passwordControl, 'Пароль'),
+                          textField(percentControl, 'Процент'),
+                          textField(nicknameControl, 'Имя'),
+                          textField(phoneControl, 'Телефон'),
+                          textField(notesControl, 'Заметки'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              AdminButtons(
+                                text: 'Сохранить',
+                                function: () {
+                                  RepoCreateUser().redactManager(
+                                    context,
+                                    nicknameControl.text,
+                                    passwordControl.text,
+                                    phoneControl.text,
+                                    percentControl.text,
+                                    notesControl.text,
+                                    docID,
+                                  );
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              AdminButtons(
+                                text: 'Отменить',
+                                function: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      Text(
-                        ' Пароль:    $password',
-                        style: VarAdmin.adminCardText,
-                        softWrap: true,
-                        overflow: TextOverflow.clip,
-                        maxLines: 5,
-                      ),
-                      Text(
-                        ' Телефон:    $phone',
-                        style: VarAdmin.adminCardText,
-                        softWrap: true,
-                        overflow: TextOverflow.clip,
-                        maxLines: 5,
-                      ),
-                      Text(
-                        ' ID:    $managerID',
-                        style: VarAdmin.adminCardText,
-                        softWrap: true,
-                        overflow: TextOverflow.clip,
-                        maxLines: 5,
-                      ),
-                      Text(
-                        ' %:    $percent',
-                        style: VarAdmin.adminCardText,
-                        softWrap: true,
-                        overflow: TextOverflow.clip,
-                        maxLines: 5,
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
-              IconButton(
-                onPressed: () => function(docID),
-                icon: const Icon(
-                  Icons.delete_forever_outlined,
-                  color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-          ExpansionTile(
-            title: const Text(
-              'Отчеты',
-              style: TextStyle(color: Colors.blue),
             ),
-            tilePadding: const EdgeInsets.only(left: 50),
-            children: [
-              AdminButtons(
-                text: 'Зарплата за период',
-                function: () => _getMoney(context, int.tryParse(managerID)),
-              ),
-            ],
           ),
+          // AdminButtons(
+          //   text: 'Зарплата за период',
+          //   function: () => _getMoney(context, int.tryParse(managerID)),
+          // ),
         ],
       ),
     );
+
+    // Card(
+    //   margin: const EdgeInsets.all(8),
+    //   elevation: 5,
+    //   child: Column(
+    //     children: [
+    //       Row(
+    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //         children: [
+    //           Expanded(
+    //             flex: 7,
+    //             child: Padding(
+    //               padding: const EdgeInsets.only(left: 15),
+    //               child: Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 mainAxisSize: MainAxisSize.min,
+    //                 children: [
+    //                   Text(
+    //                     'Логин:    $name',
+    //                     style: VarAdmin.adminCardText,
+    //                   ),
+    //                   Text(
+    //                     ' Пароль:    $password',
+    //                     style: VarAdmin.adminCardText,
+    //                     softWrap: true,
+    //                     overflow: TextOverflow.clip,
+    //                     maxLines: 5,
+    //                   ),
+    //                   Text(
+    //                     ' Телефон:    $phone',
+    //                     style: VarAdmin.adminCardText,
+    //                     softWrap: true,
+    //                     overflow: TextOverflow.clip,
+    //                     maxLines: 5,
+    //                   ),
+    //                   Text(
+    //                     ' ID:    $managerID',
+    //                     style: VarAdmin.adminCardText,
+    //                     softWrap: true,
+    //                     overflow: TextOverflow.clip,
+    //                     maxLines: 5,
+    //                   ),
+    //                   Text(
+    //                     ' %:    $percent',
+    //                     style: VarAdmin.adminCardText,
+    //                     softWrap: true,
+    //                     overflow: TextOverflow.clip,
+    //                     maxLines: 5,
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //           IconButton(
+    //             onPressed: () => function(docID),
+    //             icon: const Icon(
+    //               Icons.delete_forever_outlined,
+    //               color: Colors.red,
+    //             ),
+    //           ),
+    //         ],
+    //       ),
+    //       ExpansionTile(
+    //         title: const Text(
+    //           'Отчеты',
+    //           style: TextStyle(color: Colors.blue),
+    //         ),
+    //         tilePadding: const EdgeInsets.only(left: 50),
+    //         children: [
+    //           AdminButtons(
+    //             text: 'Зарплата за период',
+    //             function: () => _getMoney(context, int.tryParse(managerID)),
+    //           ),
+    //         ],
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   dynamic _getMoney(context, int? id) {
@@ -229,6 +322,72 @@ class ManagersCard extends StatelessWidget {
       firstDate: DateTime(2024),
       lastDate: DateTime.now(),
       initialEntryMode: DatePickerEntryMode.calendarOnly,
+    );
+  }
+}
+
+Padding textField(
+  TextEditingController controller,
+  String labelText,
+) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+      ),
+      minLines: 1,
+      maxLines: 50,
+    ),
+  );
+}
+
+class RowEntity extends StatelessWidget {
+  const RowEntity({
+    Key? key,
+    required this.value,
+    required this.name,
+  }) : super(key: key);
+
+  final String value;
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              name,
+              style: VarManager.cardSize,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 5,
+              softWrap: true,
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Text(
+                value,
+                style: VarManager.cardOrderStyle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 50,
+                softWrap: true,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

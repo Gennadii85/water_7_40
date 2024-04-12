@@ -15,28 +15,34 @@ class AddManagers extends StatefulWidget {
 class _AddManagersState extends State<AddManagers> {
   final db = FirebaseFirestore.instance;
 
-  final TextEditingController passControl = TextEditingController();
+  final TextEditingController passwordControl = TextEditingController();
   final TextEditingController nameControl = TextEditingController();
   final TextEditingController idControl = TextEditingController();
   final TextEditingController percentControl = TextEditingController();
   final TextEditingController phoneControl = TextEditingController();
+  final TextEditingController nicknameControl = TextEditingController();
+  final TextEditingController notesControl = TextEditingController();
 
   @override
   void dispose() {
-    passControl.dispose();
+    passwordControl.dispose();
     nameControl.dispose();
     idControl.dispose();
     percentControl.dispose();
     phoneControl.dispose();
+    nicknameControl.dispose();
+    notesControl.dispose();
     super.dispose();
   }
 
   void clearTextController() {
-    passControl.clear();
+    passwordControl.clear();
     nameControl.clear();
     idControl.clear();
     percentControl.clear();
     phoneControl.clear();
+    nicknameControl.clear();
+    notesControl.clear();
   }
 
   @override
@@ -50,100 +56,7 @@ class _AddManagersState extends State<AddManagers> {
           actions: [
             AdminButtons(
               text: 'Добавить',
-              function: () => showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 20),
-                        TextField(
-                          controller: nameControl,
-                          decoration: const InputDecoration(
-                            labelText: 'Логин для входа *',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        TextField(
-                          controller: passControl,
-                          decoration: const InputDecoration(
-                            labelText: 'Пароль для входа *',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        TextField(
-                          controller: phoneControl,
-                          decoration: const InputDecoration(
-                            labelText: 'Телефон',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        TextField(
-                          controller: idControl,
-                          decoration: const InputDecoration(
-                            labelText: 'ID * (только цифры)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        TextField(
-                          controller: percentControl,
-                          decoration: const InputDecoration(
-                            labelText: 'Процент (только целые числа)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    AdminButtons(
-                      text: 'Создать',
-                      function: () {
-                        RepoCreateUser().createManager(
-                          context,
-                          nameControl.text,
-                          passControl.text,
-                          phoneControl.text,
-                          idControl.text,
-                          percentControl.text,
-                        );
-                        clearTextController();
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    AdminButtons(
-                      text: 'Отмена',
-                      function: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-              ),
+              function: () => createUser(context),
             ),
           ],
         ),
@@ -168,27 +81,9 @@ class _AddManagersState extends State<AddManagers> {
                         managerID: docs[index]['id'].toString(),
                         percent: docs[index]['percent'].toString(),
                         docID: docs[index].id,
-                        function: (docID) => showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            content: const Text('Удалить ?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Отмена'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  RepoCreateUser().deleteManager(docID);
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          ),
-                        ),
+                        function: (docID) => deleteUser(context, docID),
+                        nickname: docs[index]['nickname'],
+                        notes: docs[index]['notes'],
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -205,6 +100,83 @@ class _AddManagersState extends State<AddManagers> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Future<dynamic> createUser(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 50),
+              textField(nicknameControl, 'Имя (видно только вам)'),
+              const SizedBox(height: 30),
+              textField(nameControl, 'Логин для входа *'),
+              const SizedBox(height: 30),
+              textField(passwordControl, 'Пароль для входа *'),
+              const SizedBox(height: 30),
+              textField(idControl, 'ID * (только цифры)'),
+              const SizedBox(height: 30),
+              textField(phoneControl, 'Телефон'),
+              const SizedBox(height: 30),
+              textField(percentControl, 'Процент'),
+              const SizedBox(height: 30),
+              textField(notesControl, 'Заметки'),
+              const SizedBox(height: 50),
+            ],
+          ),
+        ),
+        actions: [
+          AdminButtons(
+            text: 'Создать',
+            function: () {
+              RepoCreateUser().createManager(
+                context,
+                nicknameControl.text,
+                nameControl.text,
+                passwordControl.text,
+                idControl.text,
+                phoneControl.text,
+                percentControl.text,
+                notesControl.text,
+              );
+              clearTextController();
+              Navigator.of(context).pop();
+            },
+          ),
+          AdminButtons(
+            text: 'Отмена',
+            function: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<dynamic> deleteUser(BuildContext context, docID) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('Удалить ?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () {
+              RepoCreateUser().deleteManager(docID);
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
