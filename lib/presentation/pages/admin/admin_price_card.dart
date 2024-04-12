@@ -76,6 +76,42 @@ class AdminPriceCard extends StatelessWidget {
                   },
                   child: const Text('Удалить'),
                 ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor:
+                        isActive ? Colors.blue[200] : Colors.grey[200],
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        content: Text(
+                          isActive ? 'Убрать из прайса ?' : 'Вернуть в прайс ?',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Отмена'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              isActive
+                                  ? RepoAdminPage().deActivatedPrice(id)
+                                  : RepoAdminPage().activatedPrice(id);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  child: Text(
+                    isActive ? 'Убрать из прайса ?' : 'Вернуть в прайс ?',
+                  ),
+                ),
               ],
             ),
           ),

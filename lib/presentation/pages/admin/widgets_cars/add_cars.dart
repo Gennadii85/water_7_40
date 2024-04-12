@@ -145,12 +145,15 @@ class _AddCarsState extends State<AddCars> {
                 notesControl.text,
               );
               clearTextController();
-              Navigator.of(context).pop();
             },
           ),
           AdminButtons(
             text: 'Отмена',
-            function: () => Navigator.of(context).pop(),
+            function: () {
+              clearTextController();
+              Navigator.of(context).pop();
+              return;
+            },
           ),
         ],
       ),
@@ -171,6 +174,8 @@ class _AddCarsState extends State<AddCars> {
           ),
         ),
       ),
+      minLines: 1,
+      maxLines: 50,
     );
   }
 

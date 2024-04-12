@@ -10,7 +10,7 @@ class CarsCard extends StatelessWidget {
   final String carID;
   final Function function;
   final String max;
-  final String nickname;
+  final String? nickname;
   final String phone;
   final String notes;
   const CarsCard({
@@ -32,7 +32,7 @@ class CarsCard extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       elevation: 5,
       child: ExpansionTile(
-        title: RowEntity(value: nickname, name: 'Имя:'),
+        title: RowEntity(value: nickname ?? '', name: 'Имя:'),
         subtitle: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -111,7 +111,6 @@ class CarsCard extends StatelessWidget {
                                     notesControl.text,
                                     docID,
                                   );
-                                  Navigator.of(context).pop();
                                 },
                               ),
                               AdminButtons(

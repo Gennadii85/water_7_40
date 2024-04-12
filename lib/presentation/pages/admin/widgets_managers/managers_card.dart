@@ -93,7 +93,6 @@ class ManagersCard extends StatelessWidget {
                                     notesControl.text,
                                     docID,
                                   );
-                                  Navigator.of(context).pop();
                                 },
                               ),
                               AdminButtons(

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../../presentation/pages/widgets/massage.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 
 class RepoCreateUser {
   final db = FirebaseFirestore.instance;
@@ -38,24 +38,23 @@ class RepoCreateUser {
     if (carIDControl.isEmpty ||
         nameControl.isEmpty ||
         passwordControl.isEmpty) {
-      Navigator.of(context).pop();
-      // Massage().massage(context, 'Заполните нужные поля');
+      massage(context, 'Заполните обязательные поля');
       return;
     }
     late int id;
     if (int.tryParse(carIDControl) == null) {
-      Massage().massage(context, 'ID - только цифры !');
+      massage(context, 'ID - только цифры !');
       return;
     }
     id = int.tryParse(carIDControl)!;
     final snap = await db.collection('cars').where('id', isEqualTo: id).get();
     if (snap.docs.map((e) => e['id']).contains(id)) {
-      // Massage().massage(context, 'Такой ID уже существует');
+      massage(context, 'Такой ID уже существует');
       return;
     }
     db.collection('cars').doc().set(
       {
-        'nickname': nicknameControl,
+        'nickname': nicknameControl.isEmpty ? null : nicknameControl,
         'name': nameControl,
         'password': passwordControl,
         'id': id,
@@ -64,6 +63,7 @@ class RepoCreateUser {
         'notes': notesControl,
       },
     );
+    Navigator.of(context).pop();
   }
 
   Future redactCar(
@@ -76,8 +76,7 @@ class RepoCreateUser {
     String docID,
   ) async {
     if (passwordControl.isEmpty) {
-      Navigator.of(context).pop();
-      // Massage().massage(context, 'Заполните нужные поля');
+      massage(context, 'Заполните обязательные поля');
       return;
     }
     db.collection('cars').doc(docID).update(
@@ -89,6 +88,7 @@ class RepoCreateUser {
         'notes': notesControl,
       },
     );
+    Navigator.of(context).pop();
   }
 
   Future deleteCar(String docID) async {
@@ -106,13 +106,12 @@ class RepoCreateUser {
     String notesControl,
   ) async {
     if (managerID.isEmpty || nameControl.isEmpty || passwordControl.isEmpty) {
-      Navigator.of(context).pop();
-      // Massage().massage(context, 'Заполните нужные поля');
+      massage(context, 'Заполните обязательные поля');
       return;
     }
     late int id;
     if (int.tryParse(managerID) == null) {
-      // Massage().massage(context, 'ID - только цифры !');
+      massage(context, 'ID - только цифры !');
       return;
     }
     late int? percentManager;
@@ -129,7 +128,7 @@ class RepoCreateUser {
     final snap =
         await db.collection('managers').where('id', isEqualTo: id).get();
     if (snap.docs.map((e) => e['id']).contains(id)) {
-      // Massage().massage(context, 'Такой ID уже существует');
+      massage(context, 'Такой ID уже существует');
       return;
     }
     db.collection('managers').doc().set(
@@ -143,6 +142,7 @@ class RepoCreateUser {
         'notes': notesControl,
       },
     );
+    Navigator.of(context).pop();
   }
 
   Future redactManager(
@@ -155,8 +155,7 @@ class RepoCreateUser {
     String docID,
   ) async {
     if (passwordControl.isEmpty) {
-      Navigator.of(context).pop();
-      // Massage().massage(context, 'Заполните нужные поля');
+      massage(context, 'Заполните обязательные поля');
       return;
     }
     late int? percentManager;
@@ -178,9 +177,25 @@ class RepoCreateUser {
         'notes': notesControl,
       },
     );
+    Navigator.of(context).pop();
   }
 
   Future deleteManager(String docID) async {
     db.collection('managers').doc(docID).delete();
+  }
+
+  Future massage(BuildContext context, String massage) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(massage),
+        actions: [
+          AdminButtons(
+            text: 'OK',
+            function: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -24,6 +24,14 @@ class RepoAdminPage {
     db.collection('price').doc(id).delete();
   }
 
+  dynamic activatedPrice(String docID) {
+    db.collection('price').doc(docID).update({'isActive': true});
+  }
+
+  dynamic deActivatedPrice(String docID) {
+    db.collection('price').doc(docID).update({'isActive': false});
+  }
+
   dynamic writeOrder(
     context,
     String goodsNameControl,

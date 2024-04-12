@@ -145,12 +145,14 @@ class _AddManagersState extends State<AddManagers> {
                 notesControl.text,
               );
               clearTextController();
-              Navigator.of(context).pop();
             },
           ),
           AdminButtons(
             text: 'Отмена',
-            function: () => Navigator.of(context).pop(),
+            function: () {
+              clearTextController();
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),
@@ -177,6 +179,28 @@ class _AddManagersState extends State<AddManagers> {
             child: const Text('OK'),
           ),
         ],
+      ),
+    );
+  }
+
+  Padding textField(
+    TextEditingController controller,
+    String labelText,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
+        ),
+        minLines: 1,
+        maxLines: 50,
       ),
     );
   }

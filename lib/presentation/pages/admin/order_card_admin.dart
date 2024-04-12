@@ -53,6 +53,7 @@ class OrderCardAdmin extends StatelessWidget {
     } else {
       take = 'У менеджера';
     }
+
     return Card(
       elevation: 3,
       child: Column(
@@ -64,7 +65,13 @@ class OrderCardAdmin extends StatelessWidget {
               name: 'Адрес:',
             ),
             subtitle: RowEntity(
-              value: carID == null ? 'не назначен' : carID.toString(),
+              value: carID == null
+                  ? 'не назначен'
+                  : carList
+                          .where((element) => element.id == carID)
+                          .first
+                          .nickname ??
+                      carID.toString(),
               name: 'Водитель',
             ),
             trailing: IconButton(
@@ -82,9 +89,22 @@ class OrderCardAdmin extends StatelessWidget {
                                     .saveCarIDtoOrders(elem.id!, docID);
                                 Navigator.of(context).pop();
                               },
-                              child: Text(
-                                '${elem.name}   id:${elem.id}',
-                                style: const TextStyle(fontSize: 22),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      elem.nickname ?? elem.id.toString(),
+                                      style: const TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      'id:${elem.id}',
+                                      style: const TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           )
