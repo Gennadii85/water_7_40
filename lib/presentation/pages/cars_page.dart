@@ -24,7 +24,7 @@ class CarsPage extends StatelessWidget {
         ),
         drawer: const ManagersDrawer(),
         body: StreamBuilder<List<OrderModel>>(
-          stream: RepoCarPage().getTodayOrders(),
+          stream: RepoCarPage().getTodayOrders(carsID),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final orders = snapshot.data!;

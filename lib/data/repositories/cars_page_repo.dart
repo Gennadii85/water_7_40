@@ -8,11 +8,11 @@ class RepoCarPage {
   final int lastFifeDay = DateTime.now().millisecondsSinceEpoch -
       ((DateTime.now().hour * 3600000) - 24 * 3600000 * 4);
 
-  Stream<List<OrderModel>> getTodayOrders() {
+  Stream<List<OrderModel>> getTodayOrders(int carID) {
     return db
         .collection('orders')
         .where('created', isLessThan: lastFifeDay)
-        .where('carID', isEqualTo: 4)
+        .where('carID', isEqualTo: carID)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
