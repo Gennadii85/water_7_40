@@ -43,13 +43,3 @@ class OrderCountValueState extends OrderCountState {
     required super.addressEntity,
   });
 }
-
-// class OrderCountUpdateInitState extends OrderCountState {
-//   OrderCountUpdateInitState({
-//     required super.allMoney,
-//     required super.managerMoney,
-//     required super.modelList,
-//     // required super.priceModelList,
-//     required super.percentManager,
-//   });
-// }

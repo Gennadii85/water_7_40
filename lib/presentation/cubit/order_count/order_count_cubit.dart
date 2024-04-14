@@ -304,49 +304,100 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     initState();
   }
 
-  // void updateOrder(
-  //   String docID,
-  //   String address,
-  //   String phoneClient,
-  //   bool takeMoney,
-  //   String notes,
-  //   int manID,
-  //   int managerProfit,
-  //   int carProfit,
-  // ) {
-  //   Map map = {};
-  //   int countIndex = 0;
-  //   for (var elem in state.listCount) {
-  //     if (elem > 0) {
-  //       map.addAll({prise[countIndex].goodsName: state.listCount[countIndex]});
-  //     }
-  //     countIndex++;
-  //   }
-  //   final model = OrderModel(
-  //     created: DateTime.now().millisecondsSinceEpoch,
-  //     delivered: null,
-  //     summa: state.allMoney,
-  //     managerID: manID,
-  //     managerProfit: managerProfit,
-  //     carID: null,
-  //     carProfit: carProfit,
-  //     goodsList: map,
-  //     address: address,
-  //     phoneClient: phoneClient,
-  //     isDone: false,
-  //     takeMoney: takeMoney,
-  //     payMoneyManager: false,
-  //     payMoneyCar: false,
-  //     notes: notes,
-  //   );
-  //   FirebaseFirestore.instance
-  //       .collection(VarManager.orders)
-  //       .doc()
-  //       .set(model.toFirebase());
-  //   FirebaseFirestore.instance
-  //       .collection(VarManager.orders)
-  //       .doc(docID)
-  //       .delete();
-  //   initState();
-  // }
+  void setUpdateGoodsList(Map data) {
+    List<CreateOrderGoodsEntity> list = data.entries
+        .map(
+          (e) => CreateOrderGoodsEntity(
+            goodsName: e.key,
+            count: e.value,
+            price: 0,
+          ),
+        )
+        .toList();
+    for (var elementList in list) {
+      int indexCategoriesList = 0;
+      for (var element in state.priceEntity.categoriesList) {
+        int indexPriceModelList = 0;
+        for (var elem in element.priceModelList) {
+          if (elem.goodsName == elementList.goodsName) {
+            state.priceEntity.categoriesList[indexCategoriesList]
+                .countList[indexPriceModelList] = elementList.count;
+          }
+          indexPriceModelList++;
+        }
+        indexCategoriesList++;
+      }
+    }
+    emit(
+      OrderCountValueState(
+        allMoney: summaOrder(),
+        managerMoney: 0,
+        percentManager: 0,
+        priceEntity: state.priceEntity,
+        goodsList: getFinalPrice(),
+        addressData: state.addressData,
+        addressEntity: state.addressEntity,
+      ),
+    );
+  }
+
+  void updateFinalPrice() {
+    emit(
+      OrderCountValueState(
+        allMoney: summaOrder(),
+        managerMoney: 0,
+        percentManager: 0,
+        priceEntity: state.priceEntity,
+        goodsList: getFinalPrice(),
+        addressData: state.addressData,
+        addressEntity: state.addressEntity,
+      ),
+    );
+  }
+
+  void updateOrder(
+    OrderModel nevModel,
+    int money,
+    String phoneClient,
+    bool takeMoney,
+    String notes,
+    int manID,
+    int managerProfit,
+    int carProfit,
+    Map? goodsMap,
+    String time,
+  ) {
+    Map map = {};
+    List<CreateOrderGoodsEntity> goodsList = getFinalPrice();
+    for (var element in goodsList) {
+      map.addAll({element.goodsName: element.count});
+    }
+    final model = OrderModel(
+      created: nevModel.created,
+      delivered: null,
+      summa: money,
+      managerID: manID,
+      managerProfit: managerProfit,
+      carID: nevModel.carID,
+      carProfit: carProfit,
+      goodsList: goodsMap ?? map,
+      address: nevModel.address,
+      phoneClient: phoneClient,
+      isDone: false,
+      takeMoney: takeMoney,
+      payMoneyManager: false,
+      payMoneyCar: false,
+      notes: notes,
+      time: time,
+    );
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc()
+        .set(model.toFirebase());
+    FirebaseFirestore.instance
+        .collection(VarManager.orders)
+        .doc(nevModel.docID)
+        .delete();
+    initState();
+  }
 }

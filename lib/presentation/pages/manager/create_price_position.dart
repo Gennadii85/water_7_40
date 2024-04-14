@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
@@ -7,9 +8,8 @@ import 'create_order.dart';
 import 'price_card.dart';
 
 class CreatePricePosition extends StatefulWidget {
-  const CreatePricePosition({
-    Key? key,
-  }) : super(key: key);
+  final bool? route;
+  const CreatePricePosition({Key? key, this.route}) : super(key: key);
 
   @override
   State<CreatePricePosition> createState() => _CreatePricePositionState();
@@ -18,9 +18,8 @@ class CreatePricePosition extends StatefulWidget {
 class _CreatePricePositionState extends State<CreatePricePosition> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return SafeArea(
+      child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
           child: BlocBuilder<OrderCountCubit, OrderCountState>(
@@ -85,12 +84,17 @@ class _CreatePricePositionState extends State<CreatePricePosition> {
                       AdminButtons(
                         text: 'Применить',
                         function: () {
-                          cubit.saveFinalPrice();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const CreateOrder(),
-                            ),
-                          );
+                          if (widget.route != null) {
+                            cubit.updateFinalPrice();
+                            Navigator.of(context).pop();
+                          } else {
+                            cubit.saveFinalPrice();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const CreateOrder(),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],

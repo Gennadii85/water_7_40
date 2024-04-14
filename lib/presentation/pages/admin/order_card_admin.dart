@@ -179,13 +179,13 @@ class OrderCardAdmin extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder: (context) => UpdateOrder(
-                            //       model: orderModel,
-                            //     ),
-                            //   ),
-                            // );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => UpdateOrder(
+                                  model: orderModel,
+                                ),
+                              ),
+                            );
                           },
                           child: const Text(
                             'Изменить',
