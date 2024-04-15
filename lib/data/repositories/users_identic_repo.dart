@@ -21,6 +21,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
       UsersRegistrationModel model = await getDBRegistrationData(boxKey, data);
       if (data.entries.first.key == model.name &&
           data.entries.first.value == model.password) {
+        Hive.box(VarHive.nameBox).put(VarHive.phoneManager, model.phone);
         Navigator.of(context).push(route);
 
         if (model.percent != null) {
@@ -68,6 +69,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
       return UsersRegistrationModel(
         name: 'name',
         password: 'password',
+        phone: 'phone',
         id: null,
         percent: null,
       );
@@ -87,6 +89,7 @@ positionCompany == boxKey == VarHive. или admins, или cars, или manager
     if (dataMap.entries.first.key == model.name &&
         dataMap.entries.first.value == model.password) {
       Hive.box(VarHive.nameBox).put(positionCompany, dataMap);
+      Hive.box(VarHive.nameBox).put(VarHive.phoneManager, model.phone);
       if (model.percent != null) {
         Hive.box(VarHive.nameBox).put(VarHive.managersPercent, model.percent);
       }

@@ -243,6 +243,7 @@ class OrderCardAdmin extends StatelessWidget {
           ),
         ),
         Expanded(
+          flex: 2,
           child: Text(
             value,
             style: const TextStyle(fontSize: 20),

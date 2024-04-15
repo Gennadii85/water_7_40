@@ -6,4 +6,5 @@ class VarHive {
   static const String managersPercent = 'managersPercent'; //int
   static const String managersID = 'managersID'; //int
   static const String carsID = 'carsID'; //int
+  static const String phoneManager = 'phoneManager'; //int
 }

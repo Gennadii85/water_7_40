@@ -17,6 +17,7 @@ class OrderCardCar extends StatelessWidget {
     required this.isDone,
     required this.takeMoney,
     required this.goodsList,
+    this.phoneManager,
   }) : super(key: key);
 
   final String docID;
@@ -27,6 +28,7 @@ class OrderCardCar extends StatelessWidget {
   final bool isDone;
   final bool takeMoney;
   final Map goodsList;
+  final String? phoneManager;
   @override
   Widget build(BuildContext context) {
     String take = '';

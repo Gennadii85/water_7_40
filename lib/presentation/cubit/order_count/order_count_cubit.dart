@@ -281,6 +281,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       notesFinish =
           'Заказ переопределен ! От менеджера ${managerID.toString()} менеджеру -> $id !!!    ${state.addressEntity.notes.text}';
     }
+    String phoneManager = Hive.box(VarHive.nameBox).get(VarHive.phoneManager);
     final model = OrderModel(
       created: DateTime.now().millisecondsSinceEpoch,
       delivered: null,
@@ -299,6 +300,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       notes: notesFinish,
       name: state.addressEntity.name.text,
       time: state.addressEntity.time.text,
+      phoneManager: phoneManager,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)
@@ -369,6 +371,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     int carProfit,
     Map? goodsMap,
     String time,
+    String phoneManager,
   ) {
     Map map = {};
     List<CreateOrderGoodsEntity> goodsList = getFinalPrice();
@@ -392,6 +395,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       payMoneyCar: false,
       notes: notes,
       time: time,
+      phoneManager: phoneManager,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)

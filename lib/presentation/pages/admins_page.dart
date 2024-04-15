@@ -16,13 +16,6 @@ class AdminPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Admin panel'),
           centerTitle: true,
-          // actions: [
-          //   AdminButtons(
-          //     function: () {},
-          // => RepoAdminPage().update(),
-          //     text: 'Обновить',
-          //   ),
-          // ],
         ),
         drawer: const AdminDrawer(),
         body: FutureBuilder(

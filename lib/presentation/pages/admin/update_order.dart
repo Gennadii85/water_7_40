@@ -7,8 +7,6 @@ import 'package:water_7_40/data/repositories/manager_page_repo.dart';
 import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart';
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/admins_page.dart';
-import 'package:water_7_40/presentation/pages/manager/price_card.dart';
-import '../../../data/entity/create_order_goods_cart_entity.dart';
 import '../../../data/entity/price_entity.dart';
 import '../../../data/model/order_model.dart';
 import '../manager/create_price_position.dart';
@@ -32,6 +30,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
   final TextEditingController manIDControl = TextEditingController();
   final TextEditingController managerProfitControl = TextEditingController();
   final TextEditingController carProfitControl = TextEditingController();
+  final TextEditingController phoneManagerControl = TextEditingController();
   bool takeMoney = true;
 
   @override
@@ -43,6 +42,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
     manIDControl.text = widget.model.managerID.toString();
     managerProfitControl.text = widget.model.managerProfit.toString();
     carProfitControl.text = widget.model.carProfit.toString();
+    phoneManagerControl.text = widget.model.phoneManager ?? '';
     super.initState();
   }
 
@@ -113,6 +113,10 @@ class _UpdateOrderState extends State<UpdateOrder> {
         _textFieldRow(
           manIDControl,
           'ID менеджера',
+        ),
+        _textFieldRow(
+          phoneManagerControl,
+          'Телефон менеджера',
         ),
         _textFieldRow(
           managerProfitControl,
@@ -235,6 +239,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
                 int.tryParse(carProfitControl.text) ?? widget.model.carProfit!,
                 null,
                 timeController.text,
+                phoneManagerControl.text,
               );
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -264,6 +269,10 @@ class _UpdateOrderState extends State<UpdateOrder> {
         _textFieldRow(
           manIDControl,
           'ID менеджера',
+        ),
+        _textFieldRow(
+          phoneManagerControl,
+          'Телефон менеджера',
         ),
         _textFieldRow(
           managerProfitControl,
@@ -386,6 +395,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
                 int.tryParse(carProfitControl.text) ?? widget.model.carProfit!,
                 widget.model.goodsList,
                 timeController.text,
+                phoneManagerControl.text,
               );
               Navigator.of(context).push(
                 MaterialPageRoute(

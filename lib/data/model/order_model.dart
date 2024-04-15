@@ -17,7 +17,7 @@ class OrderModel {
   final bool payMoneyCar;
   final String? notes;
   final String? name;
-  final String? timeDelivery;
+  final String? phoneManager;
   final String? time;
 
   OrderModel({
@@ -38,7 +38,7 @@ class OrderModel {
     required this.payMoneyCar,
     this.notes,
     this.name,
-    this.timeDelivery,
+    this.phoneManager,
     this.time,
   });
 
@@ -61,7 +61,7 @@ class OrderModel {
         payMoneyCar: json['payMoneyCar'],
         notes: json['notes'],
         name: json['name'],
-        timeDelivery: json['timeDelivery'],
+        phoneManager: json['phoneManager'],
         time: json['time'],
       );
   Map<String, dynamic> toFirebase() => {
@@ -81,7 +81,7 @@ class OrderModel {
         'payMoneyCar': payMoneyCar,
         'notes': notes,
         'name': name,
-        'timeDelivery': timeDelivery,
+        'phoneManager': phoneManager,
         'time': time,
       };
 }

@@ -24,7 +24,7 @@ class _ManagersPageState extends State<ManagersPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Manager panel'),
+          title: Text('Manager panel ID:${managerID.toString()}'),
           centerTitle: true,
           actions: [
             AdminButtons(
