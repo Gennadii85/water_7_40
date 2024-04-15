@@ -78,39 +78,7 @@ class OrderCardAdmin extends StatelessWidget {
               onPressed: () => showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: carList
-                          .map(
-                            (elem) => TextButton(
-                              onPressed: () {
-                                RepoAdminGetPost()
-                                    .saveCarIDtoOrders(elem.id!, docID);
-                                Navigator.of(context).pop();
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: Text(
-                                      elem.nickname ?? elem.id.toString(),
-                                      style: const TextStyle(fontSize: 22),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'id:${elem.id}',
-                                      style: const TextStyle(fontSize: 22),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  );
+                  return showCarList(context);
                 },
               ),
               icon: const Icon(Icons.car_crash_outlined),
@@ -201,6 +169,87 @@ class OrderCardAdmin extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  AlertDialog showCarList(BuildContext context) {
+    return AlertDialog(
+      content: SizedBox(
+        width: MediaQuery.sizeOf(context).width - 20,
+        height: MediaQuery.sizeOf(context).height / 3,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: carList.length,
+          itemBuilder: (context, index) => Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: TextButton(
+                  onPressed: () {
+                    RepoAdminGetPost()
+                        .saveCarIDtoOrders(carList[index].id!, docID);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    carList[index].nickname ?? carList[index].id.toString(),
+                    style: const TextStyle(fontSize: 22),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: SizedBox(
+                        width: MediaQuery.sizeOf(context).width - 20,
+                        height: MediaQuery.sizeOf(context).height / 3,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              infoRow('Логин', carList[index].name),
+                              infoRow('Пароль', carList[index].password),
+                              infoRow('ID', carList[index].id.toString()),
+                              infoRow('Max', carList[index].max.toString()),
+                              infoRow('Имя', carList[index].nickname ?? ''),
+                              infoRow('Телефон', carList[index].phone ?? ''),
+                              infoRow('Заметки', carList[index].notes ?? ''),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(
+                    Icons.info_outline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row infoRow(String name, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Expanded(
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 18, color: Colors.blue[500]),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 20),
+          ),
+        ),
+        const SizedBox(height: 10),
+      ],
     );
   }
 

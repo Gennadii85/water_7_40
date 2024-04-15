@@ -267,16 +267,19 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       map.addAll({element.goodsName: element.count});
     }
     int? manID;
+    String notesFinish = state.addressEntity.notes.text;
     if (id == null) {
       manID = managerID;
     } else {
       manID = id;
+      //записать номер телефона в базу клиентов
       RepoAdminGetPost().savePhoneNameAddress(
         state.addressEntity.phone.text,
         state.addressEntity.name.text,
         address,
       );
-      //записать номер телефона в базу клиентов
+      notesFinish =
+          'Заказ переопределен ! От менеджера ${managerID.toString()} менеджеру -> $id !!!    ${state.addressEntity.notes.text}';
     }
     final model = OrderModel(
       created: DateTime.now().millisecondsSinceEpoch,
@@ -293,7 +296,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       takeMoney: takeMoney,
       payMoneyManager: false,
       payMoneyCar: false,
-      notes: state.addressEntity.notes.text,
+      notes: notesFinish,
       name: state.addressEntity.name.text,
       time: state.addressEntity.time.text,
     );
