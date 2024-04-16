@@ -42,7 +42,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
     manIDControl.text = widget.model.managerID.toString();
     managerProfitControl.text = widget.model.managerProfit.toString();
     carProfitControl.text = widget.model.carProfit.toString();
-    phoneManagerControl.text = widget.model.phoneManager ?? '';
+    // phoneManagerControl.text = widget.model.phoneManager ?? '';
     super.initState();
   }
 
@@ -114,10 +114,10 @@ class _UpdateOrderState extends State<UpdateOrder> {
           manIDControl,
           'ID менеджера',
         ),
-        _textFieldRow(
-          phoneManagerControl,
-          'Телефон менеджера',
-        ),
+        // _textFieldRow(
+        //   phoneManagerControl,
+        //   'Телефон менеджера',
+        // ),
         _textFieldRow(
           managerProfitControl,
           'Зарплата менеджера',
@@ -191,11 +191,17 @@ class _UpdateOrderState extends State<UpdateOrder> {
                         style: VarManager.cardSize,
                       ),
                     ),
-                    Text(
-                      '${state.goodsList[index].count} шт. - ',
-                      style: VarManager.cardSize,
+                    Expanded(
+                      child: Text(
+                        '1 шт. - ${state.goodsList[index].price} грн. ',
+                      ),
                     ),
-                    Text('$money грн.', style: VarManager.cardSize),
+                    Expanded(
+                      child: Text(
+                        '${state.goodsList[index].count} шт. - $money грн.',
+                        style: VarManager.cardSize,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -270,10 +276,10 @@ class _UpdateOrderState extends State<UpdateOrder> {
           manIDControl,
           'ID менеджера',
         ),
-        _textFieldRow(
-          phoneManagerControl,
-          'Телефон менеджера',
-        ),
+        // _textFieldRow(
+        //   phoneManagerControl,
+        //   'Телефон менеджера',
+        // ),
         _textFieldRow(
           managerProfitControl,
           'Зарплата менеджера',

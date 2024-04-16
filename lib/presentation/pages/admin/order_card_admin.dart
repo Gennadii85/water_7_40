@@ -185,11 +185,23 @@ class OrderCardAdmin extends StatelessWidget {
               Expanded(
                 flex: 4,
                 child: TextButton(
-                  onPressed: () {
-                    RepoAdminGetPost()
-                        .saveCarIDtoOrders(carList[index].id!, docID);
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Назначить этого водителя?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            RepoAdminGetPost()
+                                .saveCarIDtoOrders(carList[index].id!, docID);
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  ),
                   child: Text(
                     carList[index].nickname ?? carList[index].id.toString(),
                     style: const TextStyle(fontSize: 22),

@@ -74,6 +74,49 @@ class _CreatePricePositionState extends State<CreatePricePosition> {
                     ),
                   ),
                   const SizedBox(height: 40),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.goodsList.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      int money = state.goodsList[index].count *
+                          state.goodsList[index].price;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Card(
+                          elevation: 4,
+                          color: Colors.blue[200],
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    state.goodsList[index].goodsName,
+                                    style: VarManager.cardSize,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '1 шт. - ${state.goodsList[index].price} грн. ',
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '${state.goodsList[index].count} шт. - $money грн.',
+                                    style: VarManager.cardSize,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 40),
                   Text(
                     'Заказ на сумму: ${state.allMoney} грн.',
                     style: VarManager.cardSize,
