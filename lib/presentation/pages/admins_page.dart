@@ -38,29 +38,51 @@ class AdminPage extends StatelessWidget {
                               element.carID != null,
                         )
                         .toList();
-
                     List<OrderModel> noCarListFinish =
                         RepoAdminGetPost().sortListToCreated(noCarList);
                     List<OrderModel> waitDeliveredListFinish =
                         RepoAdminGetPost().sortListToCreated(waitDeliveredList);
-
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const Text('Ожидают распределения'),
-                          const SizedBox(height: 15),
-                          chowOrder(noCarListFinish, carList),
-                          const SizedBox(height: 30),
-                          const Text('Распределены и ожидают доставки'),
-                          const SizedBox(height: 30),
-                          chowOrder(waitDeliveredListFinish, carList),
-                          const SizedBox(height: 30),
-                        ],
-                      ),
+                    return FutureBuilder(
+                      future: RepoAdminGetPost().getAllManagers(),
+                      builder: (context, snapshotManager) {
+                        if (snapshotManager.hasData) {
+                          List<UsersRegistrationModel> managersList =
+                              snapshotManager.data!;
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text('Ожидают распределения'),
+                                const SizedBox(height: 15),
+                                chowOrder(
+                                  noCarListFinish,
+                                  carList,
+                                  managersList,
+                                ),
+                                const SizedBox(height: 30),
+                                const Text('Распределены и ожидают доставки'),
+                                const SizedBox(height: 30),
+                                chowOrder(
+                                  waitDeliveredListFinish,
+                                  carList,
+                                  managersList,
+                                ),
+                                const SizedBox(height: 30),
+                              ],
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Center(
+                            child: Text('Ошибка загрузки данных менеджеров.'),
+                          );
+                        }
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
                     );
                   } else if (snapshot.hasError) {
                     return const Center(
-                      child: Text('Ошибка загрузки данных.'),
+                      child: Text('Ошибка загрузки данных заказов.'),
                     );
                   }
                   return const Center(
@@ -85,6 +107,7 @@ class AdminPage extends StatelessWidget {
   ListView chowOrder(
     List<OrderModel> createdList,
     List<UsersRegistrationModel> carList,
+    List<UsersRegistrationModel> managersList,
   ) {
     return ListView.builder(
       shrinkWrap: true,
@@ -93,6 +116,7 @@ class AdminPage extends StatelessWidget {
       itemBuilder: (context, index) => OrderCardAdmin(
         orderModel: createdList[index],
         carList: carList,
+        managersList: managersList,
         carID: createdList[index].carID,
         docID: createdList[index].docID!,
         address: createdList[index].address,

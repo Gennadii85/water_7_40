@@ -186,12 +186,23 @@ class RepoAdminGetPost {
   Future<List<UsersRegistrationModel>> getAllCars() async {
     var collection = FirebaseFirestore.instance.collection('cars');
     var querySnapshot = await collection.get();
-    List<UsersRegistrationModel> sss = [];
+    List<UsersRegistrationModel> list = [];
     for (var doc in querySnapshot.docs) {
       UsersRegistrationModel data = UsersRegistrationModel.fromJson(doc.data());
-      sss.add(data);
+      list.add(data);
     }
-    return sss;
+    return list;
+  }
+
+  Future<List<UsersRegistrationModel>> getAllManagers() async {
+    var collection = FirebaseFirestore.instance.collection('managers');
+    var querySnapshot = await collection.get();
+    List<UsersRegistrationModel> list = [];
+    for (var doc in querySnapshot.docs) {
+      UsersRegistrationModel data = UsersRegistrationModel.fromJson(doc.data());
+      list.add(data);
+    }
+    return list;
   }
 
   dynamic saveCarIDtoOrders(int carID, String docID) {
@@ -249,5 +260,18 @@ class RepoAdminGetPost {
   List<OrderModel> sortListToCreated(List<OrderModel> list) {
     list.sort((a, b) => b.created.compareTo(a.created));
     return list;
+  }
+
+  dynamic writeAddressToManagers(
+    String address,
+    String id,
+    String phone,
+    String? name,
+  ) {
+    name ??= '';
+    db
+        .collection('managerAddress')
+        .doc(address)
+        .set({'managerID': id, 'phone': phone, 'name': name});
   }
 }

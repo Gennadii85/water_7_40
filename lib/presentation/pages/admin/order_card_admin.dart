@@ -12,6 +12,7 @@ class OrderCardAdmin extends StatelessWidget {
     Key? key,
     required this.orderModel,
     required this.carList,
+    required this.managersList,
     required this.createDate,
     required this.docID,
     this.carID,
@@ -30,6 +31,7 @@ class OrderCardAdmin extends StatelessWidget {
   }) : super(key: key);
   final OrderModel orderModel;
   final List<UsersRegistrationModel> carList;
+  final List<UsersRegistrationModel> managersList;
   final DateTime createDate;
   final String docID;
   final int? carID;
@@ -53,7 +55,23 @@ class OrderCardAdmin extends StatelessWidget {
     } else {
       take = 'У менеджера';
     }
-
+    String manager = '';
+    if (managersList.where((element) => element.id! == managerID).isNotEmpty) {
+      if (managersList
+          .where((element) => element.id! == managerID)
+          .first
+          .nickname!
+          .isNotEmpty) {
+        manager = managersList
+            .where((element) => element.id! == managerID)
+            .first
+            .nickname!;
+      } else {
+        manager = managerID.toString();
+      }
+    } else {
+      manager = managerID.toString();
+    }
     return Card(
       elevation: 3,
       child: Column(
@@ -98,9 +116,46 @@ class OrderCardAdmin extends StatelessWidget {
                 value: time,
                 name: 'Время:',
               ),
-              RowEntity(
-                value: managerID.toString(),
-                name: 'Менеджер:',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      flex: 4,
+                      child: Text(
+                        'Менеджер:',
+                        style: VarManager.cardSize,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 8,
+                        softWrap: true,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          manager,
+                          style: VarManager.cardOrderStyle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 50,
+                          softWrap: true,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: IconButton(
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) {
+                            return showManagerInfo(context, manager);
+                          },
+                        ),
+                        icon: const Icon(Icons.manage_accounts_outlined),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               RowEntity(
                 value: payManager.toString(),
@@ -169,6 +224,84 @@ class OrderCardAdmin extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  AlertDialog showManagerInfo(BuildContext context, String manager) {
+    UsersRegistrationModel managerInfo = UsersRegistrationModel(
+      name: '',
+      password: '',
+      id: 0,
+      percent: 0,
+    );
+    if (managersList.where((element) => element.id! == managerID).isNotEmpty) {
+      managerInfo =
+          managersList.where((element) => element.id! == managerID).first;
+    }
+
+    return AlertDialog(
+      content: SizedBox(
+        width: MediaQuery.sizeOf(context).width - 20,
+        height: MediaQuery.sizeOf(context).height / 3,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              infoRow('Логин', managerInfo.name),
+              infoRow('Пароль', managerInfo.password),
+              infoRow('ID', managerInfo.id.toString()),
+              infoRow('Процент', managerInfo.percent.toString()),
+              infoRow('Имя', managerInfo.nickname ?? ''),
+              infoRow('Телефон', managerInfo.phone ?? ''),
+              infoRow('Заметки', managerInfo.notes ?? ''),
+              AdminButtons(
+                text: 'Закрепить адрес',
+                function: () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return writeAddress(context, manager);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  AlertDialog writeAddress(BuildContext context, String manager) {
+    return AlertDialog(
+      content: SizedBox(
+        width: MediaQuery.sizeOf(context).width - 20,
+        height: MediaQuery.sizeOf(context).height / 3,
+        child: Text(
+          'Закрепить за адресом - $address  текущего менеджера - $manager ?',
+          style: const TextStyle(fontSize: 20),
+        ),
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            AdminButtons(
+              text: 'Закрепить',
+              function: () {
+                RepoAdminGetPost().writeAddressToManagers(
+                  address,
+                  managerID.toString(),
+                  phoneClient,
+                  name,
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+            AdminButtons(
+              text: 'Отмена',
+              function: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
