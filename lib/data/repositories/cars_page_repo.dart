@@ -11,6 +11,7 @@ class RepoCarPage {
   Stream<List<OrderModel>> getTodayOrders(int carID) {
     return db
         .collection('orders')
+        .where('delivered', isEqualTo: null)
         .where('created', isLessThan: lastFifeDay)
         .where('carID', isEqualTo: carID)
         .snapshots()

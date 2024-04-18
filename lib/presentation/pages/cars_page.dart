@@ -4,6 +4,8 @@ import 'package:water_7_40/presentation/pages/manager/managers_drawer.dart';
 
 import '../../core/var_core.dart';
 import '../../data/model/order_model.dart';
+import '../../data/model/users_registration_model.dart';
+import '../../data/repositories/admin/admin_page_manager_repo.dart';
 import '../../data/repositories/cars_page_repo.dart';
 import 'car/order_card_car.dart';
 
@@ -39,19 +41,41 @@ class CarsPage extends StatelessWidget {
                         element.delivered != null && element.delivered! > today,
                   )
                   .toList();
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Text('Ожидают доставки'),
-                    const SizedBox(height: 15),
-                    listOrders(noDeliveredList),
-                    const SizedBox(height: 15),
-                    const Text('За текущий день'),
-                    const SizedBox(height: 15),
-                    listOrders(deliveredTodayList),
-                    const SizedBox(height: 30),
-                  ],
-                ),
+              return FutureBuilder<List<UsersRegistrationModel>>(
+                future: RepoAdminGetPost().getAllManagers(),
+                builder: (context, snapshotManager) {
+                  if (snapshotManager.hasData) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const Text('Ожидают доставки'),
+                          const SizedBox(height: 15),
+                          listOrders(
+                            noDeliveredList,
+                            snapshotManager.data!,
+                            true,
+                          ),
+                          const SizedBox(height: 15),
+                          const Text('За текущий день'),
+                          const SizedBox(height: 15),
+                          listOrders(
+                            deliveredTodayList,
+                            snapshotManager.data!,
+                            false,
+                          ),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    );
+                  } else if (snapshotManager.hasError) {
+                    return const Center(
+                      child: Text('Не удалось получить список менеджеров.'),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               );
             } else if (snapshot.hasError) {
               return const Center(
@@ -67,20 +91,30 @@ class CarsPage extends StatelessWidget {
     );
   }
 
-  ListView listOrders(List<OrderModel> list) {
+  ListView listOrders(
+    List<OrderModel> list,
+    List<UsersRegistrationModel> snapshotManager,
+    bool buttonUI,
+  ) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: list.length,
       itemBuilder: (context, index) => OrderCardCar(
+        managersList: snapshotManager,
+        createDate: DateTime.fromMillisecondsSinceEpoch(list[index].created),
+        docID: list[index].docID ?? '',
+        managerID: list[index].managerID ?? 0,
         address: list[index].address,
         summa: list[index].summa.toInt(),
         phoneClient: list[index].phoneClient,
-        isDone: list[index].isDone,
         takeMoney: list[index].takeMoney,
         goodsList: list[index].goodsList,
-        notes: list[index].notes,
-        docID: list[index].docID!,
+        payCar: list[index].carProfit ?? 0,
+        time: list[index].time ?? '',
+        name: list[index].name ?? '',
+        notes: list[index].notes ?? '',
+        buttonUI: buttonUI,
       ),
     );
   }
