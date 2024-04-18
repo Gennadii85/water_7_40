@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../model/order_model.dart';
+import '../../model/write_address_model.dart';
 
 class RepoAdminManagersReport {
   final db = FirebaseFirestore.instance;
@@ -23,6 +24,14 @@ class RepoAdminManagersReport {
         .map(
           (snapshot) => snapshot.docs
               .map((doc) => OrderModel.fromFirebase(doc.data(), doc.id))
+              .toList(),
+        );
+  }
+
+  Stream<List<WriteAddressModel>> getAllWriteAddress() {
+    return db.collection('managerAddress').snapshots().map(
+          (snapshot) => snapshot.docs
+              .map((doc) => WriteAddressModel.fromFirebase(doc.data(), doc.id))
               .toList(),
         );
   }
