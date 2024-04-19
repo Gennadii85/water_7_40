@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:water_7_40/presentation/pages/manager/managers_drawer.dart';
-
 import '../../core/var_core.dart';
 import '../../data/model/order_model.dart';
 import '../../data/model/users_registration_model.dart';
 import '../../data/repositories/admin/admin_page_manager_repo.dart';
 import '../../data/repositories/cars_page_repo.dart';
+import 'car/cars_drawer.dart';
 import 'car/order_card_car.dart';
 
 class CarsPage extends StatelessWidget {
@@ -21,10 +20,10 @@ class CarsPage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Cars panel'),
+          title: Text('Cars panel  ID: ${carsID.toString()}'),
           centerTitle: true,
         ),
-        drawer: const ManagersDrawer(),
+        drawer: const CarsDrawer(),
         body: StreamBuilder<List<OrderModel>>(
           stream: RepoCarPage().getTodayOrders(carsID),
           builder: (context, snapshot) {
