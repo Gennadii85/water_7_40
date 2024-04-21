@@ -29,17 +29,22 @@ class CarsPage extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final orders = snapshot.data!;
-              final List<OrderModel> noDeliveredList = orders
-                  .where(
-                    (element) => element.delivered == null,
-                  )
-                  .toList();
+              final List<OrderModel> noDeliveredList =
+                  orders.where((element) => element.delivered == null).toList();
               final List<OrderModel> deliveredTodayList = orders
                   .where(
                     (element) =>
                         element.delivered != null && element.delivered! > today,
                   )
                   .toList();
+              int casa = 0;
+              List<int> listSumma = [];
+              if (deliveredTodayList.isNotEmpty) {
+                deliveredTodayList.forEach((element) {
+                  listSumma.add(element.summa.toInt());
+                  casa = listSumma.reduce((value, element) => value + element);
+                });
+              }
               return FutureBuilder<List<UsersRegistrationModel>>(
                 future: RepoAdminGetPost().getAllManagers(),
                 builder: (context, snapshotManager) {
@@ -56,6 +61,8 @@ class CarsPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 15),
                           const Text('За текущий день'),
+                          const SizedBox(height: 15),
+                          Text('Касса за день :   $casa  грн.'),
                           const SizedBox(height: 15),
                           listOrders(
                             deliveredTodayList,
