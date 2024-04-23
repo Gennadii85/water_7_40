@@ -7,6 +7,7 @@ import 'package:water_7_40/presentation/pages/admins_page.dart';
 
 import '../identical_page.dart';
 import 'admin_add_address.dart';
+import 'admin_manager_report.dart';
 import 'create_price_page.dart';
 
 class AdminDrawer extends StatelessWidget {
@@ -88,7 +89,18 @@ class AdminDrawer extends StatelessWidget {
                 ),
                 child: const Text(
                   'Смена аккаунта',
-                  // style: VarAdmin.adminDrawerText,
+                ),
+              ),
+              const SizedBox(height: 40),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AdminManagerReport(),
+                  ),
+                ),
+                child: const Text(
+                  'Отчеты',
+                  style: VarAdmin.adminDrawerText,
                 ),
               ),
             ],

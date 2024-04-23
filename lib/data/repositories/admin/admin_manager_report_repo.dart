@@ -5,7 +5,7 @@ import '../../model/write_address_model.dart';
 class RepoAdminManagersReport {
   final db = FirebaseFirestore.instance;
 
-  Stream<List<OrderModel>> getAllOrders(
+  Stream<List<OrderModel>> getStartFinishOrders(
     DateTime startDate,
     DateTime finishDate,
   ) {
@@ -34,5 +34,33 @@ class RepoAdminManagersReport {
               .map((doc) => WriteAddressModel.fromFirebase(doc.data(), doc.id))
               .toList(),
         );
+  }
+
+  dynamic checkPayMoneyManagerTrue(String docID) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'payMoneyManager': true});
+  }
+
+  dynamic checkPayMoneyManagerFalse(String docID) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'payMoneyManager': false});
+  }
+
+  dynamic checkPayTrue(String docID) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'isDone': true});
+  }
+
+  dynamic checkPayFalse(String docID) {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .doc(docID)
+        .update({'isDone': false});
   }
 }

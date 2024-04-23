@@ -5,20 +5,21 @@ class OrderModel {
   final int? delivered;
   final num summa;
   final int? managerID;
-  final int? managerProfit;
+  final int? managerProfit; //заработок менеджера
   final int? carID;
-  final int? carProfit;
+  final int? carProfit; //заработок водителя
   final Map goodsList;
   final String address;
   final String phoneClient;
-  final bool isDone;
-  final bool takeMoney;
-  final bool payMoneyManager;
-  final bool payMoneyCar;
+  final bool isDone; //фирма получила деньги за заказ?
+  final bool
+      takeMoney; //кто забирал деньги водитель - true или менеджер - false
+  final bool payMoneyManager; //менеджеру заплатили зарплату?
+  final bool payMoneyCar; //водителю заплатили зарплату?
   final String? notes;
-  final String? name;
+  final String? name; //ф.и.о.  клиента
   final String? phoneManager;
-  final String? time;
+  final String? time; //желаемое время доставки
 
   OrderModel({
     this.docID,

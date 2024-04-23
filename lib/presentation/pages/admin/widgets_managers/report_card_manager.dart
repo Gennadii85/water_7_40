@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/var_manager.dart';
+import '../../../../data/repositories/admin/admin_manager_report_repo.dart';
 
 class ReportCardManager extends StatelessWidget {
   const ReportCardManager({
@@ -9,65 +10,101 @@ class ReportCardManager extends StatelessWidget {
     required this.docID,
     required this.address,
     required this.summa,
-    required this.phoneClient,
     required this.goodsList,
     required this.payManager,
-    required this.payCar,
     required this.carID,
     required this.created,
     required this.delivered,
+    required this.payMoneyManager,
+    required this.isDone,
+    required this.takeMoney,
   }) : super(key: key);
   final String docID;
   final String address;
   final int summa;
-  final String phoneClient;
   final Map goodsList;
   final int payManager;
-  final int payCar;
-  final int carID;
+  final int? carID;
   final int created;
-  final int delivered;
+  final int? delivered;
+  final bool payMoneyManager;
+  final bool isDone;
+  final bool takeMoney;
   @override
   Widget build(BuildContext context) {
+    String createdData =
+        '${DateTime.fromMillisecondsSinceEpoch(created).day} - ${DateTime.fromMillisecondsSinceEpoch(created).month} - ${DateTime.fromMillisecondsSinceEpoch(created).year}';
+    String deliveredData = 'Не отгружен';
+    if (delivered != null) {
+      deliveredData =
+          '${DateTime.fromMillisecondsSinceEpoch(delivered!).day} - ${DateTime.fromMillisecondsSinceEpoch(delivered!).month} - ${DateTime.fromMillisecondsSinceEpoch(delivered!).year}';
+    }
     return Card(
       elevation: 5,
       child: ExpansionTile(
         controlAffinity: ListTileControlAffinity.leading,
+        collapsedBackgroundColor: isDone ? Colors.grey[300] : Colors.red[100],
         title: Row(
-          children: [Expanded(child: Text(address))],
-          // value: address,
-          // name: 'Адрес:',
+          children: [
+            Expanded(
+              flex: 3,
+              child: Text(address),
+            ),
+            Expanded(
+              child: TextButton(
+                onPressed: () => payMoneyManager
+                    ? RepoAdminManagersReport().checkPayMoneyManagerFalse(docID)
+                    : RepoAdminManagersReport().checkPayMoneyManagerTrue(docID),
+                style: IconButton.styleFrom(
+                  backgroundColor: payMoneyManager ? null : Colors.blue[100],
+                ),
+                child: const Text('З/П'),
+              ),
+            ),
+            Expanded(
+              child: takeMoney
+                  ? const SizedBox()
+                  : TextButton(
+                      onPressed: () => isDone
+                          ? RepoAdminManagersReport().checkPayFalse(docID)
+                          : RepoAdminManagersReport().checkPayTrue(docID),
+                      style: IconButton.styleFrom(
+                        backgroundColor: isDone ? null : Colors.blue[100],
+                      ),
+                      child: const Text('Касса'),
+                    ),
+            ),
+          ],
         ),
         children: [
-          RowEntity(
-            value: phoneClient,
-            name: 'Телефон',
-          ),
           RowEntity(
             value: summa.toString(),
             name: 'Сумма',
             grn: ' грн.',
           ),
           RowEntity(
-            value: payManager.toString(),
+            value:
+                '${payManager.toString()} грн.   ${payMoneyManager ? 'Оплачен' : 'Не оплачен'}',
             name: 'Заработок менеджера',
-            grn: ' грн.',
           ),
           RowEntity(
-            value: payCar.toString(),
-            name: 'Заработок водителя',
-            grn: ' грн.',
+            value: isDone ? 'Оплачено' : 'Не оплачено',
+            name: 'Расчет по заказу',
+          ),
+          RowEntity(
+            value: takeMoney ? 'Водитель' : 'Менеджер',
+            name: 'Кто инкассировал',
           ),
           RowEntity(
             value: carID.toString(),
             name: 'ID водителя',
           ),
           RowEntity(
-            value: created.toString(),
+            value: createdData,
             name: 'Создан',
           ),
           RowEntity(
-            value: delivered.toString(),
+            value: deliveredData,
             name: 'Отгружен',
           ),
           _listGoods(),

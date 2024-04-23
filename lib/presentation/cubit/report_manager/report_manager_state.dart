@@ -2,13 +2,17 @@
 part of 'report_manager_cubit.dart';
 
 class ReportManagerState {
+  final UsersRegistrationModel manager;
   final DateTime startDate;
   final DateTime finishDate;
   final List<OrderModel> listModel;
+  final bool isData;
   ReportManagerState({
+    required this.manager,
     required this.startDate,
     required this.finishDate,
     required this.listModel,
+    required this.isData,
   });
 }
 
@@ -23,13 +27,12 @@ class ReportManagerState {
 //   });
 // }
 
-// class ReportManagerLoaded extends ReportManagerState {
-//   final DateTime startDate;
-//   final DateTime finishDate;
-//   final List<OrderModel> listModel;
-//   ReportManagerLoaded({
-//     required this.startDate,
-//     required this.finishDate,
-//     required this.listModel,
-//   });
-// }
+class ReportManagerLoaded extends ReportManagerState {
+  ReportManagerLoaded({
+    required super.manager,
+    required super.startDate,
+    required super.finishDate,
+    required super.listModel,
+    required super.isData,
+  });
+}
