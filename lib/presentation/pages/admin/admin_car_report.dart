@@ -4,20 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/var_admin.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/users_registration_model.dart';
+import '../../../data/repositories/admin/admin_car_report_repo.dart';
 import '../../../data/repositories/admin/admin_manager_report_repo.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
+import '../../cubit/report_car/report_car_cubit.dart';
 import '../../cubit/report_manager/report_manager_cubit.dart';
 import 'admin_buttons.dart';
+import 'widgets_cars/report_card_car.dart';
 import 'widgets_managers/report_card_manager.dart';
 
-class AdminManagerReport extends StatelessWidget {
-  const AdminManagerReport({
+class AdminCarReport extends StatelessWidget {
+  const AdminCarReport({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ReportManagerCubit cubit = BlocProvider.of(context);
+    ReportCarCubit cubit = BlocProvider.of(context);
     ExpansionTileController controller = ExpansionTileController();
     return SafeArea(
       child: Scaffold(
@@ -27,21 +30,20 @@ class AdminManagerReport extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: FutureBuilder<List<UsersRegistrationModel>>(
-            future: RepoAdminGetPost().getAllManagers(),
-            builder: (context, snapshotManager) {
-              if (snapshotManager.hasData) {
-                List<UsersRegistrationModel> managersData =
-                    snapshotManager.data!;
+            future: RepoAdminGetPost().getAllCars(),
+            builder: (context, snapshotCars) {
+              if (snapshotCars.hasData) {
+                List<UsersRegistrationModel> carsData = snapshotCars.data!;
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: BlocBuilder<ReportManagerCubit, ReportManagerState>(
+                  child: BlocBuilder<ReportCarCubit, ReportCarState>(
                     builder: (context, state) {
                       return Column(
                         children: [
-                          checkManager(
+                          checkCar(
                             state,
                             controller,
-                            managersData,
+                            carsData,
                             cubit,
                           ),
                           const SizedBox(height: 10),
@@ -61,9 +63,9 @@ class AdminManagerReport extends StatelessWidget {
                     },
                   ),
                 );
-              } else if (snapshotManager.hasError) {
+              } else if (snapshotCars.hasError) {
                 return const Center(
-                  child: Text('Не удалось получить список менеджеров.'),
+                  child: Text('Не удалось получить список водителей.'),
                 );
               }
               return const Center(
@@ -76,11 +78,9 @@ class AdminManagerReport extends StatelessWidget {
     );
   }
 
-  StreamBuilder<List<OrderModel>> getStartFinishOrders(
-    ReportManagerState state,
-  ) {
+  StreamBuilder<List<OrderModel>> getStartFinishOrders(ReportCarState state) {
     return StreamBuilder<List<OrderModel>>(
-      stream: RepoAdminManagersReport().getStartFinishOrders(
+      stream: RepoAdminCarsReport().getStartFinishOrders(
         state.startDate,
         state.finishDate,
       ),
@@ -88,17 +88,17 @@ class AdminManagerReport extends StatelessWidget {
         if (snapshot.hasData) {
           List<OrderModel> orderList = snapshot.data!
               .where(
-                (element) => element.managerID == state.manager.id!,
+                (element) => element.carID == state.car.id!,
               )
               .toList();
           int profit = summaProfit(orderList);
           int salary = salaryProfit(orderList);
           int moneyPaid = profit - salary;
-          int cash = cashManager(orderList);
+          int cash = cashCar(orderList);
           return Column(
             children: [
               Text(
-                'Касса у менеджера: $cash грн.',
+                'Касса у водителя: $cash грн.',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
@@ -125,16 +125,16 @@ class AdminManagerReport extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: orderList.length,
-                itemBuilder: (context, index) => ReportCardManager(
+                itemBuilder: (context, index) => ReportCardCar(
                   address: orderList[index].address,
                   summa: orderList[index].summa.toInt(),
                   goodsList: orderList[index].goodsList,
-                  payManager: orderList[index].managerProfit ?? 0,
-                  carID: orderList[index].carID,
+                  payCar: orderList[index].carProfit ?? 0,
+                  managerID: orderList[index].managerID,
                   created: orderList[index].created,
                   delivered: orderList[index].delivered,
                   docID: orderList[index].docID!,
-                  payMoneyManager: orderList[index].payMoneyManager,
+                  payMoneyCar: orderList[index].payMoneyCar,
                   isDone: orderList[index].isDone,
                   takeMoney: orderList[index].takeMoney,
                 ),
@@ -154,9 +154,9 @@ class AdminManagerReport extends StatelessWidget {
   }
 
   Container finishDate(
-    ReportManagerState state,
+    ReportCarState state,
     BuildContext context,
-    ReportManagerCubit cubit,
+    ReportCarCubit cubit,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -195,9 +195,9 @@ class AdminManagerReport extends StatelessWidget {
   }
 
   Container startDate(
-    ReportManagerState state,
+    ReportCarState state,
     BuildContext context,
-    ReportManagerCubit cubit,
+    ReportCarCubit cubit,
   ) {
     return Container(
       decoration: BoxDecoration(
@@ -235,11 +235,11 @@ class AdminManagerReport extends StatelessWidget {
     );
   }
 
-  ExpansionTile checkManager(
-    ReportManagerState state,
+  ExpansionTile checkCar(
+    ReportCarState state,
     ExpansionTileController controller,
-    List<UsersRegistrationModel> managersData,
-    ReportManagerCubit cubit,
+    List<UsersRegistrationModel> carsData,
+    ReportCarCubit cubit,
   ) {
     return ExpansionTile(
       collapsedBackgroundColor: Colors.blue[200],
@@ -247,14 +247,14 @@ class AdminManagerReport extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       title: Text(
-        state.manager.nickname ?? state.manager.name,
+        state.car.nickname ?? state.car.name,
       ),
       controller: controller,
-      children: managersData
+      children: carsData
           .map(
             (elem) => TextButton(
               onPressed: () {
-                cubit.checkManager(elem);
+                cubit.checkCar(elem);
                 controller.collapse();
               },
               child: Row(
@@ -274,13 +274,13 @@ class AdminManagerReport extends StatelessWidget {
     );
   }
 
-  int cashManager(List<OrderModel> orderList) {
-    //касса у менеджера на руках
+  int cashCar(List<OrderModel> orderList) {
+    //касса у водителя на руках
     int profit = 0;
     if (orderList.isNotEmpty) {
       List list = [];
       for (var element in orderList) {
-        if (element.takeMoney) {
+        if (element.takeMoney == false) {
         } else if (element.isDone != true) {
           list.add(element.summa);
         }
@@ -299,7 +299,7 @@ class AdminManagerReport extends StatelessWidget {
     if (orderList.isNotEmpty) {
       List list = [];
       for (var element in orderList) {
-        list.add(element.managerProfit ?? 0);
+        list.add(element.carProfit ?? 0);
       }
       int profitManager =
           list.reduce((value, element) => value + element).toInt();
@@ -314,15 +314,15 @@ class AdminManagerReport extends StatelessWidget {
     if (orderList.isNotEmpty) {
       List list = [];
       for (var element in orderList) {
-        if (element.payMoneyManager) {
+        if (element.payMoneyCar) {
         } else {
-          list.add(element.managerProfit ?? 0);
+          list.add(element.carProfit ?? 0);
         }
       }
       if (list.isNotEmpty) {
-        int salaryManager =
+        int salaryCar =
             list.reduce((value, element) => value + element).toInt();
-        profit = salaryManager;
+        profit = salaryCar;
       }
     }
     return profit;

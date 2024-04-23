@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:water_7_40/core/var_admin.dart';
+import 'package:water_7_40/presentation/pages/admin/admin_general_report.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_admins/add_admin.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_cars/add_cars.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_managers/add_managers.dart';
@@ -7,6 +8,7 @@ import 'package:water_7_40/presentation/pages/admins_page.dart';
 
 import '../identical_page.dart';
 import 'admin_add_address.dart';
+import 'admin_car_report.dart';
 import 'admin_manager_report.dart';
 import 'create_price_page.dart';
 
@@ -81,6 +83,49 @@ class AdminDrawer extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
+              ExpansionTile(
+                expandedCrossAxisAlignment: CrossAxisAlignment.center,
+                title: const Text(
+                  'Отчеты',
+                  style: VarAdmin.adminDrawerText,
+                ),
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AdminManagerReport(),
+                      ),
+                    ),
+                    child: const Text(
+                      'Отчеты менеджера',
+                      style: VarAdmin.adminDrawerText,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AdminCarReport(),
+                      ),
+                    ),
+                    child: const Text(
+                      'Отчеты водителя',
+                      style: VarAdmin.adminDrawerText,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AdminGeneralReport(),
+                      ),
+                    ),
+                    child: const Text(
+                      'Общий по фирме',
+                      style: VarAdmin.adminDrawerText,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
               TextButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -89,18 +134,6 @@ class AdminDrawer extends StatelessWidget {
                 ),
                 child: const Text(
                   'Смена аккаунта',
-                ),
-              ),
-              const SizedBox(height: 40),
-              TextButton(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AdminManagerReport(),
-                  ),
-                ),
-                child: const Text(
-                  'Отчеты',
-                  style: VarAdmin.adminDrawerText,
                 ),
               ),
             ],

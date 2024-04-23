@@ -1,19 +1,18 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
-import 'package:water_7_40/data/model/order_model.dart';
+import '../../../data/model/order_model.dart';
 import '../../../data/model/users_registration_model.dart';
 
-part 'report_manager_state.dart';
+part 'report_car_state.dart';
 
-class ReportManagerCubit extends Cubit<ReportManagerState> {
-  ReportManagerCubit()
+class ReportCarCubit extends Cubit<ReportCarState> {
+  ReportCarCubit()
       : super(
-          ReportManagerState(
+          ReportCarState(
             startDate: DateTime.now(),
             finishDate: DateTime.now(),
             listModel: [],
-            manager: UsersRegistrationModel(
-              nickname: 'Выберите менеджера',
+            car: UsersRegistrationModel(
+              nickname: 'Выберите водителя',
               name: '',
               id: 0,
               password: '',
@@ -25,23 +24,23 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
 
   dynamic getStartFinishOrders() {
     emit(
-      ReportManagerLoaded(
+      ReportCarLoaded(
         startDate: state.startDate,
         finishDate: state.finishDate,
         listModel: state.listModel,
-        manager: state.manager,
+        car: state.car,
         isData: true,
       ),
     );
   }
 
-  dynamic checkManager(UsersRegistrationModel elem) {
+  dynamic checkCar(UsersRegistrationModel elem) {
     emit(
-      ReportManagerState(
+      ReportCarState(
         startDate: state.startDate,
         finishDate: state.finishDate,
         listModel: state.listModel,
-        manager: elem,
+        car: elem,
         isData: false,
       ),
     );
@@ -49,11 +48,11 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
 
   dynamic addStart(DateTime startDate) {
     emit(
-      ReportManagerState(
+      ReportCarState(
         startDate: startDate,
         finishDate: state.finishDate,
         listModel: state.listModel,
-        manager: state.manager,
+        car: state.car,
         isData: false,
       ),
     );
@@ -65,11 +64,11 @@ class ReportManagerCubit extends Cubit<ReportManagerState> {
       return;
     }
     emit(
-      ReportManagerState(
+      ReportCarState(
         startDate: state.startDate,
         finishDate: finishDate,
         listModel: state.listModel,
-        manager: state.manager,
+        car: state.car,
         isData: false,
       ),
     );

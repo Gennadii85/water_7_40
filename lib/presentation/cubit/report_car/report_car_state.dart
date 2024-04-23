@@ -1,14 +1,13 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-part of 'report_manager_cubit.dart';
+part of 'report_car_cubit.dart';
 
-class ReportManagerState {
-  final UsersRegistrationModel manager;
+class ReportCarState {
+  final UsersRegistrationModel car;
   final DateTime startDate;
   final DateTime finishDate;
   final List<OrderModel> listModel;
   final bool isData;
-  ReportManagerState({
-    required this.manager,
+  ReportCarState({
+    required this.car,
     required this.startDate,
     required this.finishDate,
     required this.listModel,
@@ -16,9 +15,9 @@ class ReportManagerState {
   });
 }
 
-class ReportManagerLoaded extends ReportManagerState {
-  ReportManagerLoaded({
-    required super.manager,
+class ReportCarLoaded extends ReportCarState {
+  ReportCarLoaded({
+    required super.car,
     required super.startDate,
     required super.finishDate,
     required super.listModel,
