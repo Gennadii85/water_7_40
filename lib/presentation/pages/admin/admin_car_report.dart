@@ -5,13 +5,10 @@ import '../../../core/var_admin.dart';
 import '../../../data/model/order_model.dart';
 import '../../../data/model/users_registration_model.dart';
 import '../../../data/repositories/admin/admin_car_report_repo.dart';
-import '../../../data/repositories/admin/admin_manager_report_repo.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
 import '../../cubit/report_car/report_car_cubit.dart';
-import '../../cubit/report_manager/report_manager_cubit.dart';
 import 'admin_buttons.dart';
 import 'widgets_cars/report_card_car.dart';
-import 'widgets_managers/report_card_manager.dart';
 
 class AdminCarReport extends StatelessWidget {
   const AdminCarReport({

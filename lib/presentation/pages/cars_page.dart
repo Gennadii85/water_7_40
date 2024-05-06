@@ -40,10 +40,10 @@ class CarsPage extends StatelessWidget {
               int casa = 0;
               List<int> listSumma = [];
               if (deliveredTodayList.isNotEmpty) {
-                deliveredTodayList.forEach((element) {
+                for (var element in deliveredTodayList) {
                   listSumma.add(element.summa.toInt());
                   casa = listSumma.reduce((value, element) => value + element);
-                });
+                }
               }
               return FutureBuilder<List<UsersRegistrationModel>>(
                 future: RepoAdminGetPost().getAllManagers(),

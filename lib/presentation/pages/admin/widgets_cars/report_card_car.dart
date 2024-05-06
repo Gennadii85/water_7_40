@@ -1,9 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-
 import '../../../../core/var_manager.dart';
 import '../../../../data/repositories/admin/admin_car_report_repo.dart';
-import '../../../../data/repositories/admin/admin_manager_report_repo.dart';
 
 class ReportCardCar extends StatelessWidget {
   const ReportCardCar({
