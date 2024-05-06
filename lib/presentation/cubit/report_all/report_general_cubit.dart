@@ -9,7 +9,7 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
           ReportGeneralState(
             startDate: DateTime.now(),
             finishDate: DateTime.now(),
-            listModel: [],
+            // listModel: [],
             isData: false,
           ),
         );
@@ -19,7 +19,7 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
       ReportGeneralLoaded(
         startDate: state.startDate,
         finishDate: state.finishDate,
-        listModel: state.listModel,
+        // listModel: state.listModel,
         isData: true,
       ),
     );
@@ -30,7 +30,7 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
       ReportGeneralState(
         startDate: startDate,
         finishDate: state.finishDate,
-        listModel: state.listModel,
+        // listModel: state.listModel,
         isData: false,
       ),
     );
@@ -45,7 +45,7 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
       ReportGeneralState(
         startDate: state.startDate,
         finishDate: finishDate,
-        listModel: state.listModel,
+        // listModel: state.listModel,
         isData: false,
       ),
     );

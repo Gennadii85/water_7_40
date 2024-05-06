@@ -40,8 +40,9 @@ class _CreateOrderState extends State<CreateOrder> {
       String house = cubit.state.addressEntity.house.text;
       String apartment = cubit.state.addressEntity.apartment.text;
       String address = '$city $street дом $house кв $apartment';
+      List<String> addressList = [city, street, house, apartment];
       int? id = await RepoManagerPage().checkAddress(address);
-      cubit.writeOrder(address, takeMoney, id);
+      cubit.writeOrder(address, takeMoney, id, addressList);
       goManagerPage(id);
     }
   }

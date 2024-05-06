@@ -246,6 +246,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
                 null,
                 timeController.text,
                 phoneManagerControl.text,
+                widget.model.addressList,
               );
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -402,6 +403,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
                 widget.model.goodsList,
                 timeController.text,
                 phoneManagerControl.text,
+                widget.model.addressList,
               );
               Navigator.of(context).push(
                 MaterialPageRoute(

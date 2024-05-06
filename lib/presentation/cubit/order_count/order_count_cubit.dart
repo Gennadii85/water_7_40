@@ -260,6 +260,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     String address,
     bool takeMoney,
     int? id,
+    List addressList,
   ) async {
     Map map = {};
     List<CreateOrderGoodsEntity> goodsList = getFinalPrice();
@@ -301,6 +302,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       name: state.addressEntity.name.text,
       time: state.addressEntity.time.text,
       phoneManager: phoneManager,
+      addressList: addressList,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)
@@ -372,6 +374,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     Map? goodsMap,
     String time,
     String phoneManager,
+    List addressList,
   ) {
     Map map = {};
     List<CreateOrderGoodsEntity> goodsList = getFinalPrice();
@@ -396,6 +399,7 @@ class OrderCountCubit extends Cubit<OrderCountState> {
       notes: notes,
       time: time,
       phoneManager: phoneManager,
+      addressList: addressList,
     );
     FirebaseFirestore.instance
         .collection(VarManager.orders)

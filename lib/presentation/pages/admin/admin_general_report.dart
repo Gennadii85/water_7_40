@@ -5,7 +5,6 @@ import '../../../data/model/order_model.dart';
 import '../../../data/repositories/admin/admin_car_report_repo.dart';
 import '../../cubit/report_all/report_general_cubit.dart';
 import 'admin_buttons.dart';
-import 'widgets_cars/report_card_car.dart';
 
 class AdminGeneralReport extends StatelessWidget {
   const AdminGeneralReport({super.key});
@@ -27,14 +26,13 @@ class AdminGeneralReport extends StatelessWidget {
                     startDate(state, context, cubit),
                     const SizedBox(height: 10),
                     finishDate(state, context, cubit),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     AdminButtons(
                       text: 'Показать',
                       function: () => cubit.getStartFinishOrders(),
                     ),
-                    cubit.state.isData
-                        ? getStartFinishOrders(state)
-                        : const SizedBox(),
+                    const SizedBox(height: 20),
+                    cubit.state.isData ? getCity(state) : const SizedBox(),
                   ],
                 );
               },
@@ -45,7 +43,7 @@ class AdminGeneralReport extends StatelessWidget {
     );
   }
 
-  StreamBuilder<List<OrderModel>> getStartFinishOrders(
+  StreamBuilder<List<OrderModel>> getCity(
     ReportGeneralState state,
   ) {
     return StreamBuilder<List<OrderModel>>(
@@ -56,28 +54,52 @@ class AdminGeneralReport extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<OrderModel> orderList = snapshot.data!;
-          return Column(
-            children: [
-              const SizedBox(height: 10),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: orderList.length,
-                itemBuilder: (context, index) => ReportCardCar(
-                  address: orderList[index].address,
-                  summa: orderList[index].summa.toInt(),
-                  goodsList: orderList[index].goodsList,
-                  payCar: orderList[index].carProfit ?? 0,
-                  managerID: orderList[index].managerID,
-                  created: orderList[index].created,
-                  delivered: orderList[index].delivered,
-                  docID: orderList[index].docID!,
-                  payMoneyCar: orderList[index].payMoneyCar,
-                  isDone: orderList[index].isDone,
-                  takeMoney: orderList[index].takeMoney,
-                ),
+          List<String> allCity = [];
+          if (orderList.isNotEmpty) {
+            for (var element in orderList) {
+              allCity.add(element.addressList[0].toString());
+            }
+          }
+          print(allCity);
+          List city = allCity.toSet().toList();
+          return ListView.separated(
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: city.length,
+            itemBuilder: (context, index) => Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    child: Text(city[index]),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.info_outline_rounded),
+                  ),
+                ],
+              ),
+            ),
+
+            // ReportCardCar(
+            //   address: orderList[index].address,
+            //   summa: orderList[index].summa.toInt(),
+            //   goodsList: orderList[index].goodsList,
+            //   payCar: orderList[index].carProfit ?? 0,
+            //   managerID: orderList[index].managerID,
+            //   created: orderList[index].created,
+            //   delivered: orderList[index].delivered,
+            //   docID: orderList[index].docID!,
+            //   payMoneyCar: orderList[index].payMoneyCar,
+            //   isDone: orderList[index].isDone,
+            //   takeMoney: orderList[index].takeMoney,
+            // ),
           );
         } else if (snapshot.hasError) {
           return const Center(

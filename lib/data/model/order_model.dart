@@ -20,6 +20,8 @@ class OrderModel {
   final String? name; //ф.и.о.  клиента
   final String? phoneManager;
   final String? time; //желаемое время доставки
+  final List
+      addressList; // лист с данными адреса для отчетности и сортировки  [city, street, house, apartment];
 
   OrderModel({
     this.docID,
@@ -41,6 +43,7 @@ class OrderModel {
     this.name,
     this.phoneManager,
     this.time,
+    required this.addressList,
   });
 
   static OrderModel fromFirebase(Map<String, dynamic> json, String docID) =>
@@ -64,6 +67,7 @@ class OrderModel {
         name: json['name'],
         phoneManager: json['phoneManager'],
         time: json['time'],
+        addressList: json['addressList'],
       );
   Map<String, dynamic> toFirebase() => {
         'created': created,
@@ -84,5 +88,6 @@ class OrderModel {
         'name': name,
         'phoneManager': phoneManager,
         'time': time,
+        'addressList': addressList,
       };
 }

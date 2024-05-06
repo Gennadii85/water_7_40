@@ -41,7 +41,11 @@ class CarsPage extends StatelessWidget {
               List<int> listSumma = [];
               if (deliveredTodayList.isNotEmpty) {
                 for (var element in deliveredTodayList) {
-                  listSumma.add(element.summa.toInt());
+                  if (element.takeMoney) {
+                    listSumma.add(element.summa.toInt());
+                  } else {
+                    listSumma.add(0);
+                  }
                   casa = listSumma.reduce((value, element) => value + element);
                 }
               }
