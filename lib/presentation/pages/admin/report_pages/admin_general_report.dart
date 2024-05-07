@@ -50,7 +50,7 @@ class AdminGeneralReport extends StatelessWidget {
     return StreamBuilder<List<OrderModel>>(
       stream: RepoAdminGeneralReport().getStartFinishOrders(
         state.startDate,
-        state.finishDate,
+        state.finishDate.add(const Duration(days: 1)),
       ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -84,7 +84,8 @@ class AdminGeneralReport extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            cityInfo(context, city, index, orderList),
                         icon: const Icon(Icons.info_outline_rounded),
                       ),
                     ],
@@ -102,6 +103,68 @@ class AdminGeneralReport extends StatelessWidget {
           child: CircularProgressIndicator(),
         );
       },
+    );
+  }
+
+  Future<dynamic> cityInfo(
+    BuildContext context,
+    List<String> city,
+    int index,
+    List<OrderModel> orderList,
+  ) {
+    List<OrderModel> list = orderList
+        .where((element) => element.addressList[0] == city[index])
+        .toList();
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(city[index]),
+        content: Column(
+          children: [
+            Text('Всего заказов:   ${list.length}'),
+            Text(
+              'Общий оборот:   ${RepoAdminGeneralReport().summaAllMoney(list)} грн.',
+            ),
+            Text(
+              'Заплачено водителям:   ${RepoAdminGeneralReport().carProfit(list)} грн.',
+            ),
+            Text(
+              'Заплачено менеджерам:   ${RepoAdminGeneralReport().managerProfit(list)} грн.',
+            ),
+            ExpansionTile(
+              title: const Text('Список продаж:'),
+              children: RepoAdminGeneralReport()
+                  .allCityGoods(list)
+                  .map(
+                    (elem) => SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(border: Border.all()),
+                          child: Row(
+                            children: [
+                              Expanded(flex: 5, child: Text(elem.goodsName)),
+                              Expanded(
+                                child: Text('${elem.count.toString()} шт.'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
+        ),
+        actions: [
+          AdminButtons(
+            text: 'OK',
+            function: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -131,31 +194,35 @@ class AdminGeneralReport extends StatelessWidget {
         border: Border.all(),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 15),
-            child: Text(
-              'До',
-              style: VarAdmin.adminCardText,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Text(
-              '${state.finishDate.day} - ${state.finishDate.month} - ${state.finishDate.year}',
-              style: VarAdmin.adminCardText,
-            ),
-          ),
-          IconButton(
-            onPressed: () async {
-              final selectedDate = await calendar(context, DateTime.now());
-              if (selectedDate != null) {
-                cubit.addFinish(selectedDate);
-              }
-            },
-            icon: const Icon(Icons.calendar_month),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  'По',
+                  style: VarAdmin.adminCardText,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Text(
+                  '${state.finishDate.day} - ${state.finishDate.month} - ${state.finishDate.year}',
+                  style: VarAdmin.adminCardText,
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  final selectedDate = await calendar(context, DateTime.now());
+                  if (selectedDate != null) {
+                    cubit.addFinish(selectedDate);
+                  }
+                },
+                icon: const Icon(Icons.calendar_month),
+              ),
+            ],
           ),
         ],
       ),
@@ -208,7 +275,7 @@ class AdminGeneralReport extends StatelessWidget {
       context: context,
       initialDate: date,
       firstDate: DateTime(2024),
-      lastDate: DateTime.now(),
+      lastDate: DateTime(2050),
       initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
   }
