@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/var_admin.dart';
-import '../../../data/model/order_model.dart';
-import '../../../data/repositories/admin/admin_car_report_repo.dart';
-import '../../cubit/report_all/report_general_cubit.dart';
-import 'admin_buttons.dart';
+import '../../../../core/var_admin.dart';
+import '../../../../data/model/order_model.dart';
+import '../../../../data/repositories/admin/admin_general_report_repo.dart';
+import '../../../cubit/report_all/report_general_cubit.dart';
+import '../admin_buttons.dart';
+import 'admin_general_street_report.dart';
 
 class AdminGeneralReport extends StatelessWidget {
   const AdminGeneralReport({super.key});
@@ -47,7 +48,7 @@ class AdminGeneralReport extends StatelessWidget {
     ReportGeneralState state,
   ) {
     return StreamBuilder<List<OrderModel>>(
-      stream: RepoAdminCarsReport().getStartFinishOrders(
+      stream: RepoAdminGeneralReport().getStartFinishOrders(
         state.startDate,
         state.finishDate,
       ),
@@ -60,8 +61,7 @@ class AdminGeneralReport extends StatelessWidget {
               allCity.add(element.addressList[0].toString());
             }
           }
-          print(allCity);
-          List city = allCity.toSet().toList();
+          List<String> city = allCity.toSet().toList();
           return ListView.separated(
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             shrinkWrap: true,
@@ -72,34 +72,26 @@ class AdminGeneralReport extends StatelessWidget {
                 border: Border.all(),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    child: Text(city[index]),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.info_outline_rounded),
-                  ),
-                ],
+              child: BlocBuilder<ReportGeneralCubit, ReportGeneralState>(
+                builder: (context, state) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        child: Text(city[index]),
+                        onPressed: () {
+                          goStreet(orderList, city, index, context);
+                        },
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.info_outline_rounded),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
-
-            // ReportCardCar(
-            //   address: orderList[index].address,
-            //   summa: orderList[index].summa.toInt(),
-            //   goodsList: orderList[index].goodsList,
-            //   payCar: orderList[index].carProfit ?? 0,
-            //   managerID: orderList[index].managerID,
-            //   created: orderList[index].created,
-            //   delivered: orderList[index].delivered,
-            //   docID: orderList[index].docID!,
-            //   payMoneyCar: orderList[index].payMoneyCar,
-            //   isDone: orderList[index].isDone,
-            //   takeMoney: orderList[index].takeMoney,
-            // ),
           );
         } else if (snapshot.hasError) {
           return const Center(
@@ -110,6 +102,22 @@ class AdminGeneralReport extends StatelessWidget {
           child: CircularProgressIndicator(),
         );
       },
+    );
+  }
+
+  void goStreet(
+    List<OrderModel> orderList,
+    List<String> city,
+    int index,
+    BuildContext context,
+  ) {
+    List<OrderModel> cityStreetListModel = orderList
+        .where((element) => element.addressList[0] == city[index])
+        .toList();
+    BlocProvider.of<ReportGeneralCubit>(context)
+        .setCityList(cityStreetListModel);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const AdminGeneralStreetReport()),
     );
   }
 

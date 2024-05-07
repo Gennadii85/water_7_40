@@ -1,14 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/var_admin.dart';
-import '../../../data/model/order_model.dart';
-import '../../../data/model/users_registration_model.dart';
-import '../../../data/repositories/admin/admin_car_report_repo.dart';
-import '../../../data/repositories/admin/admin_page_manager_repo.dart';
-import '../../cubit/report_car/report_car_cubit.dart';
-import 'admin_buttons.dart';
-import 'widgets_cars/report_card_car.dart';
+import '../../../../core/var_admin.dart';
+import '../../../../data/model/order_model.dart';
+import '../../../../data/model/users_registration_model.dart';
+import '../../../../data/repositories/admin/admin_car_report_repo.dart';
+import '../../../../data/repositories/admin/admin_page_manager_repo.dart';
+import '../../../cubit/report_car/report_car_cubit.dart';
+import '../admin_buttons.dart';
+import '../widgets_cars/report_card_car.dart';
 
 class AdminCarReport extends StatelessWidget {
   const AdminCarReport({

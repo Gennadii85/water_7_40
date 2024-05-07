@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:water_7_40/core/var_admin.dart';
-import 'package:water_7_40/presentation/pages/admin/admin_general_report.dart';
+import 'package:water_7_40/presentation/pages/admin/report_pages/admin_general_report.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_admins/add_admin.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_cars/add_cars.dart';
 import 'package:water_7_40/presentation/pages/admin/widgets_managers/add_managers.dart';
@@ -8,8 +8,8 @@ import 'package:water_7_40/presentation/pages/admins_page.dart';
 
 import '../identical_page.dart';
 import 'admin_add_address.dart';
-import 'admin_car_report.dart';
-import 'admin_manager_report.dart';
+import 'report_pages/admin_car_report.dart';
+import 'report_pages/admin_manager_report.dart';
 import 'create_price_page.dart';
 
 class AdminDrawer extends StatelessWidget {

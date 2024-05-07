@@ -115,7 +115,7 @@ class AddressOrderValuePage extends StatelessWidget {
                   child: TextField(
                     controller: state.addressEntity.house,
                     decoration: InputDecoration(
-                      labelText: '№ дома',
+                      labelText: '№ дома *',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -127,7 +127,7 @@ class AddressOrderValuePage extends StatelessWidget {
                   child: TextField(
                     controller: state.addressEntity.apartment,
                     decoration: InputDecoration(
-                      labelText: '№ квартиры',
+                      labelText: '№ квартиры *',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

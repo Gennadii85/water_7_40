@@ -9,18 +9,64 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
           ReportGeneralState(
             startDate: DateTime.now(),
             finishDate: DateTime.now(),
-            // listModel: [],
+            cityStreetListModel: [],
             isData: false,
+            cityStreetHouseListModel: [],
+            cityStreetHouseApartmentListModel: [],
           ),
         );
+
+  dynamic setApartmentList(List<OrderModel> cityStreetHouseApartmentListModel) {
+    emit(
+      ReportGeneralLoaded(
+        startDate: state.startDate,
+        finishDate: state.finishDate,
+        cityStreetListModel: state.cityStreetListModel,
+        isData: true,
+        cityStreetHouseListModel: state.cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel: cityStreetHouseApartmentListModel,
+      ),
+    );
+  }
+
+  dynamic setHouseList(List<OrderModel> cityStreetHouseListModel) {
+    emit(
+      ReportGeneralLoaded(
+        startDate: state.startDate,
+        finishDate: state.finishDate,
+        cityStreetListModel: state.cityStreetListModel,
+        isData: true,
+        cityStreetHouseListModel: cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel:
+            state.cityStreetHouseApartmentListModel,
+      ),
+    );
+  }
+
+  dynamic setCityList(List<OrderModel> cityStreetListModel) {
+    emit(
+      ReportGeneralLoaded(
+        startDate: state.startDate,
+        finishDate: state.finishDate,
+        cityStreetListModel: cityStreetListModel,
+        isData: true,
+        cityStreetHouseListModel: state.cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel:
+            state.cityStreetHouseApartmentListModel,
+      ),
+    );
+  }
 
   dynamic getStartFinishOrders() {
     emit(
       ReportGeneralLoaded(
         startDate: state.startDate,
         finishDate: state.finishDate,
-        // listModel: state.listModel,
+        cityStreetListModel: state.cityStreetListModel,
         isData: true,
+        cityStreetHouseListModel: state.cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel:
+            state.cityStreetHouseApartmentListModel,
       ),
     );
   }
@@ -30,8 +76,11 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
       ReportGeneralState(
         startDate: startDate,
         finishDate: state.finishDate,
-        // listModel: state.listModel,
+        cityStreetListModel: state.cityStreetListModel,
         isData: false,
+        cityStreetHouseListModel: state.cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel:
+            state.cityStreetHouseApartmentListModel,
       ),
     );
   }
@@ -45,8 +94,11 @@ class ReportGeneralCubit extends Cubit<ReportGeneralState> {
       ReportGeneralState(
         startDate: state.startDate,
         finishDate: finishDate,
-        // listModel: state.listModel,
+        cityStreetListModel: state.cityStreetListModel,
         isData: false,
+        cityStreetHouseListModel: state.cityStreetHouseListModel,
+        cityStreetHouseApartmentListModel:
+            state.cityStreetHouseApartmentListModel,
       ),
     );
   }
