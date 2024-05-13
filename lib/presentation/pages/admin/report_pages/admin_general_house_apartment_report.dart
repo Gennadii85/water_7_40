@@ -5,6 +5,7 @@ import '../../../../data/model/order_model.dart';
 import '../../../../data/repositories/admin/admin_general_report_repo.dart';
 import '../../../cubit/report_all/report_general_cubit.dart';
 import '../admin_buttons.dart';
+import 'admin_general_order_card_report.dart';
 
 class AdminGeneralHouseApartmentReport extends StatelessWidget {
   const AdminGeneralHouseApartmentReport({super.key});
@@ -76,44 +77,67 @@ class AdminGeneralHouseApartmentReport extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(apartment[index]),
-        content: Column(
-          children: [
-            Text('Всего заказов:   ${list.length}'),
-            Text(
-              'Общий оборот:   ${RepoAdminGeneralReport().summaAllMoney(list)} грн.',
-            ),
-            Text(
-              'Заплачено водителям:   ${RepoAdminGeneralReport().carProfit(list)} грн.',
-            ),
-            Text(
-              'Заплачено менеджерам:   ${RepoAdminGeneralReport().managerProfit(list)} грн.',
-            ),
-            ExpansionTile(
-              title: const Text('Список продаж:'),
-              children: RepoAdminGeneralReport()
-                  .allCityGoods(list)
-                  .map(
-                    (elem) => SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: BoxDecoration(border: Border.all()),
-                          child: Row(
-                            children: [
-                              Expanded(flex: 5, child: Text(elem.goodsName)),
-                              Expanded(
-                                child: Text('${elem.count.toString()} шт.'),
-                              ),
-                            ],
-                          ),
-                        ),
+        content: SingleChildScrollView(
+          child: Expanded(
+            child: Column(
+              children: [
+                Text('Всего заказов:   ${list.length}'),
+                Text(
+                  'Общий оборот:   ${RepoAdminGeneralReport().summaAllMoney(list)} грн.',
+                ),
+                Text(
+                  'Заплачено водителям:   ${RepoAdminGeneralReport().carProfit(list)} грн.',
+                ),
+                Text(
+                  'Заплачено менеджерам:   ${RepoAdminGeneralReport().managerProfit(list)} грн.',
+                ),
+                goodsReport(list),
+                ...list
+                    .map(
+                      (elem) => OrderCardAdminGeneralReport(
+                        createDate:
+                            DateTime.fromMillisecondsSinceEpoch(elem.created),
+                        docID: elem.docID!,
+                        managerID: elem.managerID ?? 0,
+                        address: elem.address,
+                        summa: elem.summa.toInt(),
+                        phoneClient: elem.phoneClient,
+                        isDone: elem.isDone,
+                        takeMoney: elem.takeMoney,
+                        goodsList: elem.goodsList,
+                        payManager: elem.managerProfit ?? 0,
+                        payCar: elem.carProfit ?? 0,
+                        time: elem.time ?? '',
+                        name: elem.name ?? '',
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+                // ExpansionTile(
+                //   title: const Text('Заказы'),
+                //   children: list
+                //       .map(
+                //         (elem) => OrderCardAdminGeneralReport(
+                //           createDate:
+                //               DateTime.fromMillisecondsSinceEpoch(elem.created),
+                //           docID: elem.docID!,
+                //           managerID: elem.managerID ?? 0,
+                //           address: elem.address,
+                //           summa: elem.summa.toInt(),
+                //           phoneClient: elem.phoneClient,
+                //           isDone: elem.isDone,
+                //           takeMoney: elem.takeMoney,
+                //           goodsList: elem.goodsList,
+                //           payManager: elem.managerProfit ?? 0,
+                //           payCar: elem.carProfit ?? 0,
+                //           time: elem.time ?? '',
+                //           name: elem.name ?? '',
+                //         ),
+                //       )
+                //       .toList(),
+                // ),
+              ],
             ),
-          ],
+          ),
         ),
         actions: [
           AdminButtons(
@@ -122,6 +146,34 @@ class AdminGeneralHouseApartmentReport extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  ExpansionTile goodsReport(List<OrderModel> list) {
+    return ExpansionTile(
+      title: const Text('Список продаж:'),
+      children: RepoAdminGeneralReport()
+          .allCityGoods(list)
+          .map(
+            (elem) => SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(3),
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(border: Border.all()),
+                  child: Row(
+                    children: [
+                      Expanded(flex: 5, child: Text(elem.goodsName)),
+                      Expanded(
+                        child: Text('${elem.count.toString()} шт.'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

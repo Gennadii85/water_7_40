@@ -272,15 +272,17 @@ class OrderCountCubit extends Cubit<OrderCountState> {
     if (id == null) {
       manID = managerID;
     } else {
-      manID = id;
+      if (id != managerID) {
+        manID = id;
+        notesFinish =
+            'Заказ переопределен ! От менеджера ${managerID.toString()} менеджеру -> $id !!!    ${state.addressEntity.notes.text}';
+      }
       //записать номер телефона в базу клиентов
       RepoAdminGetPost().savePhoneNameAddress(
         state.addressEntity.phone.text,
         state.addressEntity.name.text,
         address,
       );
-      notesFinish =
-          'Заказ переопределен ! От менеджера ${managerID.toString()} менеджеру -> $id !!!    ${state.addressEntity.notes.text}';
     }
     String phoneManager = Hive.box(VarHive.nameBox).get(VarHive.phoneManager);
     final model = OrderModel(

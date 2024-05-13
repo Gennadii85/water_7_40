@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:water_7_40/core/var_manager.dart';
 import 'package:water_7_40/data/model/price_model.dart';
 import 'package:water_7_40/data/repositories/manager_page_repo.dart';
@@ -8,6 +9,7 @@ import 'package:water_7_40/presentation/cubit/order_count/order_count_cubit.dart
 import 'package:water_7_40/presentation/pages/admin/admin_buttons.dart';
 import 'package:water_7_40/presentation/pages/manager/address_order_init_page.dart';
 import 'package:water_7_40/presentation/pages/manager/address_order_value_page.dart';
+import '../../../core/var_core.dart';
 import '../../../data/entity/price_entity.dart';
 import '../../../data/model/address_model.dart';
 import '../../../data/repositories/admin/admin_page_manager_repo.dart';
@@ -43,9 +45,16 @@ class _CreateOrderState extends State<CreateOrder> {
       List<String> addressList = [city, street, house, apartment];
       int? id = await RepoManagerPage().checkAddress(address);
       cubit.writeOrder(address, takeMoney, id, addressList);
-      goManagerPage(id);
+      if (Hive.box(VarHive.nameBox).get(VarHive.managersID) != id) {
+        goManagerPage(id);
+      }
+      backManagerPage();
     }
   }
+
+  Future backManagerPage() => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ManagersPage()),
+      );
 
   void goManagerPage(int? id) {
     if (id != null) {
@@ -64,11 +73,6 @@ class _CreateOrderState extends State<CreateOrder> {
         ),
       );
     }
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const ManagersPage(),
-      ),
-    );
   }
 
   @override
