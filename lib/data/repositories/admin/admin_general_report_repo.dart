@@ -94,7 +94,6 @@ class RepoAdminGeneralReport {
           .add(CarCargoEntity(goodsName: element, count: listCount[index]));
       index++;
     }
-    print(listName);
     return listEntity;
   }
 }
