@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB7Ejoap_qsyJPTEL-9kNL9uRKgcA39xlY',
-    appId: '1:138111748697:android:ad027f47861ff1821e7f48',
-    messagingSenderId: '138111748697',
-    projectId: 'water-60f3d',
-    storageBucket: 'water-60f3d.appspot.com',
+    apiKey:------,
+    appId: ------,
+    messagingSenderId: -------,
+    projectId: -------,
+    storageBucket: --------,
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCWANO6-riufwC_KN3-QZXybpbSEQsWTro',
-    appId: '1:138111748697:ios:f0fd13a353cd6baa1e7f48',
-    messagingSenderId: '138111748697',
-    projectId: 'water-60f3d',
-    storageBucket: 'water-60f3d.appspot.com',
-    iosBundleId: 'com.example.water740',
+    apiKey: -------,
+    appId: -------,
+    messagingSenderId: -------,
+    projectId: ------,
+    storageBucket:-------,
+    iosBundleId:--------,
   );
 }
